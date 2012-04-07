@@ -11,13 +11,26 @@
 using namespace cocos2d;
 using namespace CocosDenshion;
 
-#define PTM_RATIO 32
+
 enum 
 {
 	kTagTileMap = 1,
 	kTagSpriteManager = 1,
 	kTagAnimation1 = 1,
 }; 
+
+/** Convert the given position into the box2d world. */
+static inline float ptm(float d)
+{
+    return d / PTM_RATIO;
+}
+
+/** Convert the given position into the cocos2d world. */
+static inline float mtp(float d)
+{
+    return d * PTM_RATIO;
+}
+
 
 HelloWorld::HelloWorld()
 {
@@ -39,18 +52,17 @@ HelloWorld::HelloWorld()
     world->SetAllowSleeping(doSleep);    
 	world->SetContinuousPhysics(true);
     
-    /*	
-     m_debugDraw = new GLESDebugDraw( PTM_RATIO );
-     world->SetDebugDraw(m_debugDraw);
-     
-     uint flags = 0;
-     flags += b2DebugDraw::e_shapeBit;
-     flags += b2DebugDraw::e_jointBit;
-     flags += b2DebugDraw::e_aabbBit;
-     flags += b2DebugDraw::e_pairBit;
-     flags += b2DebugDraw::e_centerOfMassBit;
-     m_debugDraw->SetFlags(flags);		
-     */
+
+    m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+    world->SetDebugDraw(m_debugDraw);
+    
+	uint32 flags = 0;
+	flags += b2Draw::e_shapeBit;
+	flags += b2Draw::e_jointBit;
+	flags += b2Draw::e_aabbBit;
+	flags += b2Draw::e_pairBit;
+	flags += b2Draw::e_centerOfMassBit;
+	m_debugDraw->SetFlags(flags);
 	
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(screenSize.width/2/PTM_RATIO, 
@@ -92,6 +104,7 @@ HelloWorld::HelloWorld()
 	label->setColor( ccc3(0,0,255) );
 	label->setPosition( CCPointMake( screenSize.width/2, screenSize.height-50) );
 	
+    this->addNewRagDollAtPosition(CCPoint(screenSize.width*0.8, screenSize.height*0.1));
 	schedule( schedule_selector(HelloWorld::tick) );
 }
 
@@ -112,7 +125,7 @@ void HelloWorld::draw()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	//world->DrawDebugData();
+	world->DrawDebugData();
 	
 	// restore default GL states
 	glEnable(GL_TEXTURE_2D);
@@ -201,6 +214,231 @@ void HelloWorld::ccTouchesEnded(CCSet* touches, CCEvent* event)
         
 		addNewSpriteWithCoords( location );
 	}
+}
+
+void HelloWorld::addNewRagDollAtPosition(cocos2d::CCPoint _ragDollPosition)
+{
+    // -------------------------
+    // Bodies ------------------
+    // -------------------------
+    
+    // Set these to dynamics bodies
+    b2BodyDef bd;
+    bd.type = b2_dynamicBody;
+    b2PolygonShape box;
+    b2FixtureDef fixtureDef;
+    
+    // Head ------
+    b2CircleShape headShape;
+    headShape.m_radius = ptm(12.5f);
+    fixtureDef.shape = &headShape;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.3f;
+    bd.position.Set(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y));
+    b2Body *head = world->CreateBody(&bd);
+    head->CreateFixture(&fixtureDef);
+//    head->ApplyLinearImpulse(b2Vec2(random() % 100 - 50.0f, random() % 100 - 50.0f), head->GetWorldCenter());
+    
+    // -----------
+    
+    // Torso1 ----
+    box.SetAsBox(ptm(15.0f), ptm(10.0f));
+    fixtureDef.shape = &box;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    bd.position.Set(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 25.0f));
+    b2Body *torso1 = world->CreateBody(&bd);
+    torso1->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // Torso2 ----
+    box.SetAsBox(ptm(15.0f), ptm(10.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 43.0f));
+    b2Body *torso2 = world->CreateBody(&bd);
+    torso2->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // Torso3 ----
+    box.SetAsBox(ptm(15.0f), ptm(10.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 58.0f));
+    b2Body *torso3 = world->CreateBody(&bd);
+    torso3->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // UpperArm --
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    
+    // Left
+    box.SetAsBox(ptm(18.0f), ptm(6.5f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x - 30.0f), ptm(_ragDollPosition.y + 20.0f));
+    b2Body *upperArmL = world->CreateBody(&bd);
+    upperArmL->CreateFixture(&fixtureDef);
+    
+    // Right
+    box.SetAsBox(ptm(18.0f), ptm(6.5f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x + 30.0f), ptm(_ragDollPosition.y + 20.0f));
+    b2Body *upperArmR = world->CreateBody(&bd);
+    upperArmR->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // Lower Arm
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    
+    // Left
+    box.SetAsBox(ptm(17.0f), ptm(6.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x - 57.0f), ptm(_ragDollPosition.y + 20.0f));
+    b2Body *lowerArmL = world->CreateBody(&bd);
+    lowerArmL->CreateFixture(&fixtureDef);
+    
+    // Right
+    box.SetAsBox(ptm(17.0f), ptm(6.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x + 57.0f), ptm(_ragDollPosition.y + 20.0f));
+    b2Body *lowerArmR = world->CreateBody(&bd);
+    lowerArmR->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // UpperLeg --
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    
+    // Left
+    box.SetAsBox(ptm(7.5f), ptm(22.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x - 8.0f), ptm(_ragDollPosition.y + 85.0f));
+    b2Body *upperLegL = world->CreateBody(&bd);
+    upperLegL->CreateFixture(&fixtureDef);
+    
+    // Right
+    box.SetAsBox(ptm(7.5f), ptm(22.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x + 8.0f), ptm(_ragDollPosition.y + 85.0f));
+    b2Body *upperLegR = world->CreateBody(&bd);
+    upperLegR->CreateFixture(&fixtureDef);
+    
+    // -----------
+    
+    // LowerLeg --
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.4f;
+    fixtureDef.restitution = 0.1f;
+    
+    // Left
+    box.SetAsBox(ptm(6.0f), ptm(20.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x - 8.0f), ptm(_ragDollPosition.y + 120.0f));
+    b2Body *lowerLegL = world->CreateBody(&bd);
+    lowerLegL->CreateFixture(&fixtureDef);
+    
+    // Right
+    box.SetAsBox(ptm(6.0f), ptm(20.0f));
+    fixtureDef.shape = &box;
+    bd.position.Set(ptm(_ragDollPosition.x + 8.0f), ptm(_ragDollPosition.y + 120.0f));
+    b2Body *lowerLegR = world->CreateBody(&bd);
+    lowerLegR->CreateFixture(&fixtureDef);
+    // -----------
+    
+    // -------------------------
+    // Joints ------------------
+    // -------------------------
+    
+    b2RevoluteJointDef jd;
+    jd.enableLimit = true;
+    
+    // Head to shoulders
+    jd.lowerAngle = -40.0f / (180.0f / M_PI);
+    jd.upperAngle = 40.0f / (180.0f / M_PI);
+    jd.Initialize(torso1, head, b2Vec2(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 15.0f)));
+    world->CreateJoint(&jd);
+    
+    // Upper arm to shoulders --
+    // Left
+    jd.lowerAngle = -85.0f / (180.0f / M_PI);
+    jd.upperAngle = 130.0f / (180.0f / M_PI);
+    jd.Initialize(torso1, upperArmL, b2Vec2(ptm(_ragDollPosition.x - 18.0f), ptm(_ragDollPosition.y + 20.0f)));
+    world->CreateJoint(&jd);
+    
+    // Right
+    jd.lowerAngle = -130.0f / (180.0f / M_PI);
+    jd.upperAngle = 85.0f / (180.0f / M_PI);
+    jd.Initialize(torso1, upperArmR, b2Vec2(ptm(_ragDollPosition.x + 18.0f), ptm(_ragDollPosition.y + 20.0f)));
+    world->CreateJoint(&jd);
+    
+    // -------------------------
+    
+    // Lower arm to shoulders --
+    // Left
+    jd.lowerAngle = -130.0f / (180.0f / M_PI);
+    jd.upperAngle = 10.0f / (180.0f / M_PI);
+    jd.Initialize(upperArmL, lowerArmL, b2Vec2(ptm(_ragDollPosition.x - 45.0f), ptm(_ragDollPosition.y + 20.0f)));
+    world->CreateJoint(&jd);
+    
+    // Right
+    jd.lowerAngle = -10.0f / (180.0f / M_PI);
+    jd.upperAngle = 130.0f / (180.0f / M_PI);
+    jd.Initialize(upperArmR, lowerArmR, b2Vec2(ptm(_ragDollPosition.x + 45.0f), ptm(_ragDollPosition.y + 20.0f)));
+    world->CreateJoint(&jd);
+    
+    // -------------------------
+    
+    // Shoulders / stomach -----
+    jd.lowerAngle = -15.0f / (180.0f / M_PI);
+    jd.upperAngle = 15.0f / (180.0f / M_PI);
+    jd.Initialize(torso1, torso2, b2Vec2(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 35.0f)));
+    world->CreateJoint(&jd);
+    
+    // Stomach / hips
+    jd.Initialize(torso2, torso3, b2Vec2(ptm(_ragDollPosition.x), ptm(_ragDollPosition.y + 50.0f)));
+    world->CreateJoint(&jd);
+    
+    // -------------------------
+    
+    // Torso to upper leg ------
+    // Left
+    jd.lowerAngle = -25.0f / (180.0f / M_PI);
+    jd.upperAngle = 45.0f / (180.0f / M_PI);
+    jd.Initialize(torso3, upperLegL, b2Vec2(ptm(_ragDollPosition.x - 8), ptm(_ragDollPosition.y + 72.0f)));
+    world->CreateJoint(&jd);
+    
+    // Right
+    jd.lowerAngle = -45.0f / (180.0f / M_PI);
+    jd.upperAngle = 25.0f / (180.0f / M_PI);
+    jd.Initialize(torso3, upperLegR, b2Vec2(ptm(_ragDollPosition.x + 8), ptm(_ragDollPosition.y + 72.0f)));
+    world->CreateJoint(&jd);
+    
+    // -------------------------
+    
+    // Upper leg to lower leg --
+    // Left
+    jd.lowerAngle = -25.0f / (180.0f / M_PI);
+    jd.upperAngle = 115.0f / (180.0f / M_PI);
+    jd.Initialize(upperLegL, lowerLegL, b2Vec2(ptm(_ragDollPosition.x - 8), ptm(_ragDollPosition.y + 105.0f)));
+    world->CreateJoint(&jd);
+    
+    // Right
+    jd.lowerAngle = -115.0f / (180.0f / M_PI);
+    jd.upperAngle = 25.0f / (180.0f / M_PI);
+    jd.Initialize(upperLegR, lowerLegR, b2Vec2(ptm(_ragDollPosition.x + 8), ptm(_ragDollPosition.y + 105.0f)));
+    world->CreateJoint(&jd);
+    
+    // -------------------------
 }
 
 CCScene* HelloWorld::scene()

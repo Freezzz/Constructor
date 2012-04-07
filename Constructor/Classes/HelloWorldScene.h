@@ -7,16 +7,19 @@
 //
 #ifndef __HELLO_WORLD_H__
 #define __HELLO_WORLD_H__
-
+#define PTM_RATIO 32
 // When you import this file, you import all the cocos2d classes
+
 #include "cocos2d.h"
 #include "Box2D.h"
+#include "GLES-Render.h"
+
 
 class HelloWorld : public cocos2d::CCLayer {
 public:
     ~HelloWorld();
     HelloWorld();
-    
+	GLESDebugDraw * m_debugDraw;
     // returns a Scene that contains the HelloWorld as the only child
     static cocos2d::CCScene* scene();
     
@@ -25,9 +28,8 @@ public:
     virtual void draw();
     virtual void ccTouchesEnded(cocos2d::CCSet* touches, cocos2d::CCEvent* event);
     void tick(cocos2d::ccTime dt);
-    
+    void addNewRagDollAtPosition(cocos2d::CCPoint _ragDollPosition);
 private:
     b2World* world;
 };
-
 #endif // __HELLO_WORLD_H__
