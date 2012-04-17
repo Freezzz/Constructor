@@ -10,7 +10,8 @@
 #define __GameObject_H__
 
 #include "cocos2d.h"
-#include "Box2D.h"
+#include <Box2d/Box2d.h>
+
 using namespace cocos2d;
 
 typedef enum ObjectState{

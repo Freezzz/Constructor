@@ -7,7 +7,7 @@
 //
 
 #include "ObjectFixedPoint.h"
-#include "GameWorld.h"
+#include "../GameWorld.h"
 #define PTM_RATIO 32.0f
 
 //////////////////////////////////////////////////// 

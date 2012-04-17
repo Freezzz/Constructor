@@ -7,7 +7,7 @@
 //
 
 #include "ObjectSpring.h"
-#include "GameWorld.h"
+#include "../GameWorld.h"
 #include "ObjectSimpleBox.h"
 #define PTM_RATIO 32.0f
 #define MAX_LENGHT 50

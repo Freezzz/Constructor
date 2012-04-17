@@ -8,12 +8,14 @@
 
 #include "GameLevelScene.h"
 #include "GameWorld.h"
-#include "CreationLayer.h"
-#include "ObjectSimpleBox.h"
-#include "ObjectFixedPoint.h"
-#include "ObjectPanel.h"
-#include "ObjectSpring.h"
-#include "InventoryLayer.h"
+
+#include "GameObjects/ObjectSimpleBox.h"
+#include "GameObjects/ObjectFixedPoint.h"
+#include "GameObjects/ObjectPanel.h"
+#include "GameObjects/ObjectSpring.h"
+
+#include "Controls/InventoryLayer.h"
+#include "Controls/CreationLayer.h"
 #include "Constants.h"
 
 #define TOUCH_TRESHOLD 20

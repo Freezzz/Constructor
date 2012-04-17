@@ -7,11 +7,11 @@
 //
 
 #include "InventoryLayer.h"
-#include "GameObject.h"
-#include "ObjectFixedPoint.h"
-#include "ObjectSimpleBox.h"
-#include "ObjectSpring.h"
-#include "ObjectPanel.h"
+#include "../GameObjects/GameObject.h"
+#include "../GameObjects/ObjectFixedPoint.h"
+#include "../GameObjects/ObjectSimpleBox.h"
+#include "../GameObjects/ObjectSpring.h"
+#include "../GameObjects/ObjectPanel.h"
 
 #define BUTTON_SIZE 90
 
