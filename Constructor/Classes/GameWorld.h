@@ -9,7 +9,7 @@
 #ifndef __GameWorld_H__
 #define __GameWorld_H__
 
-#import "cocos2d.h"
+#include "cocos2d.h"
 #include "Box2D.h"
 #include "GLES-Render.h"
 

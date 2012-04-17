@@ -9,7 +9,7 @@
 #ifndef __CreationLayer_H__
 #define __CreationLayer_H__
 
-#import "cocos2d.h"
+#include "cocos2d.h"
 
 
 using namespace cocos2d;

@@ -10,7 +10,7 @@
 #include "GameWorld.h"
 #include "ObjectSimpleBox.h"
 #define PTM_RATIO 32.0f
-#define MAX_LENGHT 30
+#define MAX_LENGHT 50
 
 //////////////////////////////////////////////////// 
 // ObjectSpring init
@@ -58,49 +58,129 @@ void ObjectSpring::createBodyAtPosition(cocos2d::CCPoint position){
 	objectBody->CreateFixture(&fixtureDef);
 	objectBody->SetUserData(this);
     objectBody->SetFixedRotation(true);
+	objectBody->SetTransform(b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), 0);
 
 	b2Body * objectBody1 = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 	objectBody1->CreateFixture(&fixtureDef);
     objectBody1->SetFixedRotation(true);
+	objectBody1->SetTransform(b2Vec2(position.x/PTM_RATIO, position.y-5/PTM_RATIO), 0);	
 	ribs->push_back(objectBody1);
 	
 	b2Body * objectBody2 = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 	objectBody2->CreateFixture(&fixtureDef);
     objectBody2->SetFixedRotation(true);	
 	ribs->push_back(objectBody2);	
+	objectBody2->SetTransform(b2Vec2(position.x/PTM_RATIO, position.y-10/PTM_RATIO), 0);		
     
 	secondBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 	secondBody->CreateFixture(&fixtureDef);
 	secondBody->SetUserData(this);
     secondBody->SetFixedRotation(true);
+	secondBody->SetTransform(b2Vec2(position.x/PTM_RATIO, position.y-15/PTM_RATIO), 0);			
     
     b2DistanceJointDef jointDef1;
     jointDef1.bodyA = objectBody;
     jointDef1.bodyB = objectBody1;
-    jointDef1.length = 10 / PTM_RATIO;
+	jointDef1.localAnchorA.Set(1, 0);
+	jointDef1.localAnchorB.Set(1, 0);	
+    jointDef1.length = 5 / PTM_RATIO;
     jointDef1.frequencyHz = 4;
 	jointDef1.dampingRatio = 0.15;
     jointDef1.collideConnected = true;
 
+	
+	b2DistanceJointDef jointDef11;
+    jointDef11.bodyA = objectBody;
+    jointDef11.bodyB = objectBody1;
+	jointDef11.localAnchorA.Set(0, 0);
+	jointDef11.localAnchorB.Set(0, 0);		
+    jointDef11.length = 5 / PTM_RATIO;
+    jointDef11.frequencyHz = 4;
+	jointDef11.dampingRatio = 0.15;
+    jointDef11.collideConnected = true;
+
+	
+	b2DistanceJointDef jointDef111;
+    jointDef111.bodyA = objectBody;
+    jointDef111.bodyB = objectBody1;
+	jointDef111.localAnchorA.Set(0.5, 0);
+	jointDef111.localAnchorB.Set(0.5, 0);		
+    jointDef111.length = 5 / PTM_RATIO;
+    jointDef111.frequencyHz = 4;
+	jointDef111.dampingRatio = 0.15;
+    jointDef111.collideConnected = true;
+
 	b2DistanceJointDef jointDef2;
     jointDef2.bodyA = objectBody1;
     jointDef2.bodyB = objectBody2;
-    jointDef2.length = 10 / PTM_RATIO;
+	jointDef2.localAnchorA.Set(1, 0);
+	jointDef2.localAnchorB.Set(1, 0);	
+    jointDef2.length = 5 / PTM_RATIO;
     jointDef2.frequencyHz = 4;
 	jointDef2.dampingRatio = 0.15;
     jointDef2.collideConnected = true;
+	
+	b2DistanceJointDef jointDef22;
+    jointDef22.bodyA = objectBody1;
+    jointDef22.bodyB = objectBody2;
+	jointDef22.localAnchorA.Set(0, 0);
+	jointDef22.localAnchorB.Set(0, 0);		
+    jointDef22.length = 5 / PTM_RATIO;
+    jointDef22.frequencyHz = 4;
+	jointDef22.dampingRatio = 0.15;
+    jointDef22.collideConnected = true;
+
+	b2DistanceJointDef jointDef222;
+    jointDef222.bodyA = objectBody1;
+    jointDef222.bodyB = objectBody2;
+	jointDef222.localAnchorA.Set(0.5, 0);
+	jointDef222.localAnchorB.Set(0.5, 0);		
+    jointDef222.length = 5 / PTM_RATIO;
+    jointDef222.frequencyHz = 4;
+	jointDef222.dampingRatio = 0.15;
+    jointDef222.collideConnected = true;
+
 
 	b2DistanceJointDef jointDef3;
     jointDef3.bodyA = objectBody2;
     jointDef3.bodyB = secondBody;
-    jointDef3.length = 10 / PTM_RATIO;
+	jointDef3.localAnchorA.Set(1, 0);
+	jointDef3.localAnchorB.Set(1, 0);	
+	
+    jointDef3.length = 5 / PTM_RATIO;
     jointDef3.frequencyHz = 4;
 	jointDef3.dampingRatio = 0.15;
     jointDef3.collideConnected = true;
 
+	b2DistanceJointDef jointDef33;
+    jointDef33.bodyA = objectBody2;
+    jointDef33.bodyB = secondBody;
+	jointDef33.localAnchorA.Set(0, 0);
+	jointDef33.localAnchorB.Set(0, 0);		
+    jointDef33.length = 5 / PTM_RATIO;
+    jointDef33.frequencyHz = 4;
+	jointDef33.dampingRatio = 0.15;
+    jointDef33.collideConnected = true;
+	
+	b2DistanceJointDef jointDef333;
+    jointDef333.bodyA = objectBody2;
+    jointDef333.bodyB = secondBody;
+	jointDef333.localAnchorA.Set(0.5, 0);
+	jointDef333.localAnchorB.Set(0.5, 0);		
+    jointDef333.length = 5 / PTM_RATIO;
+    jointDef333.frequencyHz = 4;
+	jointDef333.dampingRatio = 0.15;
+    jointDef333.collideConnected = true;
+	
 	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef1));
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef11));	
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef111));		
 	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef2));
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef22));	
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef222));		
 	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef3));
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef33));	
+	joints->push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef333));		
 }
 
 
@@ -115,7 +195,7 @@ void ObjectSpring::update(ccTime dt){
         
         this->setPosition( midPoint );
         this->setRotation( -CC_RADIANS_TO_DEGREES(atan2(p2.y-p1.y, p2.x-p1.x))+ 90);
-        this->objectSprite->setScaleY(distance*1.3/MAX_LENGHT);
+        this->objectSprite->setScaleY(distance/(MAX_LENGHT*2));
     }
 }
 
@@ -145,7 +225,7 @@ void ObjectSpring::onSimulationStarted(){
 
 void ObjectSpring::onSimulationEnded(){
 	for (int i = 0; i < joints->size(); i++) {
-		joints->at(i)->SetLength(10 / PTM_RATIO);
+		joints->at(i)->SetLength(5 / PTM_RATIO);
 	}
 	objectBody->SetType(b2_staticBody);
 	secondBody->SetType(b2_staticBody);	
@@ -162,7 +242,8 @@ void ObjectSpring::onMovementStarted(){
 void ObjectSpring::onMovementEnded(){
 	GameObject::onMovementEnded();
 	secondBody->SetType(b2_staticBody);
-	secondBody->SetFixedRotation(false);	
+	objectBody->SetFixedRotation(true);			
+	secondBody->SetFixedRotation(true);	
 }
 
 void ObjectSpring::destroy(){

@@ -6,7 +6,7 @@
 //  Copyright 2012 The Epic Bean. All rights reserved.
 //
 
-#import "GameWorld.h"
+#include "GameWorld.h"
 #define PTM_RATIO 32.0f
 
 //////////////////////////////////////////////////// 
