@@ -111,7 +111,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     if (!_isInEditMode ) {
         return false;
     }
-    CCPoint location = pTouch->locationInView(pTouch->view());
+    CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
 	// Check if need to create new object
@@ -154,7 +154,7 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     if (_selectedObject == NULL) {
         return;
     }
-    CCPoint location = pTouch->locationInView(pTouch->view());
+    CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
     _selectedObject->move(location);
@@ -168,7 +168,7 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
         return;
     }
     
-    CCPoint location = pTouch->locationInView(pTouch->view());
+    CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
     // If touch is not in game zone
