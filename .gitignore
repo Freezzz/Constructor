@@ -1,0 +1,6 @@
+.DS_Store*
+Prefix.pch
+android/*
+ios/*
+libs/*
+Constructor.xcodeproj/*
