@@ -16,7 +16,8 @@ using namespace cocos2d;
 
 
 ////////////////////////////////////////////////////
-// CreationLayer
+// CreationLayer - gui layer containing menus 
+// for creation screen
 ///////////////////////////////////////////////////
 class CreationLayer : public CCLayer {
 private:
@@ -29,8 +30,6 @@ private:
     
     void onDeleteButton(CCObject * sender);
     void onResetButton(CCObject * sender);    
-    
-    void onBoxButton(CCObject * sender);    	
 public:
 	LAYER_NODE_FUNC(CreationLayer);
 };

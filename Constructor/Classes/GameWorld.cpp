@@ -17,7 +17,7 @@ bool GameWorld::init(){
     
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	b2Vec2 gravity;
-	gravity.Set(0.0f, -10.0f);
+	gravity.Set(0.0f, -9.8);
     
 	physicsWorld = new b2World(gravity);
 	physicsWorld->SetAllowSleeping(true);
@@ -38,21 +38,8 @@ bool GameWorld::init(){
 	// Create world borders
 	this->createWorldBox(winSize);
     
-    _isRunning = false;
-	return true;
-}
-
-void GameWorld::runWorld(){
-    if (_isRunning) {
-        return;
-    }
     this->scheduleUpdate();
-    _isRunning = true;
-}
-
-void GameWorld::pauseWorld(){
-    this->unscheduleUpdate();
-    _isRunning = false;
+	return true;
 }
 
 ////////////////////////////////////////////////////
@@ -69,22 +56,22 @@ void GameWorld::update(ccTime dt){
 }
 
 ////////////////////////////////////////////////////
-// Generates phisical border aroud the world
+// Generates physical border aroud the world
 ///////////////////////////////////////////////////
 void GameWorld::createWorldBox(CCSize screenSize) {
 	b2BodyDef groundBodyDef;
 	groundBodyDef.position.Set(screenSize.width/2/PTM_RATIO,
 	                           screenSize.height/2/PTM_RATIO); // bottom-left corner
-    
+
 	// Call the body factory which allocates memory for the ground body
 	// from a pool and creates the ground box shape (also from a pool).
 	// The body is also added to the world.
-	b2Body* groundBody = physicsWorld->CreateBody(&groundBodyDef);
+    b2Body* groundBody = physicsWorld->CreateBody(&groundBodyDef);
     
 	// Define the ground box shape.
 	b2PolygonShape groundBox;
     
-	int halfGameZoneHeight = screenSize.height - 150;
+	int halfGameZoneHeight = screenSize.height - 60;
 	
 	// bottom
 	groundBox.SetAsBox(screenSize.width/2/PTM_RATIO, 0, b2Vec2(0, -halfGameZoneHeight/2/PTM_RATIO), 0);
@@ -101,6 +88,26 @@ void GameWorld::createWorldBox(CCSize screenSize) {
 	// right
 	groundBox.SetAsBox(0, halfGameZoneHeight/2/PTM_RATIO, b2Vec2(screenSize.width/2/PTM_RATIO, 0), 0);
 	groundBody->CreateFixture(&groundBox, 0);
+    groundBody->SetType(b2_staticBody);
+	
+	
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_staticBody;
+	bodyDef.position.Set(screenSize.width*0.5/PTM_RATIO, screenSize.height*0.5/PTM_RATIO);
+	umbelicoDelMondo = physicsWorld->CreateBody(&bodyDef);
+	
+	// Define another box shape for our dynamic body.
+	b2PolygonShape dynamicBox;
+	dynamicBox.SetAsBox(5/2/PTM_RATIO, 5/2/PTM_RATIO);
+	
+	// Define the dynamic body fixture.
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &dynamicBox;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.3f;
+    fixtureDef.restitution = 0.3f;
+	fixtureDef.isSensor = true;
+	umbelicoDelMondo->CreateFixture(&fixtureDef);
 }
 
 void GameWorld::draw()
@@ -112,10 +119,9 @@ void GameWorld::draw()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     
-//    glPushMatrix();
-//    glScalef(CC_CONTENT_SCALE_FACTOR(), CC_CONTENT_SCALE_FACTOR(), 1);
+    
+    // Debug info, comment out this line
     physicsWorld->DrawDebugData();
-//    glPopMatrix();
 
     
 	// restore default GL states
@@ -124,7 +130,9 @@ void GameWorld::draw()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-
+//////////////////////////////////////////////////// 
+// Singleton pattern
+//////////////////////////////////////////////////// 
 GameWorld* GameWorld::gameWorldInstance = NULL;
 GameWorld* GameWorld::sharedGameWorld(){
 	CCAssert(gameWorldInstance!=NULL, "Game world not yet initialized");

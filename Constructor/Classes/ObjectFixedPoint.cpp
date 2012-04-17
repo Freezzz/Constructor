@@ -1,20 +1,20 @@
 //
-//  ObjectSimpleBox.cpp
+//  ObjectFixedPoint.cpp
 //  Constructor
 //
-//  Created by Ivan Litsvinenka on 4/7/12.
+//  Created by Ivan Litsvinenka on 4/14/12.
 //  Copyright 2012 The Epic Bean. All rights reserved.
 //
 
-#include "ObjectSimpleBox.h"
+#include "ObjectFixedPoint.h"
 #include "GameWorld.h"
 #define PTM_RATIO 32.0f
 
 //////////////////////////////////////////////////// 
-// ObjectSimpleBox init
+// ObjectFixedPoint init
 //////////////////////////////////////////////////// 
-bool ObjectSimpleBox::init(){
-    this->objectSprite = CCSprite::spriteWithFile("Icon-Small-50.png");
+bool ObjectFixedPoint::init(){
+    this->objectSprite = CCSprite::spriteWithFile("circle.png");
     
 	// Adapt container to the graphical rapresentation
 	this->setContentSize(objectSprite->getContentSize());
@@ -22,16 +22,13 @@ bool ObjectSimpleBox::init(){
 	this->setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
 
     this->addChild(objectSprite);
-    this->isStatic = false;
+	
+    this->isStatic = true;
     this->scheduleUpdate();
 	return true;
 }
 
-
-//////////////////////////////////////////////////// 
-// <#var#>
-//////////////////////////////////////////////////// 
-void ObjectSimpleBox::createBodyAtPosition(cocos2d::CCPoint position){
+void ObjectFixedPoint::createBodyAtPosition(cocos2d::CCPoint position){
 	// Player physical body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
@@ -39,15 +36,15 @@ void ObjectSimpleBox::createBodyAtPosition(cocos2d::CCPoint position){
 	objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 	
 	// Define another box shape for our dynamic body.
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(objectSprite->getContentSize().width/2/PTM_RATIO, objectSprite->getContentSize().height/2/PTM_RATIO);
+    b2CircleShape circle;
+    circle.m_radius = objectSprite->getContentSize().width/2/PTM_RATIO;
 	
 	// Define the dynamic body fixture.
 	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
+	fixtureDef.shape = &circle;
 	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.3f;
-    fixtureDef.restitution = 0.3f;
+	fixtureDef.friction = 0.1f;
+    fixtureDef.restitution = 0.5f;
 	fixtureDef.isSensor = false;
 	objectBody->CreateFixture(&fixtureDef);
 	objectBody->SetUserData(this);

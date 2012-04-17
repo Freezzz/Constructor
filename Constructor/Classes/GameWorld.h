@@ -17,25 +17,35 @@ using namespace cocos2d;
 class GameObject;
 
 ////////////////////////////////////////////////////
-// GameWorld
+// GameWorld wrapper to phyisycal world 
+// interactions
 ///////////////////////////////////////////////////
 class GameWorld : public CCNode {
 private:
     GLESDebugDraw * m_debugDraw;
-    bool _isRunning;
+    
+    
+    //////////////////////////////////////////////////// 
+    // Create world internal bounds
+    //////////////////////////////////////////////////// 
+	void createWorldBox(CCSize screenSize);
     
 	virtual void update(ccTime dt);
 	virtual bool init();
-	void createWorldBox(CCSize screenSize);
+
 	void draw();
 public:
 	b2World * physicsWorld;
+	b2Body* umbelicoDelMondo;    
     
-    void runWorld();
-    void pauseWorld();
-    bool isRunning(){return _isRunning;}
-    
+    //////////////////////////////////////////////////// 
+    // Static factory constructor
+    //////////////////////////////////////////////////// 
 	static GameWorld* node();
+    
+    //////////////////////////////////////////////////// 
+    // Singleton pattern
+    //////////////////////////////////////////////////// 
 	static GameWorld* gameWorldInstance;
 	static GameWorld* sharedGameWorld();    
 };

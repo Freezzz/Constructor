@@ -1,37 +1,35 @@
 //
-//  ObjectSimpleBox.cpp
+//  ObjectPanel.cpp
 //  Constructor
 //
-//  Created by Ivan Litsvinenka on 4/7/12.
+//  Created by Ivan Litsvinenka on 4/14/12.
 //  Copyright 2012 The Epic Bean. All rights reserved.
 //
 
-#include "ObjectSimpleBox.h"
+#include "ObjectPanel.h"
 #include "GameWorld.h"
 #define PTM_RATIO 32.0f
 
 //////////////////////////////////////////////////// 
-// ObjectSimpleBox init
+// ObjectPanel init
 //////////////////////////////////////////////////// 
-bool ObjectSimpleBox::init(){
-    this->objectSprite = CCSprite::spriteWithFile("Icon-Small-50.png");
-    
+bool ObjectPanel::init(){
+	// Add sprite and adapt container
+    this->objectSprite = CCSprite::spriteWithFile("panel.png");
+
 	// Adapt container to the graphical rapresentation
 	this->setContentSize(objectSprite->getContentSize());
 	this->objectSprite->setAnchorPoint(CCPoint(0,0));	
 	this->setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
-
-    this->addChild(objectSprite);
+    
+	this->addChild(objectSprite);
+	
     this->isStatic = false;
     this->scheduleUpdate();
 	return true;
 }
 
-
-//////////////////////////////////////////////////// 
-// <#var#>
-//////////////////////////////////////////////////// 
-void ObjectSimpleBox::createBodyAtPosition(cocos2d::CCPoint position){
+void ObjectPanel::createBodyAtPosition(cocos2d::CCPoint position){
 	// Player physical body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
@@ -51,4 +49,6 @@ void ObjectSimpleBox::createBodyAtPosition(cocos2d::CCPoint position){
 	fixtureDef.isSensor = false;
 	objectBody->CreateFixture(&fixtureDef);
 	objectBody->SetUserData(this);
+	
+	this->setPosition(position);
 }

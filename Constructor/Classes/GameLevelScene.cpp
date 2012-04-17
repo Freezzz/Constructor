@@ -10,9 +10,13 @@
 #include "GameWorld.h"
 #include "CreationLayer.h"
 #include "ObjectSimpleBox.h"
+#include "ObjectFixedPoint.h"
+#include "ObjectPanel.h"
+#include "ObjectSpring.h"
+#include "InventoryLayer.h"
+#include "Constants.h"
 
-#define GRID_SIZE 50
-#define TOUCH_TRESHOLD GRID_SIZE * 1.7
+#define TOUCH_TRESHOLD 20
 
 //////////////////////////////////////////////////// 
 // GameLevelScene init
@@ -25,17 +29,160 @@ bool GameLevelScene::init(){
 	setIsTouchEnabled( true );
 	setIsAccelerometerEnabled( true );
     
+    CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+    
+    // Background
+    CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
+    bg->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
+    this->addChild(bg);
+    
+    // Game World
     gameWorld = GameWorld::node();
     this->addChild(gameWorld);
     
-    creationLayer = CreationLayer::node();
-    this->addChild(creationLayer);
+    // Invetory
+    _inventoryLayer = InventoryLayer::node();
+    _inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
+    this->addChild(_inventoryLayer);
     
-    _gameObjects = new vector<GameObject*>();
-    _isInEditMode = true;
+    // Game Menu
+    CreationLayer * creationLayer = CreationLayer::node();
+    this->addChild(creationLayer, 10);
+    
+    this->_gameObjects  = new CCMutableArray<GameObject*>();
+    this->_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
+    this->_isInEditMode = true;
     
     gameSceneInstance = this;
 	return true;
+}
+
+//////////////////////////////////////////////////// 
+// Starts world simulation
+////////////////////////////////////////////////////
+void GameLevelScene::runWorld(){
+    _isInEditMode = false;
+    _inventoryLayer->setOnScreen(false);    
+    for (int i = 0; i < _gameObjects->count(); i++) {
+		_gameObjects->getObjectAtIndex(i)->setObjectState(simulating);
+    }
+}
+
+//////////////////////////////////////////////////// 
+// Pause world simulation without reseting initial state
+//////////////////////////////////////////////////// 
+void GameLevelScene::pauseWorld(){
+    _isInEditMode = true;
+    _inventoryLayer->setOnScreen(true);
+    for (int i = 0; i < _gameObjects->count(); i++) {
+		_gameObjects->getObjectAtIndex(i)->setObjectState(idile);
+    }
+}
+
+
+//////////////////////////////////////////////////// 
+// Restore original GameObjects postions before simulation
+//////////////////////////////////////////////////// 
+void GameLevelScene::resetWorld(){    
+    gameWorld->physicsWorld->ClearForces();    
+    this->pauseWorld();
+}
+
+//////////////////////////////////////////////////// 
+// Deletes all GameObjects from world
+//////////////////////////////////////////////////// 
+void GameLevelScene::wipeWorld(){
+    this->pauseWorld();  
+    gameWorld->physicsWorld->ClearForces();    
+    for (int i = 0; i < _gameObjects->count(); i++) {
+		_gameObjects->getObjectAtIndex(i)->destroy();
+    }
+    _gameObjects->removeAllObjects();
+}
+
+
+
+//////////////////////////////////////////////////// 
+// Screen Touch delegates - touch started
+//////////////////////////////////////////////////// 
+bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
+    if (!_isInEditMode ) {
+        return false;
+    }
+    CCPoint location = pTouch->locationInView(pTouch->view());
+    location = CCDirector::sharedDirector()->convertToGL(location);
+    
+	// Check if need to create new object
+	GameObject * newObject = _inventoryLayer->getGameObjectForTapLocation(location);
+    if (newObject != NULL) {
+		_gameObjects->addObject(newObject);		
+		this->addChild(newObject);		
+        newObject->setObjectState(moving);
+        newObject->setSelected(true);     
+		newObject->move(location);		
+		_selectedObject = newObject;		
+        return true;
+    }
+
+	
+    // If touch is in game zone look for touched object
+    if (CCRect::CCRectContainsPoint(_gameZoneRect, location)) {
+        
+		// Take in account threshold, to make easier touch selection
+//        CCRect touchZone = CCRect(location.x - TOUCH_TRESHOLD*0.5, location.y- TOUCH_TRESHOLD*0.5, TOUCH_TRESHOLD, TOUCH_TRESHOLD);
+        for (int i = 0; i < _gameObjects->count(); i++) {
+            GameObject * tmp = (GameObject*)_gameObjects->getObjectAtIndex(i);
+//			if (CCRect::CCRectIntersectsRect(touchZone, tmp->boundingBox())) {				
+			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {			
+                _selectedObject = tmp;
+                _selectedObject->setSelected(true);
+                _selectedObject->setObjectState(moving);
+				_selectedObject->move(location);				
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//////////////////////////////////////////////////// 
+// Screen Touch delegates - touch moved
+//////////////////////////////////////////////////// 
+void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
+    if (_selectedObject == NULL) {
+        return;
+    }
+    CCPoint location = pTouch->locationInView(pTouch->view());
+    location = CCDirector::sharedDirector()->convertToGL(location);
+    
+    _selectedObject->move(location);
+}
+
+//////////////////////////////////////////////////// 
+// Screen Touch delegates - touch finished
+//////////////////////////////////////////////////// 
+void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
+    if (_selectedObject == NULL) {
+        return;
+    }
+    
+    CCPoint location = pTouch->locationInView(pTouch->view());
+    location = CCDirector::sharedDirector()->convertToGL(location);
+    
+    // If touch is not in game zone
+    if (!CCRect::CCRectContainsPoint(_gameZoneRect, location)) {
+		_gameObjects->removeObject(_selectedObject);
+        _selectedObject->destroy();
+        _selectedObject=NULL;        
+        return;
+    }
+    
+    _selectedObject->move(location);
+    _selectedObject->setSelected(false);
+    _selectedObject->setObjectState(idile);
+	CCLog("GameLevelScene::ccTouchEnded SEL Size: %f, %f", _selectedObject->getContentSize().width, _selectedObject->getContentSize().height);					
+	
+//    _selectedObject = NULL;
 }
 
 void GameLevelScene::registerWithTouchDispatcher()
@@ -43,105 +190,9 @@ void GameLevelScene::registerWithTouchDispatcher()
 	CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(this, 0, true);
 }
 
-void GameLevelScene::runWorld(){
-    _isInEditMode = false;
-    for (int i = 0; i < _gameObjects->size(); i++) {
-        GameObject * tmp = _gameObjects->at(i);
-        tmp->originalPosition = tmp->getPosition();
-        tmp->originalRotation = tmp->getRotation();
-        tmp->objectBody->SetAwake(true);
-    }
-    gameWorld->runWorld();
-}
-
-void GameLevelScene::pauseWorld(){
-    _isInEditMode = true;
-    gameWorld->pauseWorld();
-}
-
-
-void GameLevelScene::resetWorld(){
-    this->pauseWorld();
-    gameWorld->physicsWorld->ClearForces();
-    for (int i = 0; i < _gameObjects->size(); i++) {
-        GameObject * tmp = _gameObjects->at(i);
-        tmp->move(tmp->originalPosition);
-        tmp->rotate(tmp->originalRotation);
-    }
-}
-
-void GameLevelScene::wipeWorld(){
-    this->pauseWorld();  
-    gameWorld->physicsWorld->ClearForces();    
-    for (int i = 0; i < _gameObjects->size(); i++) {
-        GameObject * tmp = _gameObjects->at(i);
-        tmp->destroy();
-    }
-    _gameObjects->clear();
-}
-
-CCPoint GameLevelScene::alignPointToGrid(cocos2d::CCPoint point){
-    int x =  ((int)(point.x / GRID_SIZE)) * GRID_SIZE;
-    int y =  ((int)(point.y / GRID_SIZE)) * GRID_SIZE;    
-    return CCPoint(x, y);
-}
-
-
-
-bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-    if (!_isInEditMode) {
-        return false;
-    }
-    CCPoint location = pTouch->locationInView(pTouch->view());
-    
-    location = CCDirector::sharedDirector()->convertToGL(location);
-    
-    CCPoint locationAligned = alignPointToGrid(location);
-    
-    CCRect touchZone = CCRect(locationAligned.x, locationAligned.y, TOUCH_TRESHOLD, TOUCH_TRESHOLD);
-    for (int i = 0; i < _gameObjects->size(); i++) {
-        GameObject * tmp = _gameObjects->at(i);
-        if (CCRect::CCRectContainsPoint(touchZone, tmp->getPosition())) {
-            selectedObject = tmp;
-            selectedObject->unscheduleUpdate();   
-            selectedObject->setSelected(true);
-            return true;
-        }
-    }
-    
-    selectedObject = (ObjectSimpleBox*)ObjectSimpleBox::node();
-    ((ObjectSimpleBox*)selectedObject)->createBodyAtPosition(location);
-    this->addChild(selectedObject);
-    _gameObjects->push_back(selectedObject);
-    selectedObject->unscheduleUpdate();
-    selectedObject->setSelected(true);    
-    return true;
-}
-
-void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
-    if (selectedObject == NULL) {
-        return;
-    }
-    CCPoint location = pTouch->locationInView(pTouch->view());
-    location = CCDirector::sharedDirector()->convertToGL(location);
-
-    selectedObject->move(location);
-}
-
-void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
-    if (selectedObject == NULL) {
-        return;
-    }
-    CCPoint location = pTouch->locationInView(pTouch->view());
-    location = CCDirector::sharedDirector()->convertToGL(location);
-
-	location = alignPointToGrid(location);
-    selectedObject->scheduleUpdate();
-    selectedObject->move(location);
-    selectedObject->setSelected(false);    
-    selectedObject = NULL;
-}
-
+//////////////////////////////////////////////////// 
+// Static factory creation methods
+//////////////////////////////////////////////////// 
 CCScene* GameLevelScene::scene()
 {
 	// 'scene' is an autorelease object
@@ -157,6 +208,9 @@ CCScene* GameLevelScene::scene()
 	return scene;
 }
 
+//////////////////////////////////////////////////// 
+// Singleton pattern
+////////////////////////////////////////////////////     
 GameLevelScene* GameLevelScene::gameSceneInstance = NULL;
 GameLevelScene* GameLevelScene::sharedGameScene(){
 	CCAssert(gameSceneInstance!=NULL, "Game world not yet initialized");
