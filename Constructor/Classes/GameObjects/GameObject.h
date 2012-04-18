@@ -27,6 +27,9 @@ typedef enum ObjectState{
 class GameObject : public CCNode {
 protected:
 	b2MouseJoint * m_moveJoint;
+
+	b2RevoluteJoint * m_objectBodyPin;
+	b2MouseJoint * m_rotationJoin;
 	
 	// Original pre-simulation settings of object
 	CCPoint m_originalPosition;
@@ -49,6 +52,9 @@ protected:
 	virtual void onSimulationEnded();	
 	virtual void onMovementStarted();
 	virtual void onMovementEnded();	
+	virtual void onRotationStarted();
+	virtual void onRotationEnded();	
+	
 public:
 	// Properties
     b2Body * m_objectBody;
@@ -86,12 +92,15 @@ public:
     virtual void move(CCPoint newPostion);
 	
 	//////////////////////////////////////////////////// 
-	// Rotates object to give angle, if state is idile
-	// than it is a simple translation, if rotating than
-	// creates a rotate joint to rotate object along 
-	//	it's axis
+	// Rotates object to give angle with simple translation
 	//////////////////////////////////////////////////// 
     virtual void rotate(float newRotation);
+
+	//////////////////////////////////////////////////// 
+	// Rotates object to give angle creates a rotate 
+	//	joint to rotate object along it's axis
+	//////////////////////////////////////////////////// 
+    virtual void rotate(CCPoint location);
 	
 	//////////////////////////////////////////////////// 
 	// Destroy object and it's physical body

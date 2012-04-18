@@ -59,6 +59,12 @@ bool GameLevelScene::init(){
 	this->addChild(m_deleteButton, 100);
 	m_deleteButton->setIsVisible(false);
 	
+
+	m_rotareButton = CCSprite::spriteWithFile("rotate_btn.png");
+	this->addChild(m_rotareButton, 100);
+	m_rotareButton->setIsVisible(false);
+
+	
 	m_gameObjects  = new CCMutableArray<GameObject*>();
 	m_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
 	m_isInEditMode = true;
@@ -77,6 +83,9 @@ void GameLevelScene::runWorld(){
     for (int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Simulating);
     }
+	if (m_selectedObject) {
+		m_selectedObject->setSelected(false);
+	}
 }
 
 //////////////////////////////////////////////////// 
@@ -85,10 +94,16 @@ void GameLevelScene::runWorld(){
 void GameLevelScene::pauseWorld(){
     m_isInEditMode = true;
     m_inventoryLayer->setOnScreen(true);
-    setUtilityButtonsVisibleFoSelectedObject(true);	
+	
     for (int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
     }
+	
+	// If before simulation objec was selecteed restore selction and buttons
+	if (m_selectedObject) {
+		m_selectedObject->setSelected(true);
+	}	
+    setUtilityButtonsVisibleFoSelectedObject(true);	
 }
 
 
@@ -104,13 +119,13 @@ void GameLevelScene::resetWorld(){
 // Deletes all GameObjects from world
 //////////////////////////////////////////////////// 
 void GameLevelScene::wipeWorld(){
-	setUtilityButtonsVisibleFoSelectedObject(false);
 	pauseWorld();  
     gameWorld->physicsWorld->ClearForces();    
     for (int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->destroy();
     }
     m_gameObjects->removeAllObjects();
+	setUtilityButtonsVisibleFoSelectedObject(false);	
 }
 
 
@@ -178,7 +193,10 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     
 	if (m_selectedObject->m_state == Moving) {
 		m_selectedObject->move(location);
+	}else if (m_selectedObject->m_state == Rotating) {
+		m_selectedObject->rotate(location);
 	}
+
 
 	setUtilityButtonsVisibleFoSelectedObject(false);
 }
@@ -224,6 +242,12 @@ bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
 		setUtilityButtonsVisibleFoSelectedObject(false);
 		m_selectedObject = NULL;
 		return true;	
+	}
+	if (m_selectedObject && m_rotareButton->getIsVisible() && CCRect::CCRectContainsPoint(m_rotareButton->boundingBox(), location)) {
+		m_selectedObject->setSelected(true);
+		m_selectedObject->setObjectState(Rotating);
+		m_selectedObject->rotate(location);
+		return true;	
 	}	
 	return false;
 }
@@ -235,6 +259,7 @@ void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject(bool visibility){
 	if (!visibility || !m_selectedObject) {
 		m_moveButton->setIsVisible(false);
 		m_deleteButton->setIsVisible(false);
+		m_rotareButton->setIsVisible(false);
 		return;
 	}
 	if (m_selectedObject && m_selectedObject->m_state == Idile) {
@@ -242,6 +267,10 @@ void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject(bool visibility){
 			m_moveButton->setIsVisible(true);
 			m_moveButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->moveButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->moveButtonOffset.y));							
 		}
+		if (m_selectedObject->isRotatable) {
+			m_rotareButton->setIsVisible(true);
+			m_rotareButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->rotateButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->rotateButtonOffset.y));							
+		}				
 		if (m_selectedObject->isDeletable) {
 			m_deleteButton->setIsVisible(true);
 			m_deleteButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->deleteButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->deleteButtonOffset.y));							

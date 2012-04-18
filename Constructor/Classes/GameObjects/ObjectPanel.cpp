@@ -26,11 +26,11 @@ bool ObjectPanel::init(){
 	
 	isStatic = false;
 	isMovable = true;
-	isRotatable = false;
+	isRotatable = true;
 	isDeletable = true;
 	
 	moveButtonOffset = CCPoint(0, 10);
-	rotateButtonOffset = CCPoint(0,-30);
+	rotateButtonOffset = CCPoint(0,-20);
 	deleteButtonOffset = CCPoint(-100,0);
 	
 	scheduleUpdate();

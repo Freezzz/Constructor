@@ -33,11 +33,19 @@ void GameObject::setObjectState(ObjectState newState){
 		onSimulationStarted();
     }else if (m_state == Simulating && newState == Idile) {
 		onSimulationEnded();
-    } 
+    }if (m_state == Idile && newState == Rotating) {
+		onRotationStarted();
+    }else if (m_state == Rotating && newState == Idile) {
+		onRotationEnded();
+    }
+	
 	m_state = newState;
     
 }
 
+//////////////////////////////////////////////////// 
+// Callback when simulation just started
+//////////////////////////////////////////////////// 
 void GameObject::onSimulationStarted(){
 	saveOriginalProperties();
 	m_objectBody->SetAwake(true);
@@ -46,11 +54,17 @@ void GameObject::onSimulationStarted(){
 	}
 }
 
+//////////////////////////////////////////////////// 
+// Callback when simulation just ended
+//////////////////////////////////////////////////// 
 void GameObject::onSimulationEnded(){
 	m_objectBody->SetType(b2_staticBody);	
 	restoreToOriginalProperties();
 }
 
+//////////////////////////////////////////////////// 
+// Callback when movement just started
+//////////////////////////////////////////////////// 
 void GameObject::onMovementStarted(){
 	// Movement started set as dynamic so it can interact with other objects
 	m_objectBody->SetType(b2_dynamicBody);
@@ -58,11 +72,42 @@ void GameObject::onMovementStarted(){
 	m_objectBody->SetFixedRotation(true);  
 }
 
+//////////////////////////////////////////////////// 
+// Callback when movement just ended
+//////////////////////////////////////////////////// 
 void GameObject::onMovementEnded(){
-	// Movement ended
+	// Destory helper objects	
 	if (m_moveJoint) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_moveJoint);
 		m_moveJoint = NULL;
+	}
+	// Enable rotation
+	m_objectBody->SetFixedRotation(false);
+	// Set static to avoid further movements        
+	m_objectBody->SetType(b2_staticBody);	
+}
+
+//////////////////////////////////////////////////// 
+// Callback when rotation just started
+//////////////////////////////////////////////////// 
+void GameObject::onRotationStarted(){
+	m_objectBody->SetFixedRotation(false);	
+	m_objectBody->SetType(b2_dynamicBody);
+}
+
+//////////////////////////////////////////////////// 
+// Callback when rotation just ended
+//////////////////////////////////////////////////// 
+void GameObject::onRotationEnded(){
+	// Destory helper objects
+	if (m_rotationJoin) {
+		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_rotationJoin);
+		m_rotationJoin = NULL;
+	}
+
+	if (m_objectBodyPin) {
+		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_objectBodyPin);
+		m_objectBodyPin = NULL;
 	}
 	// Enable rotation
 	m_objectBody->SetFixedRotation(false);
@@ -121,6 +166,39 @@ void GameObject::rotate(float newRotation){
 		m_objectBody->SetTransform(b2Position, b2Angle);
         
 	}
+}
+
+//////////////////////////////////////////////////// 
+// Rotates object to give angle creates a rotate 
+//	joint to rotate object along it's axis
+//////////////////////////////////////////////////// 
+void GameObject::rotate(CCPoint location){
+	if (getParent() && m_objectBody) {
+		b2Vec2 b2Position = b2Vec2(location.x/PTM_RATIO,
+		                           location.y/PTM_RATIO);
+        		
+        // Create joint to tap location
+        if (!m_rotationJoin) {
+            b2MouseJointDef md;
+            md.bodyA = GameWorld::sharedGameWorld()->umbelicoDelMondo; // useless but it is a convention
+            md.bodyB = m_objectBody;
+            md.target = b2Position;
+            md.maxForce = 2000;
+            md.frequencyHz = 20;
+            md.dampingRatio = 1;
+            m_rotationJoin = (b2MouseJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
+        }
+		
+		// Pin object to it's position in the world alowing rotation
+		if(!m_objectBodyPin){
+			b2RevoluteJointDef md;
+			md.Initialize(m_objectBody, GameWorld::sharedGameWorld()->umbelicoDelMondo, m_objectBody->GetPosition());
+			md.referenceAngle = m_objectBody->GetAngle();
+            m_objectBodyPin = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
+		}
+
+        m_rotationJoin->SetTarget(b2Position);
+	}	
 }
 
 //////////////////////////////////////////////////// 

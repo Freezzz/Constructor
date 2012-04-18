@@ -31,7 +31,8 @@ private:
 	virtual bool init();
 	
 	CCSprite * m_moveButton;
-	CCSprite * m_deleteButton;	
+	CCSprite * m_deleteButton;
+	CCSprite * m_rotareButton;	
 public:
     GameWorld * gameWorld;
     
