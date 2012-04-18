@@ -7,7 +7,7 @@
 //
 
 #include "CreationLayer.h"
-#include "../GameLevelScene.h"
+#include <GameLevelScene.h>
 
 //////////////////////////////////////////////////// 
 // CreationLayer init
@@ -16,12 +16,12 @@ bool CreationLayer::init(){
     CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
     
     // Buttons
-    labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
-	CCMenuItemLabel * menuItemPause = CCMenuItemLabel::itemWithLabel(labelPause, this, menu_selector(CreationLayer::onPauseButton));
-    labelPause->setColor(ccc3(0, 254, 30));
+    m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
+	CCMenuItemLabel * menuItemPause = CCMenuItemLabel::itemWithLabel(m_labelPause, this, menu_selector(CreationLayer::onPauseButton));
+    m_labelPause->setColor(ccc3(0, 254, 30));
     
-    labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
-	CCMenuItemLabel * menuItemPlay = CCMenuItemLabel::itemWithLabel(labelPlay, this, menu_selector(CreationLayer::onPlayButton));
+    m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
+	CCMenuItemLabel * menuItemPlay = CCMenuItemLabel::itemWithLabel(m_labelPlay, this, menu_selector(CreationLayer::onPlayButton));
 
     
     CCLabelTTF * labelDelete = CCLabelTTF::labelWithString("Delete", "Arial", 30);
@@ -41,32 +41,32 @@ bool CreationLayer::init(){
 
     menuItemReset->setPosition(CCPoint(screenSize.width-70, screenSize.height-30));
     
-	this->addChild(pMenu, 1);
+	addChild(pMenu, 1);
 
     
 	return true;
 }
 
-void CreationLayer::onPlayButton(cocos2d::CCObject *sender){
+void CreationLayer::onPlayButton(CCObject *sender){
     GameLevelScene::sharedGameScene()->runWorld();
-    labelPlay->setColor(ccc3(0, 254, 30));
-    labelPause->setColor(ccc3(255, 255, 255));
+    m_labelPlay->setColor(ccc3(0, 254, 30));
+    m_labelPause->setColor(ccc3(255, 255, 255));
 }
 
-void CreationLayer::onPauseButton(cocos2d::CCObject *sender){
+void CreationLayer::onPauseButton(CCObject *sender){
     GameLevelScene::sharedGameScene()->pauseWorld();
-    labelPause->setColor(ccc3(0, 254, 30));
-    labelPlay->setColor(ccc3(255, 255, 255));    
+    m_labelPause->setColor(ccc3(0, 254, 30));
+    m_labelPlay->setColor(ccc3(255, 255, 255));    
 }
 
-void CreationLayer::onDeleteButton(cocos2d::CCObject *sender){
+void CreationLayer::onDeleteButton(CCObject *sender){
     GameLevelScene::sharedGameScene()->wipeWorld();  
-    labelPause->setColor(ccc3(0, 254, 30));
-    labelPlay->setColor(ccc3(255, 255, 255));       
+    m_labelPause->setColor(ccc3(0, 254, 30));
+    m_labelPlay->setColor(ccc3(255, 255, 255));       
 }
 
-void CreationLayer::onResetButton(cocos2d::CCObject *sender){
+void CreationLayer::onResetButton(CCObject *sender){
     GameLevelScene::sharedGameScene()->resetWorld();  
-    labelPause->setColor(ccc3(0, 254, 30));
-    labelPlay->setColor(ccc3(255, 255, 255));       
+    m_labelPause->setColor(ccc3(0, 254, 30));
+    m_labelPlay->setColor(ccc3(255, 255, 255));       
 }

@@ -15,10 +15,10 @@
 using namespace cocos2d;
 
 typedef enum ObjectState{
-    idile       = 0,
-    moving      = 1,
-    rotating    = 2,
-    simulating  = 3
+    Idile       = 0,
+    Moving      = 1,
+    Rotating    = 2,
+    Simulating  = 3
 }ObjectState;
 
 ////////////////////////////////////////////////////
@@ -26,11 +26,11 @@ typedef enum ObjectState{
 ///////////////////////////////////////////////////
 class GameObject : public CCNode {
 protected:
-	b2MouseJoint * moveJoint;
+	b2MouseJoint * m_moveJoint;
 	
 	// Original pre-simulation settings of object
-	CCPoint _originalPosition;
-    float _originalRotation;
+	CCPoint m_originalPosition;
+    float m_originalRotation;
 
 	
 	//////////////////////////////////////////////////// 
@@ -51,13 +51,22 @@ protected:
 	virtual void onMovementEnded();	
 public:
 	// Properties
-    b2Body * objectBody;
-    CCSprite * objectSprite;
+    b2Body * m_objectBody;
+	b2Body* getObjectBody(){return m_objectBody;}
+	
+    CCSprite * m_objectSprite;
+	CCSprite* getObjectSprite(){return m_objectSprite;}
 	
 	// Is a static object in simulation
     bool isStatic;
+	
 	// Current object state
-    ObjectState state;
+    ObjectState m_state;
+	ObjectState getObjectState(){return m_state;}
+	//////////////////////////////////////////////////// 
+	// Sets object state, and calls coresponding handlers
+	//////////////////////////////////////////////////// 
+    virtual void setObjectState(ObjectState newState);	
         
 	//////////////////////////////////////////////////// 
 	// Moves object to new location, if state is idile
@@ -95,10 +104,6 @@ public:
 	//////////////////////////////////////////////////// 
     void setSelected(bool selected);
 	
-	//////////////////////////////////////////////////// 
-	// Sets object state, and calls coresponding handlers
-	//////////////////////////////////////////////////// 
-    virtual void setObjectState(ObjectState newState);
     
 	//////////////////////////////////////////////////// 
 	// Creates object at location

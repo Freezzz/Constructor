@@ -10,11 +10,11 @@
 #define Constructor_Constants_h
 
 typedef enum ObjectType{
-    undefined   = -1,
-    simpleBox   = 0,
-    fixedPoint  = 1,
-    panel       = 2,
-    spring      = 3
+    Undefined   = -1,
+    SimpleBox   = 0,
+    FixedPoint  = 1,
+    Panel       = 2,
+    Spring      = 3
 }ObjectType;
 
 

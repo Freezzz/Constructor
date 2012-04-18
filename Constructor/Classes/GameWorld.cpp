@@ -36,9 +36,9 @@ bool GameWorld::init(){
 	m_debugDraw->SetFlags(flags);
     
 	// Create world borders
-	this->createWorldBox(winSize);
+	createWorldBox(winSize);
     
-    this->scheduleUpdate();
+	scheduleUpdate();
 	return true;
 }
 

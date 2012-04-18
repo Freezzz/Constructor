@@ -22,8 +22,8 @@ using namespace cocos2d;
 class CreationLayer : public CCLayer {
 private:
 	virtual bool init();
-    CCLabelTTF * labelPause;
-    CCLabelTTF * labelPlay;
+    CCLabelTTF * m_labelPause;
+    CCLabelTTF * m_labelPlay;
     
     void onPlayButton(CCObject * sender);
     void onPauseButton(CCObject * sender);	

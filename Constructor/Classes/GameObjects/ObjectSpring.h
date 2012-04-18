@@ -19,16 +19,18 @@ using namespace cocos2d;
 ///////////////////////////////////////////////////
 class ObjectSpring : public GameObject {
 private:
-    b2Vec2 _secondBodyOriginalLocation;
-	float _secondBodyOriginalRotation;
+    b2Body * m_secondBody;
 	
-	vector<b2DistanceJoint*> * joints;
-	vector<b2Body*> *ribs;
+    b2Vec2 m_secondBodyOriginalLocation;
+	float m_secondBodyOriginalRotation;
+	
+	vector<b2DistanceJoint*> m_joints;
+	vector<b2Body*> m_ribs;
 protected:
 	virtual bool init();
     virtual void destroy();
     virtual void update(ccTime dt);    
-    b2Body * secondBody;
+
 	
 
 	// State change handlers

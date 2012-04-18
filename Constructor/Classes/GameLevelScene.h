@@ -19,13 +19,13 @@ class InventoryLayer;
 ///////////////////////////////////////////////////
 class GameLevelScene : public CCLayer {
 private:
-    GameObject * _selectedObject;
+    GameObject * m_selectedObject;
 	
-	CCMutableArray<GameObject*>* _gameObjects;
-    CCRect _gameZoneRect;
+	CCMutableArray<GameObject*> * m_gameObjects;
+    CCRect m_gameZoneRect;
     
-	InventoryLayer * _inventoryLayer;
-    bool _isInEditMode;
+	InventoryLayer * m_inventoryLayer;
+    bool m_isInEditMode;
     
     virtual void registerWithTouchDispatcher();
 	virtual bool init();    
@@ -60,7 +60,7 @@ public:
     virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent);  
     
-    bool isInEditMode(){return _isInEditMode;}
+    bool isInEditMode(){return m_isInEditMode;}
 
     //////////////////////////////////////////////////// 
     // Static factory creation methods

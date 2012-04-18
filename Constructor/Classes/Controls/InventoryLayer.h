@@ -22,10 +22,10 @@ class InventoryLayer : public CCLayer {
 private:
 	virtual bool init();
     
-    CCSprite * boxButton;
-    CCSprite * pointButton;
-    CCSprite * panelButton;
-    CCSprite * springButton;    
+    CCSprite * m_boxButton;
+    CCSprite * m_pointButton;
+    CCSprite * m_panelButton;
+    CCSprite * m_springButton;    
 	
 public:
     //////////////////////////////////////////////////// 
