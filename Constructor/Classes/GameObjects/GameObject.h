@@ -60,6 +60,16 @@ public:
 	// Is a static object in simulation
     bool isStatic;
 	
+	
+	bool isMovable;
+	bool isRotatable;
+	bool isDeletable;
+	
+    // Utility buttons offsets
+	CCPoint moveButtonOffset;
+	CCPoint rotateButtonOffset;
+	CCPoint deleteButtonOffset;
+	
 	// Current object state
     ObjectState m_state;
 	ObjectState getObjectState(){return m_state;}

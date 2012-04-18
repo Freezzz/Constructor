@@ -25,6 +25,14 @@ bool ObjectPanel::init(){
 	addChild(m_objectSprite);
 	
 	isStatic = false;
+	isMovable = true;
+	isRotatable = false;
+	isDeletable = true;
+	
+	moveButtonOffset = CCPoint(0, 10);
+	rotateButtonOffset = CCPoint(0,-30);
+	deleteButtonOffset = CCPoint(-100,0);
+	
 	scheduleUpdate();
 	return true;
 }

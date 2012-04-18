@@ -7,8 +7,8 @@
 //
 
 #include "ObjectSpring.h"
-#include "../GameWorld.h"
 #include "ObjectSimpleBox.h"
+#include "../GameWorld.h"
 #define PTM_RATIO 32.0f
 #define MAX_LENGHT 50
 
@@ -21,13 +21,21 @@ bool ObjectSpring::init(){
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
-	m_objectSprite->setAnchorPoint(CCPoint(0,0));	
-	setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
+	m_objectSprite->setAnchorPoint(CCPoint(0,0.5));	
+	setAnchorPoint(CCPoint(0.5,0)); // CCNode AP default is 0,0
 
-    this->addChild(m_objectSprite);
+	addChild(m_objectSprite);
 	
-    this->isStatic = false;
-    this->scheduleUpdate();
+	isStatic = false;
+	isMovable = true;
+	isRotatable = false;
+	isDeletable = true;
+	
+	moveButtonOffset = CCPoint(0, 10);
+	rotateButtonOffset = CCPoint(0,-30);
+	deleteButtonOffset = CCPoint(-30,0);
+
+	scheduleUpdate();
 	m_joints = vector<b2DistanceJoint*>();
 	m_ribs = vector<b2Body*>();
 	return true;
@@ -52,7 +60,6 @@ void ObjectSpring::createBodyAtPosition(cocos2d::CCPoint position){
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
     fixtureDef.restitution = 0.3f;
-	fixtureDef.isSensor = false;
 	
 	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 	m_objectBody->CreateFixture(&fixtureDef);
@@ -68,17 +75,36 @@ void ObjectSpring::createBodyAtPosition(cocos2d::CCPoint position){
     b2DistanceJointDef jointDef1;
     jointDef1.bodyA = m_objectBody;
     jointDef1.bodyB = m_secondBody;
-	jointDef1.localAnchorA.Set(1, 0);
+	jointDef1.localAnchorA.Set(1, -1);
 	jointDef1.localAnchorB.Set(1, 0);	
     jointDef1.length = 5 / PTM_RATIO;
-    jointDef1.frequencyHz = 4;
-	jointDef1.dampingRatio = 0.15;
+    jointDef1.frequencyHz = 20;
+	jointDef1.dampingRatio = 1;
     jointDef1.collideConnected = true;
 
-	
+	b2DistanceJointDef jointDef2;
+    jointDef2.bodyA = m_objectBody;
+    jointDef2.bodyB = m_secondBody;
+	jointDef2.localAnchorA.Set(0, -1);
+	jointDef2.localAnchorB.Set(0, 0);	
+    jointDef2.length = 5 / PTM_RATIO;
+    jointDef2.frequencyHz = 20;
+	jointDef2.dampingRatio = 1;
+    jointDef2.collideConnected = true;
 
-	
+	b2DistanceJointDef jointDef3;
+    jointDef3.bodyA = m_objectBody;
+    jointDef3.bodyB = m_secondBody;
+	jointDef3.localAnchorA.Set(-1, -1);
+	jointDef3.localAnchorB.Set(-1, 0);	
+    jointDef3.length = 5 / PTM_RATIO;
+    jointDef3.frequencyHz = 20;
+	jointDef3.dampingRatio = 1;
+    jointDef3.collideConnected = true;
+
 	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef1));
+	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef2));
+	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef3));	
 	setPosition(position);	
 }
 
@@ -91,7 +117,7 @@ void ObjectSpring::update(ccTime dt){
 
         float distance = sqrt(pow(p1.x-p2.x, 2)+pow(p1.y-p2.y, 2));
         CCPoint midPoint = CCPoint( (p1.x + p2.x) * 0.5, (p1.y + p2.y) * 0.5);
-        
+
         setPosition( midPoint );
         setRotation( -CC_RADIANS_TO_DEGREES(atan2(p2.y-p1.y, p2.x-p1.x))+ 90);
         m_objectSprite->setScaleY(distance/(MAX_LENGHT*2));
@@ -113,13 +139,13 @@ void ObjectSpring::saveOriginalProperties(){
 
 void ObjectSpring::onSimulationStarted(){
 	saveOriginalProperties();
-	for (int i = 0; i < m_joints.size(); i++) {
-		m_joints.at(i)->SetLength(MAX_LENGHT / PTM_RATIO);
-	}
 	m_objectBody->SetAwake(true);
 	m_secondBody->SetAwake(true);
 	m_objectBody->SetType(b2_dynamicBody);
-	m_secondBody->SetType(b2_dynamicBody);
+	m_secondBody->SetType(b2_dynamicBody);  	
+	for (int i = 0; i < m_joints.size(); i++) {		
+		m_joints.at(i)->SetLength(MAX_LENGHT / PTM_RATIO);
+	}	
 }
 
 void ObjectSpring::onSimulationEnded(){

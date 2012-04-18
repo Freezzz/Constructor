@@ -115,7 +115,7 @@ void GameObject::rotate(float newRotation){
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
 		                           getPosition().y/PTM_RATIO);
-		float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS(newRotation);
+		float32 b2Angle =  CC_DEGREES_TO_RADIANS(newRotation);
         
         setRotation(newRotation);        
 		m_objectBody->SetTransform(b2Position, b2Angle);
@@ -155,8 +155,8 @@ void GameObject::saveOriginalProperties(){
 // before simulation
 //////////////////////////////////////////////////// 
 void GameObject::restoreToOriginalProperties(){
-	move(this->m_originalPosition);
-	rotate(this->m_originalRotation);
+	move(m_originalPosition);
+	rotate(m_originalRotation);
 	m_objectBody->SetLinearVelocity(b2Vec2(0, 0));
 	m_objectBody->SetAngularVelocity(0);
 }

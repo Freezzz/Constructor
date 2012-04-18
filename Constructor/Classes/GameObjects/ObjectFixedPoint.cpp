@@ -24,6 +24,15 @@ bool ObjectFixedPoint::init(){
 	addChild(m_objectSprite);
 	
 	isStatic = true;
+	
+	isMovable = true;
+	isRotatable = false;
+	isDeletable = true;
+	
+	moveButtonOffset = CCPoint(0, 30);
+	rotateButtonOffset = CCPoint(0,-30);
+	deleteButtonOffset = CCPoint(-30,0);
+
 	scheduleUpdate();
 	return true;
 }

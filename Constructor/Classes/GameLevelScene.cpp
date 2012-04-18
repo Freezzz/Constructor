@@ -50,7 +50,15 @@ bool GameLevelScene::init(){
     // Game Menu
     CreationLayer * creationLayer = CreationLayer::node();
 	addChild(creationLayer, 10);
-    
+	
+	m_moveButton = CCSprite::spriteWithFile("move_btn.png");
+	this->addChild(m_moveButton, 100);
+	m_moveButton->setIsVisible(false);
+
+	m_deleteButton = CCSprite::spriteWithFile("delete_btn.png");
+	this->addChild(m_deleteButton, 100);
+	m_deleteButton->setIsVisible(false);
+	
 	m_gameObjects  = new CCMutableArray<GameObject*>();
 	m_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
 	m_isInEditMode = true;
@@ -64,7 +72,8 @@ bool GameLevelScene::init(){
 ////////////////////////////////////////////////////
 void GameLevelScene::runWorld(){
     m_isInEditMode = false;
-    m_inventoryLayer->setOnScreen(false);    
+    m_inventoryLayer->setOnScreen(false);
+    setUtilityButtonsVisibleFoSelectedObject(false);
     for (int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Simulating);
     }
@@ -76,6 +85,7 @@ void GameLevelScene::runWorld(){
 void GameLevelScene::pauseWorld(){
     m_isInEditMode = true;
     m_inventoryLayer->setOnScreen(true);
+    setUtilityButtonsVisibleFoSelectedObject(true);	
     for (int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
     }
@@ -94,6 +104,7 @@ void GameLevelScene::resetWorld(){
 // Deletes all GameObjects from world
 //////////////////////////////////////////////////// 
 void GameLevelScene::wipeWorld(){
+	setUtilityButtonsVisibleFoSelectedObject(false);
 	pauseWorld();  
     gameWorld->physicsWorld->ClearForces();    
     for (int i = 0; i < m_gameObjects->count(); i++) {
@@ -114,6 +125,17 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
+	// If user taped on move button
+	if (tapUtilityButtons(location)) {
+		return true;
+	}
+	
+	if (m_selectedObject != NULL) {
+		setUtilityButtonsVisibleFoSelectedObject(false);
+		m_selectedObject->setSelected(false);
+		m_selectedObject = NULL;
+	}
+	
 	// Check if need to create new object
 	GameObject * newObject = m_inventoryLayer->getGameObjectForTapLocation(location);
     if (newObject != NULL) {
@@ -122,7 +144,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
         newObject->setObjectState(Moving);
         newObject->setSelected(true);     
 		newObject->move(location);		
-		m_selectedObject = newObject;		
+		m_selectedObject = newObject;
         return true;
     }
 
@@ -131,15 +153,12 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
         
 		// Take in account threshold, to make easier touch selection
-//        CCRect touchZone = CCRect(location.x - TOUCH_TRESHOLD*0.5, location.y- TOUCH_TRESHOLD*0.5, TOUCH_TRESHOLD, TOUCH_TRESHOLD);
         for (int i = 0; i < m_gameObjects->count(); i++) {
-            GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
-//			if (CCRect::CCRectIntersectsRect(touchZone, tmp->boundingBox())) {				
+            GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);			
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {			
                 m_selectedObject = tmp;
                 m_selectedObject->setSelected(true);
-                m_selectedObject->setObjectState(Moving);
-				m_selectedObject->move(location);				
+				setUtilityButtonsVisibleFoSelectedObject(true);
                 return true;
             }
         }
@@ -157,7 +176,11 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
-    m_selectedObject->move(location);
+	if (m_selectedObject->m_state == Moving) {
+		m_selectedObject->move(location);
+	}
+
+	setUtilityButtonsVisibleFoSelectedObject(false);
 }
 
 //////////////////////////////////////////////////// 
@@ -178,13 +201,54 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
         m_selectedObject=NULL;        
         return;
     }
-    
-    m_selectedObject->move(location);
-    m_selectedObject->setSelected(false);
-    m_selectedObject->setObjectState(Idile);
-	
-//    m_selectedObject = NULL;
+    m_selectedObject->setObjectState(Idile);	
+	setUtilityButtonsVisibleFoSelectedObject(true);
 }
+
+//////////////////////////////////////////////////// 
+// Checks if user taped on one of ultility bottons
+// and performs tapped button operation
+// returns true if button was activated, false otherwise 
+//////////////////////////////////////////////////// 
+bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
+	if (m_selectedObject && m_moveButton->getIsVisible() && CCRect::CCRectContainsPoint(m_moveButton->boundingBox(), location)) {
+		m_selectedObject->setSelected(true);
+		m_selectedObject->setObjectState(Moving);
+		m_selectedObject->move(location);
+		return true;	
+	}	
+	if (m_selectedObject && m_deleteButton->getIsVisible() && CCRect::CCRectContainsPoint(m_deleteButton->boundingBox(), location)) {
+		m_selectedObject->setSelected(false);
+		m_gameObjects->removeObject(m_selectedObject);
+		m_selectedObject->destroy();
+		setUtilityButtonsVisibleFoSelectedObject(false);
+		m_selectedObject = NULL;
+		return true;	
+	}	
+	return false;
+}
+
+//////////////////////////////////////////////////// 
+// Shows and hides utility buttons near selected object
+//////////////////////////////////////////////////// 
+void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject(bool visibility){
+	if (!visibility || !m_selectedObject) {
+		m_moveButton->setIsVisible(false);
+		m_deleteButton->setIsVisible(false);
+		return;
+	}
+	if (m_selectedObject && m_selectedObject->m_state == Idile) {
+		if (m_selectedObject->isMovable) {
+			m_moveButton->setIsVisible(true);
+			m_moveButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->moveButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->moveButtonOffset.y));							
+		}
+		if (m_selectedObject->isDeletable) {
+			m_deleteButton->setIsVisible(true);
+			m_deleteButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->deleteButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->deleteButtonOffset.y));							
+		}
+	}
+}
+
 
 void GameLevelScene::registerWithTouchDispatcher()
 {

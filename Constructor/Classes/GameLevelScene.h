@@ -28,7 +28,10 @@ private:
     bool m_isInEditMode;
     
     virtual void registerWithTouchDispatcher();
-	virtual bool init();    
+	virtual bool init();
+	
+	CCSprite * m_moveButton;
+	CCSprite * m_deleteButton;	
 public:
     GameWorld * gameWorld;
     
@@ -60,6 +63,18 @@ public:
     virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent);  
     
+	//////////////////////////////////////////////////// 
+	// Checks if user taped on one of ultility bottons
+	// and performs tapped button operation
+	// returns true if button was activated, false otherwise 
+	//////////////////////////////////////////////////// 
+	bool tapUtilityButtons(CCPoint location);
+	
+	//////////////////////////////////////////////////// 
+	// Shows and hides utility buttons near selected object
+	//////////////////////////////////////////////////// 
+	void setUtilityButtonsVisibleFoSelectedObject(bool visibility);
+	
     bool isInEditMode(){return m_isInEditMode;}
 
     //////////////////////////////////////////////////// 
