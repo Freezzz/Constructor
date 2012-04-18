@@ -126,6 +126,7 @@ void GameLevelScene::wipeWorld(){
     }
     m_gameObjects->removeAllObjects();
 	setUtilityButtonsVisibleFoSelectedObject(false);	
+	m_selectedObject = NULL;
 }
 
 
