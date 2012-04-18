@@ -10,7 +10,7 @@
 #define __GameObject_H__
 
 #include "cocos2d.h"
-#include <Box2d/Box2d.h>
+#include <Box2D/Box2D.h>
 
 using namespace cocos2d;
 
