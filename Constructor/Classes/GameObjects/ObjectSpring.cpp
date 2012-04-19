@@ -12,6 +12,8 @@
 #define PTM_RATIO 32.0f
 #define MAX_LENGHT 50
 
+INVENTORYITEM_GAMEOBJECT_NODE_DECL( SpringInventoryItem, ObjectSpring )
+
 //////////////////////////////////////////////////// 
 // ObjectSpring init
 //////////////////////////////////////////////////// 

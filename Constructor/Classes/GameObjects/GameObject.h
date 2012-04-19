@@ -21,6 +21,69 @@ typedef enum ObjectState{
     Simulating  = 3
 }ObjectState;
 
+
+class GameObject;
+
+#define INVENTORYITEM_CLASS_DEF(INVENTORYITEM,GAMEOBJECT,SPRITE) \
+	class GAMEOBJECT; \
+	class INVENTORYITEM : public InventoryItem \
+	{ \
+	public: \
+		INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
+		bool init( ) { \
+			m_objectSprite = CCSprite::spriteWithFile(SPRITE); \
+			addChild( m_objectSprite ); \
+			CCLOG("INIT"); \
+		} \
+	};
+
+#define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
+	static INVENTORYITEM* node(); \
+	INVENTORYITEM* nodeV(); \
+	GameObject* gameObjectNodeV();
+
+#define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
+	static GAMEOBJECT* node(); \
+	GAMEOBJECT* nodeV(); \
+	INVENTORYITEM* inventoryItemNodeV();
+
+#define GENERIC_NODE_DECL(layer) \
+	layer* layer::node() \
+	{ \
+		layer *r = new layer(); \
+		if( r && r->init() ) { \
+			r->autorelease(); \
+			return r; \
+		} \
+		\
+		delete r; \
+		return NULL; \
+	};
+
+#define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
+	GENERIC_NODE_DECL(INVENTORYITEM) \
+	GENERIC_NODE_DECL(GAMEOBJECT) \
+	GameObject* INVENTORYITEM::gameObjectNodeV( ) { return GAMEOBJECT::node(); } \
+	INVENTORYITEM* INVENTORYITEM::nodeV( ) { return INVENTORYITEM::node(); } \
+	INVENTORYITEM* GAMEOBJECT::inventoryItemNodeV( ) { return INVENTORYITEM::node(); } \
+	GAMEOBJECT* GAMEOBJECT::nodeV( ) { return GAMEOBJECT::node(); }
+	
+	
+
+// the inventory item
+class InventoryItem : public CCNode
+{
+public:
+    CCSprite * m_objectSprite;
+    
+public:
+	virtual bool init( ) = 0;
+	
+	virtual GameObject* gameObjectNodeV( ) = 0;
+	virtual InventoryItem* nodeV( ) = 0;
+	
+};
+
 ////////////////////////////////////////////////////
 // GameObject
 ///////////////////////////////////////////////////
@@ -53,7 +116,7 @@ protected:
 	virtual void onMovementStarted();
 	virtual void onMovementEnded();	
 	virtual void onRotationStarted();
-	virtual void onRotationEnded();	
+	virtual void onRotationEnded();
 	
 public:
 	// Properties
@@ -128,7 +191,9 @@ public:
 	// Creates object at location
 	//////////////////////////////////////////////////// 
 	virtual void createBodyAtPosition(CCPoint position)=0;
-    static GameObject* node();
+	
+	virtual GameObject* nodeV( ) = 0;
+	virtual InventoryItem* inventoryItemNodeV( ) = 0;
 };
 
 #endif

@@ -12,6 +12,7 @@
 #include "../GameObjects/ObjectSimpleBox.h"
 #include "../GameObjects/ObjectSpring.h"
 #include "../GameObjects/ObjectPanel.h"
+#include <iostream>
 
 #define BUTTON_SIZE 90
 
@@ -30,23 +31,10 @@ bool InventoryLayer::init(){
     
     
     // Buttons
-    m_boxButton = CCSprite::spriteWithFile("box.png");
-    m_boxButton->setPosition(CCPoint(35, BUTTON_SIZE * 1));
-    addChild(m_boxButton);
-    
-    
-    m_pointButton = CCSprite::spriteWithFile("fixed.png");
-    m_pointButton->setPosition(CCPoint(35, BUTTON_SIZE * 0));
-    addChild(m_pointButton);
-    
-    
-    m_panelButton= CCSprite::spriteWithFile("panel_btn.png");
-    m_panelButton->setPosition(CCPoint(35, BUTTON_SIZE * -1));
-    addChild(m_panelButton);
-    
-    m_springButton = CCSprite::spriteWithFile("spring_btn.png");
-    m_springButton->setPosition(CCPoint(35, BUTTON_SIZE * -2));
-    addChild(m_springButton);
+    addInventoryItem( SimpleBoxInventoryItem::node() );
+    addInventoryItem( FixedPointInventoryItem::node() );
+    addInventoryItem( PanelInventoryItem::node() );
+    addInventoryItem( SpringInventoryItem::node() );
     
 	return true;
 }
@@ -63,65 +51,43 @@ void InventoryLayer::setOnScreen(bool isOnscreen){
     this->runAction(CCMoveTo::actionWithDuration(0.5, location));
 }
 
-
-//////////////////////////////////////////////////// 
-// Returns wich button type was tapped 
-//////////////////////////////////////////////////// 
-ObjectType InventoryLayer::getObjectTypeForTapCoordinates(CCPoint location){
-    CCPoint pointLocal = CCPoint(location.x - getPosition().x, location.y - getPosition().y);        
-    if (CCRect::CCRectContainsPoint(m_boxButton->boundingBox(), pointLocal)) {
-        m_boxButton->runAction(CCBlink::actionWithDuration(0.2, true));
-        return SimpleBox;
-    }
-    if (CCRect::CCRectContainsPoint(m_pointButton->boundingBox(), pointLocal)) {
-        m_pointButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-        return FixedPoint;
-    }
-    if (CCRect::CCRectContainsPoint(m_panelButton->boundingBox(), pointLocal)) {
-        m_panelButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-        return Panel;
-    }
-    if (CCRect::CCRectContainsPoint(m_springButton->boundingBox(), pointLocal)) {
-        m_springButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-        return Spring;
-    }
-    
-    
-    return Undefined;
-}
-
 //////////////////////////////////////////////////// 
 // Creates object if tap location is on any button,
 // null othewise
 //////////////////////////////////////////////////// 
 GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
-	CCPoint pointLocal = CCPoint(location.x - getPosition().x, location.y - getPosition().y);        
-    if (CCRect::CCRectContainsPoint(m_boxButton->boundingBox(), pointLocal)) {
-        m_boxButton->runAction(CCBlink::actionWithDuration(0.2, true));
-		ObjectSimpleBox * ret = ObjectSimpleBox::node();
-		ret->createBodyAtPosition(location);
-        return ret;
-    }
-    if (CCRect::CCRectContainsPoint(m_pointButton->boundingBox(), pointLocal)) {
-        m_pointButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-		ObjectFixedPoint * ret = ObjectFixedPoint::node();
-		ret->createBodyAtPosition(location);
-        return ret;
-    }
-    if (CCRect::CCRectContainsPoint(m_panelButton->boundingBox(), pointLocal)) {
-        m_panelButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-		ObjectPanel * ret = ObjectPanel::node();
-		ret->createBodyAtPosition(location);
-        return ret;
-    }
-    if (CCRect::CCRectContainsPoint(m_springButton->boundingBox(), pointLocal)) {
-        m_springButton->runAction(CCBlink::actionWithDuration(0.2, true));        
-		ObjectSpring * ret = ObjectSpring::node();
-		ret->createBodyAtPosition(location);
-        return ret;
-
-    }
+	CCPoint pointLocal = CCPoint(location.x - getPosition().x, location.y - getPosition().y);
+	
+	//std::cout << "Clicked: " << pointLocal.x << "," << pointLocal.y << std::endl;
+	
+	vector<InventoryItem*>::iterator it;
+	for( it = m_buttons.begin(); it != m_buttons.end(); ++ it ) {
+		InventoryItem *button = *it;
+		
+		/*
+		std::cout << "  Item at: " << CCRect::CCRectGetMidX( button->boundingBox() ) << "," << CCRect::CCRectGetMidY( button->boundingBox() )
+				  << " : " << button->m_objectSprite->boundingBox().size.width << "x" << button->m_objectSprite->boundingBox().size.height << std::endl;
+		*/
+				  
+		CCPoint point = CCPoint( pointLocal.x - button->boundingBox().origin.x, pointLocal.y - button->boundingBox().origin.y );
+		// std::cout << "  Fake click: " << point.x << "," << point.y << std::endl;
+		
+		if( CCRect::CCRectContainsPoint( button->m_objectSprite->boundingBox(), point ) ) {
+			button->runAction( CCBlink::actionWithDuration(0.2, true) );
+			GameObject *r = button->gameObjectNodeV();
+			r->createBodyAtPosition( location );
+			return r;
+		}
+	}
+	
     return NULL;
+}
+
+void InventoryLayer::addInventoryItem( InventoryItem *item )
+{
+    item->setPosition( CCPoint(35, BUTTON_SIZE * (1-(int)m_buttons.size()) ) );
+    m_buttons.push_back( item );
+    addChild( item );
 }
 
 
