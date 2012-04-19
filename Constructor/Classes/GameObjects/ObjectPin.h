@@ -9,7 +9,7 @@
 #ifndef __ObjectPin_H__
 #define __ObjectPin_H__
 
-#import "cocos2d.h"
+#include "cocos2d.h"
 #include "GameObject.h"
 using namespace cocos2d;
 

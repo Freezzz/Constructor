@@ -43,7 +43,8 @@ public:
 	//////////////////////////////////////////////////// 
 	GameObject* getGameObjectForTapLocation(CCPoint location);
 	
-	void addInventoryItem( InventoryItem *item );
+	// quantity=-1 : infinite
+	void addInventoryItem( InventoryItem *item, int quantity = -1 );
 	
 	LAYER_NODE_FUNC(InventoryLayer);
 };

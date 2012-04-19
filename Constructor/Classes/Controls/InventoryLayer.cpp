@@ -84,7 +84,7 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
     return NULL;
 }
 
-void InventoryLayer::addInventoryItem( InventoryItem *item )
+void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 {
     item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
     m_buttons.push_back( item );

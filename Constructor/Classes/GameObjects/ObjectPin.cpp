@@ -74,8 +74,8 @@ void ObjectPin::onMovementEnded(){
 	// Check if our sensor object collides with other GameObjects
 	b2ContactEdge * cont = m_objectBody->GetContactList();
 	if (cont != NULL) {
-		b2Vec2 pnt1 = cont->contact->GetManifold()->points[0].localPoint;		
-		b2Vec2 pnt2 = cont->contact->GetManifold()->points[1].localPoint;		
+		//b2Vec2 pnt1 = cont->contact->GetManifold()->points[0].localPoint;
+		//b2Vec2 pnt2 = cont->contact->GetManifold()->points[1].localPoint;
 		
 		// If contanc between two gameObjects. TODO: Improve check
 		if (cont->contact->GetFixtureA()->GetBody()->GetUserData() != NULL && cont->contact->GetFixtureB()->GetBody()->GetUserData() != NULL) {
@@ -90,7 +90,7 @@ void ObjectPin::onMovementEnded(){
 				otherBody = cont->contact->GetFixtureA()->GetBody();
 			}
 			
-			CCPoint midPoint = CCPoint( (pnt1.x + pnt2.x) * 0.5, (pnt1.y + pnt2.y) * 0.5);
+			// CCPoint midPoint = CCPoint( (pnt1.x + pnt2.x) * 0.5, (pnt1.y + pnt2.y) * 0.5);
 			
 			// Pin object to it's position in the world alowing rotation
 			b2RevoluteJointDef md;

@@ -129,6 +129,15 @@ void GameLevelScene::wipeWorld(){
 	m_selectedObject = NULL;
 }
 
+bool GameLevelScene::checkVectory()
+{
+	return 0;
+}
+bool GameLevelScene::checkDefeat()
+{
+	return 0;
+}
+
 
 
 //////////////////////////////////////////////////// 
@@ -174,6 +183,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {			
                 m_selectedObject = tmp;
                 m_selectedObject->setSelected(true);
+                m_selectedObject->setObjectState(Moving);
 				setUtilityButtonsVisibleFoSelectedObject(true);
                 return true;
             }

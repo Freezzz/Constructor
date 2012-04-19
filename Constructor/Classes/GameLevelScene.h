@@ -32,7 +32,7 @@ private:
 	
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
-	CCSprite * m_rotareButton;	
+	CCSprite * m_rotareButton;
 	
 public:
     GameWorld * gameWorld;
@@ -57,6 +57,11 @@ public:
     //////////////////////////////////////////////////// 
     void wipeWorld();
     
+    ////////////////////////////////////////////////////
+    // Checks whether the user won or lost
+    ////////////////////////////////////////////////////
+    bool checkVectory();
+    bool checkDefeat();
     
     //////////////////////////////////////////////////// 
     // Screen Touch delegates
