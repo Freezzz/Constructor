@@ -11,7 +11,7 @@
 
 #include "cocos2d.h"
 #include <Box2D/Box2D.h>
-
+#include "Constants.h"
 using namespace cocos2d;
 
 typedef enum ObjectState{
@@ -135,6 +135,8 @@ public:
 	bool isRotatable;
 	bool isDeletable;
 	
+	int defaultZOrder;
+	
     // Utility buttons offsets
 	CCPoint moveButtonOffset;
 	CCPoint rotateButtonOffset;
@@ -148,6 +150,11 @@ public:
 	//////////////////////////////////////////////////// 
     virtual void setObjectState(ObjectState newState);	
         
+	
+	// Object type
+    ObjectType m_type;
+	ObjectType getObjectType(){return m_type;}
+
 	//////////////////////////////////////////////////// 
 	// Moves object to new location, if state is idile
 	// than it is a simple translation, if moving than

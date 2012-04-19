@@ -68,7 +68,7 @@ bool GameLevelScene::init(){
 	m_gameObjects  = new CCMutableArray<GameObject*>();
 	m_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
 	m_isInEditMode = true;
-    
+	
     gameSceneInstance = this;
 	return true;
 }
@@ -141,7 +141,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
-	// If user taped on move button
+	// If user taped on utility buttons
 	if (tapUtilityButtons(location)) {
 		return true;
 	}
@@ -156,7 +156,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 	GameObject * newObject = m_inventoryLayer->getGameObjectForTapLocation(location);
     if (newObject != NULL) {
 		m_gameObjects->addObject(newObject);		
-		addChild(newObject);		
+		addChild(newObject, newObject->defaultZOrder);		
         newObject->setObjectState(Moving);
         newObject->setSelected(true);     
 		newObject->move(location);		

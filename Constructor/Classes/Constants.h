@@ -14,7 +14,8 @@ typedef enum ObjectType{
     SimpleBox   = 0,
     FixedPoint  = 1,
     Panel       = 2,
-    Spring      = 3
+    Spring      = 3,
+	Pin			= 4
 }ObjectType;
 
 

@@ -12,6 +12,7 @@
 #include "../GameObjects/ObjectSimpleBox.h"
 #include "../GameObjects/ObjectSpring.h"
 #include "../GameObjects/ObjectPanel.h"
+#include "../GameObjects/ObjectPin.h"
 #include <iostream>
 
 #define BUTTON_SIZE 90
@@ -35,7 +36,7 @@ bool InventoryLayer::init(){
     addInventoryItem( FixedPointInventoryItem::node() );
     addInventoryItem( PanelInventoryItem::node() );
     addInventoryItem( SpringInventoryItem::node() );
-    
+    addInventoryItem( PinInventoryItem::node() );    
 	return true;
 }
 
@@ -85,7 +86,7 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 
 void InventoryLayer::addInventoryItem( InventoryItem *item )
 {
-    item->setPosition( CCPoint(35, BUTTON_SIZE * (1-(int)m_buttons.size()) ) );
+    item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
     m_buttons.push_back( item );
     addChild( item );
 }

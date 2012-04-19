@@ -12,7 +12,7 @@ using namespace cocos2d;
 class GameWorld;
 class GameObject;
 class InventoryLayer;
-
+class b2Contact;
 ////////////////////////////////////////////////////
 // GameLevelScene - tat manages user interaction 
 // with game world
@@ -33,6 +33,7 @@ private:
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;	
+	
 public:
     GameWorld * gameWorld;
     
@@ -75,6 +76,7 @@ public:
 	// Shows and hides utility buttons near selected object
 	//////////////////////////////////////////////////// 
 	void setUtilityButtonsVisibleFoSelectedObject(bool visibility);
+	
 	
     bool isInEditMode(){return m_isInEditMode;}
 

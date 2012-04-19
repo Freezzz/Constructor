@@ -8,7 +8,7 @@
 
 #include "GameObject.h"
 #include <GameWorld.h>
-
+#include "ObjectPin.h"
 #define PTM_RATIO 32.0f
 //////////////////////////////////////////////////// 
 // GameObject init
@@ -216,6 +216,16 @@ void GameObject::update(ccTime dt){
 // Destroy object and it's physical body
 //////////////////////////////////////////////////// 
 void GameObject::destroy(){
+	b2JointEdge * jnt = m_objectBody->GetJointList();
+	while (jnt) {
+		ObjectPin * pin = dynamic_cast<ObjectPin*>((GameObject*)jnt->joint->GetUserData());
+		if (pin) {
+			// We dont need to destroy joint manualy it will be destroyed with this body
+			pin->unPin(false);
+		}
+		jnt = jnt->next;
+	}
+	
     GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_objectBody);	
 	removeFromParentAndCleanup(true);
 }
