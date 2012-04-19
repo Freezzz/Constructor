@@ -13,6 +13,8 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
+INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, "spring_btn.png" )
+
 
 ////////////////////////////////////////////////////
 // ObjectSpring
@@ -54,8 +56,8 @@ public:
 	// before simulation
 	//////////////////////////////////////////////////// 
     virtual void restoreToOriginalProperties();
-
-	LAYER_NODE_FUNC(ObjectSpring);
+    
+	GAMEOBJECT_NODE_DEF( SpringInventoryItem, ObjectSpring )
 };
 
 #endif

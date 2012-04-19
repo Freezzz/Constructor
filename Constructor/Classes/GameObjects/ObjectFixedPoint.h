@@ -13,6 +13,7 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
+INVENTORYITEM_CLASS_DEF( FixedPointInventoryItem , ObjectFixedPoint, "fixed.png" )
 
 ////////////////////////////////////////////////////
 // ObjectFixedPoint
@@ -23,7 +24,8 @@ protected:
 	
 public:
     void createBodyAtPosition(CCPoint position);
-	LAYER_NODE_FUNC(ObjectFixedPoint);
+	// LAYER_NODE_FUNC(ObjectFixedPoint);
+	GAMEOBJECT_NODE_DEF( FixedPointInventoryItem , ObjectFixedPoint )
 };
 
 #endif

@@ -11,6 +11,7 @@
 #include "cocos2d.h"
 #include "Constants.h"
 
+class InventoryItem;
 class GameObject;
 using namespace cocos2d;
 
@@ -21,11 +22,14 @@ using namespace cocos2d;
 class InventoryLayer : public CCLayer {
 private:
 	virtual bool init();
-    
+	
+    vector<InventoryItem*> m_buttons;
+    /*
     CCSprite * m_boxButton;
     CCSprite * m_pointButton;
     CCSprite * m_panelButton;
     CCSprite * m_springButton;    
+    */
 	
 public:
     //////////////////////////////////////////////////// 
@@ -33,16 +37,13 @@ public:
     //////////////////////////////////////////////////// 
     void setOnScreen(bool isOnscreen);
     
-    //////////////////////////////////////////////////// 
-    // Returns wich button type was tapped 
-    //////////////////////////////////////////////////// 
-    ObjectType getObjectTypeForTapCoordinates(CCPoint location);
-    
 	//////////////////////////////////////////////////// 
 	// Creates object if tap location is on any button,
 	// null othewise
 	//////////////////////////////////////////////////// 
 	GameObject* getGameObjectForTapLocation(CCPoint location);
+	
+	void addInventoryItem( InventoryItem *item );
 	
 	LAYER_NODE_FUNC(InventoryLayer);
 };

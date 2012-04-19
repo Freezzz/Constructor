@@ -13,6 +13,8 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
+INVENTORYITEM_CLASS_DEF( PanelInventoryItem , ObjectPanel, "panel_btn.png" )
+
 ////////////////////////////////////////////////////
 // ObjectPanel
 ///////////////////////////////////////////////////
@@ -22,7 +24,7 @@ protected:
 public:
     void createBodyAtPosition(CCPoint position);
     
-	LAYER_NODE_FUNC(ObjectPanel);
+	GAMEOBJECT_NODE_DEF( PanelInventoryItem , ObjectPanel )
 };
 
 #endif

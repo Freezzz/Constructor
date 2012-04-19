@@ -13,6 +13,8 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
+INVENTORYITEM_CLASS_DEF( SimpleBoxInventoryItem, ObjectSimpleBox, "box.png" )
+
 
 ////////////////////////////////////////////////////
 // ObjectSimpleBox
@@ -23,7 +25,7 @@ protected:
 public:    
     void createBodyAtPosition(CCPoint position);
     
-	LAYER_NODE_FUNC(ObjectSimpleBox);
+	GAMEOBJECT_NODE_DEF( SimpleBoxInventoryItem, ObjectSimpleBox )
 };
 
 #endif
