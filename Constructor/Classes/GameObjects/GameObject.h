@@ -34,6 +34,7 @@ class GameObject;
 			m_objectSprite = CCSprite::spriteWithFile(SPRITE); \
 			addChild( m_objectSprite ); \
 			CCLOG("INIT"); \
+			return true;\
 		} \
 	};
 
