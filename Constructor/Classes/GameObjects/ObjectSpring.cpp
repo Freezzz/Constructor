@@ -10,7 +10,7 @@
 #include "ObjectSimpleBox.h"
 #include "../GameWorld.h"
 #define PTM_RATIO 32.0f
-#define MAX_LENGHT 50
+#define MAX_LENGHT 132
 
 //////////////////////////////////////////////////// 
 // ObjectSpring init
@@ -120,7 +120,7 @@ void ObjectSpring::update(ccTime dt){
 
         setPosition( midPoint );
         setRotation( -CC_RADIANS_TO_DEGREES(atan2(p2.y-p1.y, p2.x-p1.x))+ 90);
-        m_objectSprite->setScaleY(distance/(MAX_LENGHT*2));
+        m_objectSprite->setScaleY(distance/(MAX_LENGHT));
     }
 }
 
