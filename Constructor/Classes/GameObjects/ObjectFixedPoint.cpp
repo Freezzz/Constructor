@@ -35,6 +35,9 @@ bool ObjectFixedPoint::init(){
 	rotateButtonOffset = CCPoint(0,-30);
 	deleteButtonOffset = CCPoint(-30,0);
 
+	defaultZOrder = 1;
+    
+    m_type = FixedPoint;
 	scheduleUpdate();
 	return true;
 }

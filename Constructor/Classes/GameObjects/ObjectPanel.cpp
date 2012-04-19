@@ -35,6 +35,8 @@ bool ObjectPanel::init(){
 	rotateButtonOffset = CCPoint(0,-20);
 	deleteButtonOffset = CCPoint(-100,0);
 	
+	defaultZOrder = 1;
+	m_type = Panel;
 	scheduleUpdate();
 	return true;
 }

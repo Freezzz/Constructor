@@ -39,6 +39,7 @@ bool ObjectPin::init(){
 	defaultZOrder = 20;
 	
 	m_type = Pin;
+	m_isPinned = false;
 	
 	scheduleUpdate();
 	return true;

@@ -37,9 +37,11 @@ bool ObjectSpring::init(){
 	rotateButtonOffset = CCPoint(0,-30);
 	deleteButtonOffset = CCPoint(-30,0);
 
-	scheduleUpdate();
+	defaultZOrder = 1;
+	m_type = Spring;
 	m_joints = vector<b2DistanceJoint*>();
-	m_ribs = vector<b2Body*>();
+	
+	scheduleUpdate();	
 	return true;
 }
 
@@ -177,9 +179,6 @@ void ObjectSpring::destroy(){
 	for (unsigned int i = 0; i < m_joints.size(); i++) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_joints.at(i));		
 	}
-	for (unsigned int i = 0; i < m_ribs.size(); i++) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_ribs.at(i));		
-	}    
     GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_secondBody);
     GameObject::destroy();
 }

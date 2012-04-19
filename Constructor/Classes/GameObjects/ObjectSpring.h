@@ -27,7 +27,6 @@ private:
 	float m_secondBodyOriginalRotation;
 	
 	vector<b2DistanceJoint*> m_joints;
-	vector<b2Body*> m_ribs;
 protected:
 	virtual bool init();
     virtual void destroy();
