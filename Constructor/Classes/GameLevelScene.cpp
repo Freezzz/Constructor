@@ -184,6 +184,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
                 m_selectedObject = tmp;
                 m_selectedObject->setSelected(true);
                 m_selectedObject->setObjectState(Moving);
+                m_selectedObject->move(location);
 				setUtilityButtonsVisibleFoSelectedObject(true);
                 return true;
             }
