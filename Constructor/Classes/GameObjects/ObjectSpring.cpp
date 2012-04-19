@@ -145,13 +145,13 @@ void ObjectSpring::onSimulationStarted(){
 	m_secondBody->SetAwake(true);
 	m_objectBody->SetType(b2_dynamicBody);
 	m_secondBody->SetType(b2_dynamicBody);  	
-	for (int i = 0; i < m_joints.size(); i++) {		
+	for (unsigned int i = 0; i < m_joints.size(); i++) {
 		m_joints.at(i)->SetLength(MAX_LENGHT / PTM_RATIO);
 	}	
 }
 
 void ObjectSpring::onSimulationEnded(){
-	for (int i = 0; i < m_joints.size(); i++) {
+	for (unsigned int i = 0; i < m_joints.size(); i++) {
 		m_joints.at(i)->SetLength(5 / PTM_RATIO);
 	}
 	m_objectBody->SetType(b2_staticBody);
@@ -174,10 +174,10 @@ void ObjectSpring::onMovementEnded(){
 }
 
 void ObjectSpring::destroy(){
-	for (int i = 0; i < m_joints.size(); i++) {
+	for (unsigned int i = 0; i < m_joints.size(); i++) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_joints.at(i));		
 	}
-	for (int i = 0; i < m_ribs.size(); i++) {
+	for (unsigned int i = 0; i < m_ribs.size(); i++) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_ribs.at(i));		
 	}    
     GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_secondBody);

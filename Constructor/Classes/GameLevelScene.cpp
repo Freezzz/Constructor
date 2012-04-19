@@ -80,7 +80,7 @@ void GameLevelScene::runWorld(){
     m_isInEditMode = false;
     m_inventoryLayer->setOnScreen(false);
     setUtilityButtonsVisibleFoSelectedObject(false);
-    for (int i = 0; i < m_gameObjects->count(); i++) {
+    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Simulating);
     }
 	if (m_selectedObject) {
@@ -95,7 +95,7 @@ void GameLevelScene::pauseWorld(){
     m_isInEditMode = true;
     m_inventoryLayer->setOnScreen(true);
 	
-    for (int i = 0; i < m_gameObjects->count(); i++) {
+    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
     }
 	
@@ -121,7 +121,7 @@ void GameLevelScene::resetWorld(){
 void GameLevelScene::wipeWorld(){
 	pauseWorld();  
     gameWorld->physicsWorld->ClearForces();    
-    for (int i = 0; i < m_gameObjects->count(); i++) {
+    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->destroy();
     }
     m_gameObjects->removeAllObjects();
@@ -169,7 +169,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
         
 		// Take in account threshold, to make easier touch selection
-        for (int i = 0; i < m_gameObjects->count(); i++) {
+        for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
             GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);			
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {			
                 m_selectedObject = tmp;
