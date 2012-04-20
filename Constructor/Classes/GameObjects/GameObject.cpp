@@ -9,12 +9,12 @@
 #include "GameObject.h"
 #include <GameWorld.h>
 #include "ObjectPin.h"
+#include <iostream>
 #define PTM_RATIO 32.0f
 //////////////////////////////////////////////////// 
 // GameObject init
 //////////////////////////////////////////////////// 
 bool GameObject::init(){
-	CCLog("GameObject::init -- OVERRIDE ME!");
 	return true;
 }
 

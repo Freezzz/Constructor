@@ -14,12 +14,12 @@
 #include "Constants.h"
 using namespace cocos2d;
 
-typedef enum ObjectState{
+enum ObjectState{
     Idile       = 0,
     Moving      = 1,
     Rotating    = 2,
     Simulating  = 3
-}ObjectState;
+};
 
 
 class GameObject;
@@ -40,13 +40,10 @@ class GameObject;
 
 #define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static INVENTORYITEM* node(); \
-	INVENTORYITEM* nodeV(); \
-	GameObject* gameObjectNodeV();
+	GameObject* gameObjectNode();
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static GAMEOBJECT* node(); \
-	GAMEOBJECT* nodeV(); \
-	INVENTORYITEM* inventoryItemNodeV();
 
 #define GENERIC_NODE_DECL(layer) \
 	layer* layer::node() \
@@ -64,10 +61,7 @@ class GameObject;
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
 	GENERIC_NODE_DECL(INVENTORYITEM) \
 	GENERIC_NODE_DECL(GAMEOBJECT) \
-	GameObject* INVENTORYITEM::gameObjectNodeV( ) { return GAMEOBJECT::node(); } \
-	INVENTORYITEM* INVENTORYITEM::nodeV( ) { return INVENTORYITEM::node(); } \
-	INVENTORYITEM* GAMEOBJECT::inventoryItemNodeV( ) { return INVENTORYITEM::node(); } \
-	GAMEOBJECT* GAMEOBJECT::nodeV( ) { return GAMEOBJECT::node(); }
+	GameObject* INVENTORYITEM::gameObjectNode( ) { return GAMEOBJECT::node(); } \
 	
 	
 
@@ -76,12 +70,11 @@ class InventoryItem : public CCNode
 {
 public:
     CCSprite * m_objectSprite;
+	
+	virtual bool init( ) = 0;
     
 public:
-	virtual bool init( ) = 0;
-	
-	virtual GameObject* gameObjectNodeV( ) = 0;
-	virtual InventoryItem* nodeV( ) = 0;
+	virtual GameObject* gameObjectNode( ) = 0;
 	
 };
 
@@ -199,9 +192,6 @@ public:
 	// Creates object at location
 	//////////////////////////////////////////////////// 
 	virtual void createBodyAtPosition(CCPoint position)=0;
-	
-	virtual GameObject* nodeV( ) = 0;
-	virtual InventoryItem* inventoryItemNodeV( ) = 0;
 };
 
 #endif

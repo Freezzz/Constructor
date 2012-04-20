@@ -10,8 +10,6 @@
 #include "GameWorld.h"
 
 #include "GameObjects/ObjectSimpleBox.h"
-#include "GameObjects/ObjectFixedPoint.h"
-#include "GameObjects/ObjectPanel.h"
 #include "GameObjects/ObjectSpring.h"
 
 #include "Controls/InventoryLayer.h"
