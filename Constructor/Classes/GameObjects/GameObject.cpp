@@ -104,17 +104,18 @@ void GameObject::onRotationStarted(){
 //////////////////////////////////////////////////// 
 void GameObject::onRotationEnded(){
 	// Destory helper objects
-	if (m_rotationJoin) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_rotationJoin);
-		m_rotationJoin = NULL;
-	}
-
 	if (m_objectBodyPin) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_objectBodyPin);
-		m_objectBodyPin = NULL;
+		m_objectBodyPin = NULL;		
 	}
+
+	if (m_rotationJoin) {
+		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_rotationJoin);
+		m_rotationJoin = NULL;					
+	}
+
 	// Enable rotation
-	m_objectBody->SetFixedRotation(false);
+	m_objectBody->SetFixedRotation(true);
 	// Set static to avoid further movements        
 	m_objectBody->SetType(b2_staticBody);	
 }
@@ -164,7 +165,7 @@ void GameObject::rotate(float newRotation){
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
 		                           getPosition().y/PTM_RATIO);
-		float32 b2Angle =  CC_DEGREES_TO_RADIANS(newRotation);
+		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS(newRotation);
         
         setRotation(newRotation);        
 		m_objectBody->SetTransform(b2Position, b2Angle);
@@ -186,11 +187,11 @@ void GameObject::rotate(CCPoint location){
             b2MouseJointDef md;
             md.bodyA = GameWorld::sharedGameWorld()->umbelicoDelMondo; // useless but it is a convention
             md.bodyB = m_objectBody;
-            md.target = b2Position;
-            md.maxForce = 2000;
+			md.maxForce = 2000;
             md.frequencyHz = 20;
             md.dampingRatio = 1;
-            m_rotationJoin = (b2MouseJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
+			md.collideConnected = false;
+            m_rotationJoin = (b2MouseJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);						
         }
 		
 		// Pin object to it's position in the world alowing rotation
@@ -198,6 +199,7 @@ void GameObject::rotate(CCPoint location){
 			b2RevoluteJointDef md;
 			md.Initialize(m_objectBody, GameWorld::sharedGameWorld()->umbelicoDelMondo, m_objectBody->GetPosition());
 			md.referenceAngle = m_objectBody->GetAngle();
+			md.collideConnected = false;
             m_objectBodyPin = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
 		}
 
