@@ -13,6 +13,7 @@
 #include "GameObjects/ObjectSpring.h"
 
 #include "Controls/InventoryLayer.h"
+#include "Controls/VictoryLayer.h"
 #include "Controls/CreationLayer.h"
 #include "Constants.h"
 
@@ -24,33 +25,33 @@
 // GameLevelScene init
 //////////////////////////////////////////////////// 
 bool GameLevelScene::init(){
-    if ( !CCLayer::init() )
+	if ( !CCLayer::init() )
 	{
 		return false;
 	}
 	setIsTouchEnabled( true );
 	setIsAccelerometerEnabled( true );
-    
-    CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-    
-    // Background
-    CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
-    bg->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
+
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+	// Background
+	CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
+	bg->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
 	addChild(bg);
-    
-    // Game World
-    gameWorld = GameWorld::node();
+
+	// Game World
+	gameWorld = GameWorld::node();
 	addChild(gameWorld);
-    
-    // Invetory
-    m_inventoryLayer = InventoryLayer::node();
-    m_inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
-	addChild(m_inventoryLayer);
-    
-    // Game Menu
-    CreationLayer * creationLayer = CreationLayer::node();
-	addChild(creationLayer, 10);
-	
+
+	// Invetory
+	m_inventoryLayer = InventoryLayer::node();
+	m_inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
+	addChild( m_inventoryLayer );
+
+	// Game Menu
+	m_creationLayer = CreationLayer::node();
+	addChild( m_creationLayer, 10 );
+
 	m_moveButton = CCSprite::spriteWithFile("move_btn.png");
 	this->addChild(m_moveButton, 100);
 	m_moveButton->setIsVisible(false);
@@ -58,23 +59,23 @@ bool GameLevelScene::init(){
 	m_deleteButton = CCSprite::spriteWithFile("delete_btn.png");
 	this->addChild(m_deleteButton, 100);
 	m_deleteButton->setIsVisible(false);
-	
+
 
 	m_rotareButton = CCSprite::spriteWithFile("rotate_btn.png");
 	this->addChild(m_rotareButton, 100);
 	m_rotareButton->setIsVisible(false);
 
-	
+
 	m_gameObjects  = new CCMutableArray<GameObject*>();
 	m_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
 	m_isInEditMode = true;
-	
-    gameSceneInstance = this;
+
+	gameSceneInstance = this;
 
 
 	// initializing the level
 	m_target = ObjectSimpleBox::node( CCPoint(500,300), SimpleBox );
-    if( ! m_target ) {
+	if( ! m_target ) {
 		return false;
 	}
 	m_gameObjects->addObject( m_target );
@@ -154,9 +155,19 @@ bool GameLevelScene::checkDefeat()
 {
 	return 0;
 }
-void GameLevelScene::update(ccTime dt) {
+void GameLevelScene::update(ccTime dt)
+{
+	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	if( checkVictory() || checkDefeat() ) {
-		sharedGameScene()->resetWorld();
+		// sharedGameScene()->resetWorld();
+		
+		// disabling creation layer
+		m_creationLayer->setOnScreen( false );
+    
+		// Victory layer
+		VictoryLayer *vl = VictoryLayer::node();
+		vl->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
+		addChild( vl );
 	}
 }
 
