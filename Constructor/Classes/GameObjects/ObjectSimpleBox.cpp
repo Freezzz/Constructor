@@ -32,9 +32,9 @@ bool SimpleBoxInventoryItem::init( )
 	
 	return true;
 }
-GameObject* SimpleBoxInventoryItem::gameObjectNode( )
+GameObject* SimpleBoxInventoryItem::gameObjectNode( CCPoint p )
 {
-	return ObjectSimpleBox::node( m_type );
+	return ObjectSimpleBox::node( p, m_type );
 }
 
 //////////////////////////////////////////////////// 

@@ -22,7 +22,7 @@ private:
 	SimpleBoxInventoryItem( ObjectType type ) : m_type(type) { }
 
 public:
-	GameObject* gameObjectNode( );
+	GameObject* gameObjectNode( CCPoint p );
 
 	// TODO: instead of type, let node be fed with the physical
 	//       and graphical properties of the inventory item
@@ -52,13 +52,13 @@ protected:
 	ObjectSimpleBox( ObjectType type ) {
 		m_simpleType = type;
 	}
-	
-public:    
     void createBodyAtPosition(CCPoint position);
-    
-	static ObjectSimpleBox *node( ObjectType type ) {
+	
+public:
+	static ObjectSimpleBox *node( CCPoint p, ObjectType type ) {
 		ObjectSimpleBox *r = new ObjectSimpleBox(type);
 		if( r && r->init() ) {
+			r->createBodyAtPosition( p );
 			r->autorelease();
 			return r;
 		}

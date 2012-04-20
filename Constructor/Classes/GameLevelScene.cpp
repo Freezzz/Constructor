@@ -16,6 +16,8 @@
 #include "Controls/CreationLayer.h"
 #include "Constants.h"
 
+#include <iostream>
+
 #define TOUCH_TRESHOLD 20
 
 //////////////////////////////////////////////////// 
@@ -68,6 +70,20 @@ bool GameLevelScene::init(){
 	m_isInEditMode = true;
 	
     gameSceneInstance = this;
+
+
+	// initializing the level
+	m_target = ObjectSimpleBox::node( CCPoint(500,300), SimpleBox );
+    if( ! m_target ) {
+		return false;
+	}
+	m_gameObjects->addObject( m_target );
+	addChild( m_target, m_target->defaultZOrder );
+	m_target->setId( 1 );
+	m_target->setMutable( 0 );
+
+
+	scheduleUpdate();
 	return true;
 }
 
@@ -127,15 +143,22 @@ void GameLevelScene::wipeWorld(){
 	m_selectedObject = NULL;
 }
 
-bool GameLevelScene::checkVectory()
+bool GameLevelScene::checkVictory()
 {
+	if( m_target->boundingBox().origin.x > 600 ) {
+		return 1;
+	}
 	return 0;
 }
 bool GameLevelScene::checkDefeat()
 {
 	return 0;
 }
-
+void GameLevelScene::update(ccTime dt) {
+	if( checkVictory() || checkDefeat() ) {
+		sharedGameScene()->resetWorld();
+	}
+}
 
 
 //////////////////////////////////////////////////// 
@@ -177,8 +200,11 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
         
 		// Take in account threshold, to make easier touch selection
         for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
-            GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);			
-			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {			
+            GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
+			if( ! tmp->isMutable() ) {
+				continue ;
+			}
+			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {
                 m_selectedObject = tmp;
                 m_selectedObject->setSelected(true);
                 m_selectedObject->setObjectState(Moving);

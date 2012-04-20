@@ -40,10 +40,21 @@ class GameObject;
 
 #define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static INVENTORYITEM* node(); \
-	GameObject* gameObjectNode();
+	GameObject* gameObjectNode( CCPoint p );
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node(); \
+	static GAMEOBJECT* node( CCPoint p ) \
+	{ \
+		GAMEOBJECT *r = new GAMEOBJECT(); \
+		if( r && r->init() ) { \
+			r->createBodyAtPosition( p ); \
+			r->autorelease(); \
+			return r; \
+		} \
+		\
+		delete r; \
+		return NULL; \
+	};
 
 #define GENERIC_NODE_DECL(layer) \
 	layer* layer::node() \
@@ -60,8 +71,7 @@ class GameObject;
 
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
 	GENERIC_NODE_DECL(INVENTORYITEM) \
-	GENERIC_NODE_DECL(GAMEOBJECT) \
-	GameObject* INVENTORYITEM::gameObjectNode( ) { return GAMEOBJECT::node(); } \
+	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(p); } \
 	
 	
 
@@ -74,7 +84,7 @@ public:
 	virtual bool init( ) = 0;
     
 public:
-	virtual GameObject* gameObjectNode( ) = 0;
+	virtual GameObject* gameObjectNode( CCPoint p ) = 0;
 	
 };
 
@@ -92,10 +102,14 @@ protected:
 	CCPoint m_originalPosition;
     float m_originalRotation;
 
+	int m_id;
+	bool m_mutable;
+
 	
 	//////////////////////////////////////////////////// 
 	// GameObject init
-	//////////////////////////////////////////////////// 
+	////////////////////////////////////////////////////
+	GameObject( );
 	virtual bool init();
 	
 	//////////////////////////////////////////////////// 
@@ -111,7 +125,13 @@ protected:
 	virtual void onMovementEnded();	
 	virtual void onRotationStarted();
 	virtual void onRotationEnded();
-	
+
+public:
+	int id( ) const { return m_id; }
+	void setId( int id ) { m_id = id; }
+	bool isMutable( ) const { return m_mutable; }
+	void setMutable( bool mut ) { m_mutable = mut; }
+
 public:
 	// Properties
     b2Body * m_objectBody;

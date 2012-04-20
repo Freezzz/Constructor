@@ -31,7 +31,9 @@ protected:
 	virtual void onSimulationStarted();
 	virtual void onSimulationEnded();	
 	virtual void onMovementStarted();
-	virtual void onMovementEnded();	
+	virtual void onMovementEnded();
+	
+	void createBodyAtPosition(CCPoint position);
 	
 public:
 	//////////////////////////////////////////////////// 
@@ -39,7 +41,6 @@ public:
 	//////////////////////////////////////////////////// 
 	void unPin(bool destroyJoint);
 	
-	void createBodyAtPosition(CCPoint position);
 	GAMEOBJECT_NODE_DEF( PinInventoryItem , ObjectPin )
 };
 

@@ -74,8 +74,7 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 
 		if( CCRect::CCRectContainsPoint( button->m_objectSprite->boundingBox(), point ) ) {
 			button->runAction( CCBlink::actionWithDuration(0.2, true) );
-			GameObject *r = button->gameObjectNode();
-			r->createBodyAtPosition( location );
+			GameObject *r = button->gameObjectNode( location );
 			return r;
 		}
 	}

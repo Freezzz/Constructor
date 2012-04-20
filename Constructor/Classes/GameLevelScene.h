@@ -22,6 +22,8 @@ private:
     GameObject * m_selectedObject;
 	
 	CCMutableArray<GameObject*> * m_gameObjects;
+	GameObject * m_target;
+	
     CCRect m_gameZoneRect;
     
 	InventoryLayer * m_inventoryLayer;
@@ -60,8 +62,9 @@ public:
     ////////////////////////////////////////////////////
     // Checks whether the user won or lost
     ////////////////////////////////////////////////////
-    bool checkVectory();
+    bool checkVictory();
     bool checkDefeat();
+	void update(ccTime dt);
     
     //////////////////////////////////////////////////// 
     // Screen Touch delegates
