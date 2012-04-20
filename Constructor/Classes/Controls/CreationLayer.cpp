@@ -15,6 +15,9 @@
 bool CreationLayer::init(){
     CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
     
+	// Set achor point to top
+	setAnchorPoint( CCPoint(0.5,0) );
+    
     // Buttons
     m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
 	CCMenuItemLabel * menuItemPause = CCMenuItemLabel::itemWithLabel(m_labelPause, this, menu_selector(CreationLayer::onPauseButton));
@@ -42,9 +45,21 @@ bool CreationLayer::init(){
     menuItemReset->setPosition(CCPoint(screenSize.width-70, screenSize.height-30));
     
 	addChild(pMenu, 1);
-
+	setContentSize( CCSize(screenSize.width, 30) );
     
 	return true;
+}
+
+//////////////////////////////////////////////////// 
+// Shows and hides the buttons 
+//////////////////////////////////////////////////// 
+void CreationLayer::setOnScreen( bool isOnscreen ){
+	CCPoint location = this->getPosition();
+	location.y = 0; // assuming it will be always on the top of the screen
+	if ( ! isOnscreen) {
+		location.y += this->getContentSize().height;
+	}
+	this->runAction( CCMoveTo::actionWithDuration(0.5, location) );
 }
 
 void CreationLayer::onPlayButton(CCObject *sender){

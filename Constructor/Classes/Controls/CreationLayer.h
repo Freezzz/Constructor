@@ -22,16 +22,21 @@ using namespace cocos2d;
 class CreationLayer : public CCLayer {
 private:
 	virtual bool init();
-    CCLabelTTF * m_labelPause;
-    CCLabelTTF * m_labelPlay;
-    
-    void onPlayButton(CCObject * sender);
-    void onPauseButton(CCObject * sender);	
-    
-    void onDeleteButton(CCObject * sender);
-    void onResetButton(CCObject * sender);    
+	CCLabelTTF * m_labelPause;
+	CCLabelTTF * m_labelPlay;
+
+	void onPlayButton(CCObject * sender);
+	void onPauseButton(CCObject * sender);	
+
+	void onDeleteButton(CCObject * sender);
+	void onResetButton(CCObject * sender);
+
+public:
+	void setOnScreen(bool isOnscreen);
+
 public:
 	LAYER_NODE_FUNC(CreationLayer);
+
 };
 
 #endif

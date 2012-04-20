@@ -12,6 +12,7 @@ using namespace cocos2d;
 class GameWorld;
 class GameObject;
 class InventoryLayer;
+class CreationLayer;
 class b2Contact;
 ////////////////////////////////////////////////////
 // GameLevelScene - tat manages user interaction 
@@ -27,6 +28,7 @@ private:
     CCRect m_gameZoneRect;
     
 	InventoryLayer * m_inventoryLayer;
+	CreationLayer * m_creationLayer;
     bool m_isInEditMode;
     
     virtual void registerWithTouchDispatcher();
