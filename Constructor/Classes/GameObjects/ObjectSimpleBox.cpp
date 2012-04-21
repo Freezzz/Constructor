@@ -24,8 +24,7 @@ bool SimpleBoxInventoryItem::init( )
 		m_objectSprite = CCSprite::spriteWithFile( "panel_btn.png" );
 	}
 	else {
-		std::cout << "I shouldn't be here" << std::endl;
-		* ((int*) 0 ) = 0;
+		CCAssert(true, "SimpleBoxInventoryItem::Init - Invalid object type!");
 	}
 	
 	addChild( m_objectSprite );
@@ -107,14 +106,13 @@ bool ObjectSimpleBox::init(){
 		defaultZOrder = 1;
 	}
 	else {
-		std::cout << "I shouldn't be here" << std::endl;
-		* ((int*) 0 ) = 0;
+		CCAssert(true, "ObjectSimpleBox::init - Invalid object type!");
 	}
-
 	m_type = m_simpleType;
 	m_state = Idile;
 	m_moveJoint = NULL;
-	
+	m_rotationJoin = NULL;
+	m_objectBodyPin = NULL;
 	scheduleUpdate();
 	return true;
 }
@@ -167,8 +165,7 @@ void ObjectSimpleBox::createBodyAtPosition(cocos2d::CCPoint position){
 		fixtureDef.isSensor = false;
 	}
 	else {
-		std::cout << "I shouldn't be here" << std::endl;
-		* ((int*) 0 ) = 0;
+		CCAssert(true, "ObjectSimpleBox::createBodyAtPosition - Invalid object type!");
 	}
 		
 	m_objectBody->CreateFixture(&fixtureDef);

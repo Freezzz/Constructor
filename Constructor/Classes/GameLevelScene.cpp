@@ -260,7 +260,7 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
     location = CCDirector::sharedDirector()->convertToGL(location);
     
     // If touch is not in game zone
-    if (!CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
+    if (!CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == Moving) {
 		m_gameObjects->removeObject(m_selectedObject);
         m_selectedObject->destroy();
         m_selectedObject=NULL;        
