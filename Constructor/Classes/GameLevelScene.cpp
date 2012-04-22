@@ -32,7 +32,10 @@ bool GameLevelScene::init(){
 	setIsTouchEnabled( true );
 	setIsAccelerometerEnabled( true );
 
+	m_gameOver = 0;
+
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+	setContentSize( winSize );
 
 	// Background
 	CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
@@ -72,8 +75,15 @@ bool GameLevelScene::init(){
 
 	gameSceneInstance = this;
 
-
 	// initializing the level
+	initLevel( );
+
+	scheduleUpdate();
+	return true;
+}
+
+bool GameLevelScene::initLevel( )
+{
 	m_target = ObjectSimpleBox::node( CCPoint(500,300), SimpleBox );
 	if( ! m_target ) {
 		return false;
@@ -82,9 +92,6 @@ bool GameLevelScene::init(){
 	addChild( m_target, m_target->defaultZOrder );
 	m_target->setId( 1 );
 	m_target->setMutable( 0 );
-
-
-	scheduleUpdate();
 	return true;
 }
 
@@ -109,6 +116,9 @@ void GameLevelScene::runWorld(){
 void GameLevelScene::pauseWorld(){
     m_isInEditMode = true;
     m_inventoryLayer->setOnScreen(true);
+    m_creationLayer->setOnScreen(true);
+	m_victoryLayer->setOnScreen( false );
+	m_gameOver = 0;
 	
     for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
@@ -142,11 +152,14 @@ void GameLevelScene::wipeWorld(){
     m_gameObjects->removeAllObjects();
 	setUtilityButtonsVisibleFoSelectedObject(false);	
 	m_selectedObject = NULL;
+
+	// reinitializing the level
+	initLevel( );
 }
 
 bool GameLevelScene::checkVictory()
 {
-	if( m_target->boundingBox().origin.x > 600 ) {
+	if( m_target->boundingBox().origin.x > 500 ) {
 		return 1;
 	}
 	return 0;
@@ -157,17 +170,27 @@ bool GameLevelScene::checkDefeat()
 }
 void GameLevelScene::update(ccTime dt)
 {
-	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-	if( checkVictory() || checkDefeat() ) {
-		// sharedGameScene()->resetWorld();
-		
-		// disabling creation layer
-		m_creationLayer->setOnScreen( false );
-    
-		// Victory layer
-		VictoryLayer *vl = VictoryLayer::node();
-		vl->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
-		addChild( vl );
+	if( ! m_gameOver ) {
+		if( checkVictory() ) {
+			m_gameOver = 1;
+			CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+			// disabling creation layer
+			m_creationLayer->setOnScreen( false );
+
+			if( ! m_victoryLayer ) {
+				// Victory layer
+				m_victoryLayer = VictoryLayer::node();
+				m_victoryLayer->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
+				m_victoryLayer->setScale( 0 );
+				addChild( m_victoryLayer, 1000 );
+			}
+			m_victoryLayer->setOnScreen( true );
+		}
+		if( checkDefeat() ) {
+			m_gameOver = 1;
+			std::cout << "TODO: defeat" << std::endl;
+		}
 	}
 }
 

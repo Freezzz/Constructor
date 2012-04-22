@@ -24,6 +24,7 @@ private:
 	virtual bool init();
 	CCLabelTTF * m_labelPause;
 	CCLabelTTF * m_labelPlay;
+	CCMenu *m_menu;
 
 	void onPlayButton(CCObject * sender);
 	void onPauseButton(CCObject * sender);	
