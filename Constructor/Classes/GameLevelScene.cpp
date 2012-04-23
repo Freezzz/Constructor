@@ -111,6 +111,7 @@ bool GameLevelScene::init()
 bool GameLevelScene::initLevel( )
 {
 	m_target = SimpleBoxInventoryItem::node( SimpleBox )->gameObjectNode( CCPoint(500,300) );
+	m_target->m_objectSprite->setColor(ccc3(255, 10, 10));
 	if( ! m_target ) {
 		return false;
 	}
