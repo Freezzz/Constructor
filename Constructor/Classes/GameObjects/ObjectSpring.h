@@ -22,10 +22,14 @@ INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, "spring_btn.png" )
 class ObjectSpring : public GameObject {
 private:
     b2Body * m_secondBody;
+
+	b2Vec2 m_firstBodyOriginalLocation;
+	float m_firstBodyOriginalRotation;
 	
     b2Vec2 m_secondBodyOriginalLocation;
 	float m_secondBodyOriginalRotation;
 	
+	b2PrismaticJoint * m_prismaticJoint;	
 	vector<b2DistanceJoint*> m_joints;
 protected:
 	virtual bool init();
