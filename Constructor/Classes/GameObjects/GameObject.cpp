@@ -9,13 +9,14 @@
 #include "GameObject.h"
 #include <GameWorld.h>
 #include "ObjectPin.h"
+#include "ObjectGlue.h"
 #include <iostream>
 #define PTM_RATIO 32.0f
 ////////////////////////////////////////////////////
 // GameObject init
 ////////////////////////////////////////////////////
 GameObject::GameObject( )
-	: m_id(0), m_mutable(true)
+: m_id(0), m_mutable(true)
 {
 }
 bool GameObject::init(){
@@ -108,12 +109,12 @@ void GameObject::onRotationEnded(){
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_objectBodyPin);
 		m_objectBodyPin = NULL;		
 	}
-
+	
 	if (m_rotationJoin) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_rotationJoin);
 		m_rotationJoin = NULL;					
 	}
-
+	
 	// Enable rotation
 	m_objectBody->SetFixedRotation(true);
 	// Set static to avoid further movements        
@@ -181,7 +182,7 @@ void GameObject::rotate(CCPoint location){
 	if (getParent() && m_objectBody) {
 		b2Vec2 b2Position = b2Vec2(location.x/PTM_RATIO,
 		                           location.y/PTM_RATIO);
-        		
+		
         // Create joint to tap location
         if (!m_rotationJoin) {
             b2MouseJointDef md;
@@ -202,7 +203,7 @@ void GameObject::rotate(CCPoint location){
 			md.collideConnected = false;
             m_objectBodyPin = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
 		}
-
+		
         m_rotationJoin->SetTarget(b2Position);
 	}	
 }
@@ -228,6 +229,12 @@ void GameObject::destroy(){
 		if (pin) {
 			// We dont need to destroy joint manualy it will be destroyed with this body
 			pin->unPin(false);
+		}else {
+			ObjectGlue * glue = dynamic_cast<ObjectGlue*>((GameObject*)jnt->joint->GetUserData());
+			if (glue) {
+				// We dont need to destroy joint manualy it will be destroyed with this body
+				glue->unGlueJoint((b2WeldJoint*)jnt->joint);
+			}
 		}
 		jnt = jnt->next;
 	}

@@ -15,7 +15,8 @@ typedef enum ObjectType{
     FixedPoint  = 1,
     Panel       = 2,
     Spring      = 3,
-	Pin			= 4
+	Pin			= 4,
+	Glue		= 5 
 }ObjectType;
 
 

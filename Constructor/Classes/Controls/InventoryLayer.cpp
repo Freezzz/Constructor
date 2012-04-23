@@ -11,6 +11,7 @@
 #include "../GameObjects/ObjectSimpleBox.h"
 #include "../GameObjects/ObjectSpring.h"
 #include "../GameObjects/ObjectPin.h"
+#include "../GameObjects/ObjectGlue.h"
 #include <iostream>
 
 #define BUTTON_SIZE 90
@@ -36,6 +37,8 @@ bool InventoryLayer::init(){
 	// addInventoryItem( PanelInventoryItem::node() );
 	addInventoryItem( SpringInventoryItem::node() );
 	addInventoryItem( PinInventoryItem::node() );
+	addInventoryItem( GlueInventoryItem::node() );	
+	
 	return true;
 }
 
