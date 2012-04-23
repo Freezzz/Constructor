@@ -12,20 +12,30 @@
 //////////////////////////////////////////////////// 
 // GameWorld init
 //////////////////////////////////////////////////// 
-bool GameWorld::init(){
-    gameWorldInstance = this;
-    
+bool GameWorld::init( b2World *phyWorld, b2Body *nullBody )
+{
+	gameWorldInstance = this;
+
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	b2Vec2 gravity;
 	gravity.Set(0.0f, -9.8);
-    
-	physicsWorld = new b2World(gravity);
-	physicsWorld->SetAllowSleeping(true);
-	physicsWorld->SetContinuousPhysics(true);
+
+	if( ! phyWorld || ! nullBody ) {
+		physicsWorld = new b2World(gravity);
+		physicsWorld->SetAllowSleeping(true);
+		physicsWorld->SetContinuousPhysics(true);
+		
+		// Create world borders
+		createWorldBox(winSize);
+	}
+	else {
+		physicsWorld = phyWorld;
+		umbelicoDelMondo = nullBody;
+	}
     
 	// Box2d debugDraw configuration
 	m_debugDraw = new GLESDebugDraw( PTM_RATIO * CC_CONTENT_SCALE_FACTOR() );
-	physicsWorld->SetDebugDraw(m_debugDraw);
+	physicsWorld->SetDebugDraw( m_debugDraw );
     
 	uint32 flags = 0;
 	flags += b2Draw::e_shapeBit;
@@ -34,9 +44,6 @@ bool GameWorld::init(){
 	flags += b2Draw::e_pairBit;
 	flags += b2Draw::e_centerOfMassBit;
 	m_debugDraw->SetFlags(flags);
-    
-	// Create world borders
-	createWorldBox(winSize);
     
 	scheduleUpdate();
 	return true;
@@ -48,11 +55,10 @@ bool GameWorld::init(){
 void GameWorld::update(ccTime dt){
 	int velocityIterations = 8;
 	int positionIterations = 1;
-    
+
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
 	physicsWorld->Step(dt, velocityIterations, positionIterations);
-    
 }
 
 ////////////////////////////////////////////////////
@@ -74,19 +80,19 @@ void GameWorld::createWorldBox(CCSize screenSize) {
 	int halfGameZoneHeight = screenSize.height - 60;
 	
 	// bottom
-	groundBox.SetAsBox(screenSize.width/2/PTM_RATIO, 0, b2Vec2(0, -halfGameZoneHeight/2/PTM_RATIO), 0);
+	groundBox.SetAsBox(screenSize.width/2/PTM_RATIO, .001, b2Vec2(0, -halfGameZoneHeight/2/PTM_RATIO), 0);
  	groundBody->CreateFixture(&groundBox, 0);
     
 	// top
-	groundBox.SetAsBox(screenSize.width/2/PTM_RATIO, 0, b2Vec2(0, halfGameZoneHeight/2/PTM_RATIO), 0);
+	groundBox.SetAsBox(screenSize.width/2/PTM_RATIO, .001, b2Vec2(0, halfGameZoneHeight/2/PTM_RATIO), 0);
 	groundBody->CreateFixture(&groundBox, 0);
     
 	// left
-	groundBox.SetAsBox(0, halfGameZoneHeight/2/PTM_RATIO, b2Vec2(-screenSize.width/2/PTM_RATIO, 0), 0);
+	groundBox.SetAsBox(.001, halfGameZoneHeight/2/PTM_RATIO, b2Vec2(-screenSize.width/2/PTM_RATIO, 0), 0);
 	groundBody->CreateFixture(&groundBox, 0);
     
 	// right
-	groundBox.SetAsBox(0, halfGameZoneHeight/2/PTM_RATIO, b2Vec2(screenSize.width/2/PTM_RATIO, 0), 0);
+	groundBox.SetAsBox(.001, halfGameZoneHeight/2/PTM_RATIO, b2Vec2(screenSize.width/2/PTM_RATIO, 0), 0);
 	groundBody->CreateFixture(&groundBox, 0);
     groundBody->SetType(b2_staticBody);
 	
@@ -142,9 +148,10 @@ GameWorld* GameWorld::sharedGameWorld(){
 //////////////////////////////////////////////////// 
 // Static constructor returns autorelesed object
 //////////////////////////////////////////////////// 
-GameWorld* GameWorld::node(){
+GameWorld* GameWorld::node( b2World *phyWorld, b2Body *nullBody )
+{
 	GameWorld * pRet = new GameWorld();
-	if (pRet && pRet->init()) {
+	if ( pRet && pRet->init(phyWorld, nullBody) ) {
 		pRet->autorelease();
 		return pRet;
 	}

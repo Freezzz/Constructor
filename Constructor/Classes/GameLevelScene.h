@@ -15,6 +15,8 @@ class InventoryLayer;
 class CreationLayer;
 class VictoryLayer;
 class b2Contact;
+class LevelDef;
+
 ////////////////////////////////////////////////////
 // GameLevelScene - tat manages user interaction 
 // with game world
@@ -40,7 +42,9 @@ private:
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;
 	bool m_gameOver;
-	
+
+	LevelDef *m_levelDef;
+
 public:
 	GameWorld * gameWorld;
 
