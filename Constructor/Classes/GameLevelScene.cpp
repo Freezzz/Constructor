@@ -17,6 +17,8 @@
 #include "Controls/CreationLayer.h"
 #include "Constants.h"
 
+#include "LevelDef.h"
+
 #include <iostream>
 
 #define TOUCH_TRESHOLD 20
@@ -24,7 +26,8 @@
 //////////////////////////////////////////////////// 
 // GameLevelScene init
 //////////////////////////////////////////////////// 
-bool GameLevelScene::init(){
+bool GameLevelScene::init()
+{
 	if ( !CCLayer::init() )
 	{
 		return false;
@@ -44,6 +47,23 @@ bool GameLevelScene::init(){
 
 	// Game World
 	gameWorld = GameWorld::node();
+	if( true ) // saving
+	{
+		LevelDef ld;
+		ld.name = "test level";
+		ld.difficulty = 1;
+		ld.theme = "test theme";
+		ld.gameWorld = gameWorld;
+		ld.winConditions = LevelDef::EnterAreaWin;
+		ld.loseConditions = LevelDef::EnterAreaLose;
+
+		ld.saveToFile( "test" );
+	}
+	if( true ) // loading
+	{
+		m_levelDef = LevelDef::loadFromFile( "test" );
+		gameWorld = m_levelDef->gameWorld;
+	}
 	addChild(gameWorld);
 
 	// Invetory
@@ -78,13 +98,19 @@ bool GameLevelScene::init(){
 	// initializing the level
 	initLevel( );
 
+	// initializing the victory layer
+	m_victoryLayer = VictoryLayer::node();
+	m_victoryLayer->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
+	m_victoryLayer->setScale( 0 );
+	addChild( m_victoryLayer, 1000 );
+
 	scheduleUpdate();
 	return true;
 }
 
 bool GameLevelScene::initLevel( )
 {
-	m_target = ObjectSimpleBox::node( CCPoint(500,300), SimpleBox );
+	m_target = SimpleBoxInventoryItem::node( SimpleBox )->gameObjectNode( CCPoint(500,300) );
 	if( ! m_target ) {
 		return false;
 	}
@@ -177,14 +203,6 @@ void GameLevelScene::update(ccTime dt)
 
 			// disabling creation layer
 			m_creationLayer->setOnScreen( false );
-
-			if( ! m_victoryLayer ) {
-				// Victory layer
-				m_victoryLayer = VictoryLayer::node();
-				m_victoryLayer->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
-				m_victoryLayer->setScale( 0 );
-				addChild( m_victoryLayer, 1000 );
-			}
 			m_victoryLayer->setOnScreen( true );
 		}
 		if( checkDefeat() ) {

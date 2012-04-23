@@ -47,16 +47,18 @@ public:
 class ObjectSimpleBox : public GameObject {
 protected:
 	virtual bool init();
-
 	ObjectType m_simpleType;
-	ObjectSimpleBox( ObjectType type ) {
+	b2FixtureDef *m_fixtureDef;
+
+	ObjectSimpleBox( ObjectType type, b2FixtureDef *fixtureDef ) {
 		m_simpleType = type;
+		m_fixtureDef = fixtureDef;
 	}
-    void createBodyAtPosition(CCPoint position);
+    void createBodyAtPosition( CCPoint position );
 	
 public:
-	static ObjectSimpleBox *node( CCPoint p, ObjectType type ) {
-		ObjectSimpleBox *r = new ObjectSimpleBox(type);
+	static ObjectSimpleBox *node( CCPoint p, ObjectType type, b2FixtureDef *fixtureDef ) {
+		ObjectSimpleBox *r = new ObjectSimpleBox( type, fixtureDef );
 		if( r && r->init() ) {
 			r->createBodyAtPosition( p );
 			r->autorelease();
