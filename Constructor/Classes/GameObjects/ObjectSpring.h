@@ -13,13 +13,14 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, "spring_btn.png" )
+INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, "spring_btn.png", Spring )
 
 
 ////////////////////////////////////////////////////
 // ObjectSpring
 ///////////////////////////////////////////////////
-class ObjectSpring : public GameObject {
+class ObjectSpring : public GameObject
+{
 private:
     b2Body * m_secondBody;
 

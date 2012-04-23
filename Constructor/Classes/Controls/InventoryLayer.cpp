@@ -33,8 +33,6 @@ bool InventoryLayer::init(){
 	addInventoryItem( SimpleBoxInventoryItem::node(SimpleBox) );
 	addInventoryItem( SimpleBoxInventoryItem::node(FixedPoint) );
 	addInventoryItem( SimpleBoxInventoryItem::node(Panel) );
-	// addInventoryItem( FixedPointInventoryItem::node() );
-	// addInventoryItem( PanelInventoryItem::node() );
 	addInventoryItem( SpringInventoryItem::node() );
 	addInventoryItem( PinInventoryItem::node() );
 	addInventoryItem( GlueInventoryItem::node() );	
@@ -90,6 +88,11 @@ void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 	item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
 	m_buttons.push_back( item );
 	addChild( item );
+}
+void InventoryLayer::removeInventoryItem( InventoryItem *item )
+{
+	m_buttons.erase( std::remove(m_buttons.begin(), m_buttons.end(), item), m_buttons.end() );
+	removeChild( item, 1 );
 }
 
 

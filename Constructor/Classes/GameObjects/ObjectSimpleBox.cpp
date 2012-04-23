@@ -14,14 +14,73 @@
 
 bool SimpleBoxInventoryItem::init( )
 {
+	m_fixtureDef = new b2FixtureDef;
+
 	if( m_type == SimpleBox ) {
-		m_objectSprite = CCSprite::spriteWithFile( "box.png" );
+		m_itemSpritePath = "box.png";
+		m_objectSpritePath = "Icon-Small-50.png";
+
+		m_objectSprite = CCSprite::spriteWithFile( m_itemSpritePath.c_str() );
+		
+		// Define another box shape for our dynamic body.
+		CCSprite *s = CCSprite::spriteWithFile( m_objectSpritePath.c_str() );
+		b2PolygonShape *dynamicBox = new b2PolygonShape;
+		dynamicBox->SetAsBox( s->getContentSize().width/2/PTM_RATIO, s->getContentSize().height/2/PTM_RATIO );
+
+		m_fixtureDef->shape = dynamicBox;
+		m_fixtureDef->density = 1.0f;
+		m_fixtureDef->friction = 0.3f;
+		m_fixtureDef->restitution = 0.3f;
+		m_fixtureDef->isSensor = false;
+		
+		isStatic = false;
+		isMovable = true;
+		isRotatable = true;
+		isDeletable = true;
 	}
 	else if( m_type == FixedPoint ) {
-		m_objectSprite = CCSprite::spriteWithFile( "fixed.png" );
+		m_itemSpritePath = "fixed.png";
+		m_objectSpritePath = "circle.png";
+
+		m_objectSprite = CCSprite::spriteWithFile( m_itemSpritePath.c_str() );
+
+		// Define another box shape for our dynamic body.
+		CCSprite *s = CCSprite::spriteWithFile( m_objectSpritePath.c_str() );
+		b2CircleShape *circle = new b2CircleShape;
+		circle->m_radius = s->getContentSize().width/2/PTM_RATIO;
+
+		m_fixtureDef->shape = circle;
+		m_fixtureDef->density = 1.0f;
+		m_fixtureDef->friction = 0.1f;
+		m_fixtureDef->restitution = 0.5f;
+		m_fixtureDef->isSensor = false;
+		
+		isStatic = true;
+		isMovable = true;
+		isRotatable = false;
+		isDeletable = true;
 	}
 	else if( m_type == Panel ) {
-		m_objectSprite = CCSprite::spriteWithFile( "panel_btn.png" );
+		m_itemSpritePath = "panel_btn.png";
+		m_objectSpritePath = "panel.png";
+
+		m_objectSprite = CCSprite::spriteWithFile( m_itemSpritePath.c_str() );
+
+		// Define another box shape for our dynamic body.
+		CCSprite *s = CCSprite::spriteWithFile( m_objectSpritePath.c_str() );
+		b2PolygonShape *dynamicBox = new b2PolygonShape;
+		dynamicBox->SetAsBox( s->getContentSize().width/2/PTM_RATIO, s->getContentSize().height/2/PTM_RATIO );
+
+		m_fixtureDef->shape = dynamicBox;
+		m_fixtureDef->density = 1.0f;
+		m_fixtureDef->friction = 0.3f;
+		m_fixtureDef->restitution = 0.3f;
+		m_fixtureDef->isSensor = false;
+		
+		isStatic = false;
+		isMovable = true;
+		isRotatable = true;
+		isDeletable = true;
 	}
 	else {
 		CCAssert(true, "SimpleBoxInventoryItem::Init - Invalid object type!");
@@ -31,104 +90,36 @@ bool SimpleBoxInventoryItem::init( )
 	
 	return true;
 }
+bool SimpleBoxInventoryItem::init( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef )
+{
+	m_itemSpritePath = itemPath;
+	m_objectSpritePath = spritePath;
+	m_fixtureDef = fixtureDef;
+	
+	m_objectSprite = CCSprite::spriteWithFile( m_itemSpritePath.c_str() );
+
+	addChild( m_objectSprite );
+
+	return true;
+}
 GameObject* SimpleBoxInventoryItem::gameObjectNode( CCPoint p )
 {
-	// Define the dynamic body fixture.
-	b2FixtureDef fixtureDef;
-
-	b2CircleShape circle;
-	b2PolygonShape dynamicBox;
-
-	if( m_type == SimpleBox ) {
-		// Define another box shape for our dynamic body.
-		CCSprite *s = CCSprite::spriteWithFile( "Icon-Small-50.png" );
-		dynamicBox.SetAsBox( s->getContentSize().width/2/PTM_RATIO, s->getContentSize().height/2/PTM_RATIO );
-
-		fixtureDef.shape = &dynamicBox;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-		fixtureDef.restitution = 0.3f;
-		fixtureDef.isSensor = false;
-	}
-	else if( m_type == FixedPoint ) {
-		// Define another box shape for our dynamic body.
-		CCSprite *s = CCSprite::spriteWithFile( "circle.png" );
-		circle.m_radius = s->getContentSize().width/2/PTM_RATIO;
-
-		fixtureDef.shape = &circle;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.1f;
-		fixtureDef.restitution = 0.5f;
-		fixtureDef.isSensor = false;
-	}
-	else if( m_type == Panel ) {
-		// Define another box shape for our dynamic body.
-		CCSprite *s = CCSprite::spriteWithFile( "panel.png" );
-		dynamicBox.SetAsBox( s->getContentSize().width/2/PTM_RATIO, s->getContentSize().height/2/PTM_RATIO );
-
-		fixtureDef.shape = &dynamicBox;
-		fixtureDef.density = 1.0f;
-		fixtureDef.friction = 0.3f;
-		fixtureDef.restitution = 0.3f;
-		fixtureDef.isSensor = false;
-	}
-	else {
-		CCAssert(true, "ObjectSimpleBox::createBodyAtPosition - Invalid object type!");
-	}
-
-	return ObjectSimpleBox::node( p, m_type, &fixtureDef );
+	GameObject *go = ObjectSimpleBox::node( p, m_objectSpritePath, m_fixtureDef );
+	go->isStatic = isStatic;
+	go->isMovable = isMovable;
+	go->isRotatable = isRotatable;
+	go->isDeletable = isDeletable;
+	return go;
 }
 
 //////////////////////////////////////////////////// 
 // ObjectSimpleBox init
 //////////////////////////////////////////////////// 
-bool ObjectSimpleBox::init()
+bool ObjectSimpleBox::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
-	if( m_simpleType == SimpleBox ) {
-		m_objectSprite = CCSprite::spriteWithFile("Icon-Small-50.png");
-		
-		isStatic = false;
-		isMovable = true;
-		isRotatable = true;
-		isDeletable = true;
+	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
 
-		moveButtonOffset = CCPoint(0, 30);
-		rotateButtonOffset = CCPoint(0,-30);
-		deleteButtonOffset = CCPoint(-30,0);
-
-		defaultZOrder = 1;
-	}
-	else if( m_simpleType == FixedPoint ) {
-		m_objectSprite = CCSprite::spriteWithFile("circle.png");
-
-		isStatic = true;
-		isMovable = true;
-		isRotatable = false;
-		isDeletable = true;
-
-		moveButtonOffset = CCPoint(0, 30);
-		rotateButtonOffset = CCPoint(0,-30);
-		deleteButtonOffset = CCPoint(-30,0);
-
-		defaultZOrder = 1;
-	}
-	else if( m_simpleType == Panel ) {
-		// Add sprite and adapt container
-		m_objectSprite = CCSprite::spriteWithFile("panel.png");
-
-		isStatic = false;
-		isMovable = true;
-		isRotatable = true;
-		isDeletable = true;
-
-		moveButtonOffset = CCPoint(0, 10);
-		rotateButtonOffset = CCPoint(0,-20);
-		deleteButtonOffset = CCPoint(-100,0);
-	}
-	else {
-		CCAssert(true, "ObjectSimpleBox::init - Invalid object type!");
-	}
-
+	m_fixtureDef = fixtureDef;
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -143,7 +134,7 @@ bool ObjectSimpleBox::init()
 	rotateButtonOffset = CCPoint( 0,-getContentSize().height/2 - 10 );
 	deleteButtonOffset = CCPoint( -getContentSize().width/2 - 10, 0 );
 
-	m_type = m_simpleType;
+	m_type = SimpleBox;
 	m_state = Idile;
 	m_moveJoint = NULL;
 	m_rotationJoin = NULL;

@@ -29,7 +29,7 @@ private:
 	GameObject * m_target;
 	
     CCRect m_gameZoneRect;
-    
+
 	InventoryLayer * m_inventoryLayer;
 	CreationLayer * m_creationLayer;
 	VictoryLayer * m_victoryLayer;
@@ -37,7 +37,7 @@ private:
     
     virtual void registerWithTouchDispatcher();
 	virtual bool init();
-	
+
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;

@@ -52,6 +52,9 @@ public:
     Json::Value b2j(b2Body* body);
     Json::Value b2j(b2Fixture* fixture);
     Json::Value b2j(b2Joint* joint);
+    
+    Json::Value b2j( const b2Shape* shape );
+    Json::Value b2j( b2FixtureDef* fixtureDef );
 
     void setBodyName(b2Body* body, const char* name);
     void setFixtureName(b2Fixture* fixture, const char* name);
@@ -65,6 +68,9 @@ public:
     b2Body* j2b2Body(b2World* world, Json::Value bodyValue);
     b2Fixture* j2b2Fixture(b2Body* body, Json::Value fixtureValue);
     b2Joint* j2b2Joint(b2World* world, Json::Value jointValue);
+    
+    b2Shape* j2b2Shape( Json::Value shapeValue );
+    b2FixtureDef* j2b2FixtureDef( Json::Value fixtureDefValue );
 
     int getBodiesByName(string name, vector<b2Body*>& bodies);
     int getFixturesByName(string name, vector<b2Fixture*>& fixtures);

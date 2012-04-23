@@ -46,7 +46,15 @@ bool GameLevelScene::init()
 	addChild(bg);
 
 	// Game World
-	gameWorld = GameWorld::node();
+	if( true ) {
+		gameWorld = GameWorld::node();
+	}
+
+	// Invetory
+	m_inventoryLayer = InventoryLayer::node();
+	m_inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
+	addChild( m_inventoryLayer );
+	
 	if( true ) // saving
 	{
 		LevelDef ld;
@@ -54,6 +62,7 @@ bool GameLevelScene::init()
 		ld.difficulty = 1;
 		ld.theme = "test theme";
 		ld.gameWorld = gameWorld;
+		ld.inventoryItems = m_inventoryLayer->m_buttons;
 		ld.winConditions = LevelDef::EnterAreaWin;
 		ld.loseConditions = LevelDef::EnterAreaLose;
 
@@ -63,13 +72,22 @@ bool GameLevelScene::init()
 	{
 		m_levelDef = LevelDef::loadFromFile( "test" );
 		gameWorld = m_levelDef->gameWorld;
+
+		// removing inventory items
+		{
+			while( ! m_inventoryLayer->m_buttons.empty() ) {
+				m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+			}
+		}
+		// adding new ones
+		{
+			vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
+			for( unsigned int i = 0; i < invItems.size(); ++i ) {
+				m_inventoryLayer->addInventoryItem( invItems.at(i) );
+			}
+		}
 	}
 	addChild(gameWorld);
-
-	// Invetory
-	m_inventoryLayer = InventoryLayer::node();
-	m_inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
-	addChild( m_inventoryLayer );
 
 	// Game Menu
 	m_creationLayer = CreationLayer::node();
@@ -199,8 +217,7 @@ void GameLevelScene::update(ccTime dt)
 	if( ! m_gameOver ) {
 		if( checkVictory() ) {
 			m_gameOver = 1;
-			CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-
+			
 			// disabling creation layer
 			m_creationLayer->setOnScreen( false );
 			m_victoryLayer->setOnScreen( true );

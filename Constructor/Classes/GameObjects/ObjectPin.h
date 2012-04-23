@@ -13,13 +13,14 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, "pin_btn.png" )
+INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, "pin_btn.png", Pin )
 
 
 ////////////////////////////////////////////////////
 // ObjectPin
 ///////////////////////////////////////////////////
-class ObjectPin : public GameObject {
+class ObjectPin : public GameObject
+{
 private:
 	bool m_isPinned;
 	b2RevoluteJoint * m_pinJoint;	

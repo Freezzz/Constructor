@@ -14,7 +14,7 @@
 
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( GlueInventoryItem , ObjectGlue, "glue_btn.png" )
+INVENTORYITEM_CLASS_DEF( GlueInventoryItem , ObjectGlue, "glue_btn.png", Glue )
 
 
 

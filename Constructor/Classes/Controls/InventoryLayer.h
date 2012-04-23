@@ -22,30 +22,26 @@ using namespace cocos2d;
 class InventoryLayer : public CCLayer {
 private:
 	virtual bool init();
-	
-    vector<InventoryItem*> m_buttons;
-    /*
-    CCSprite * m_boxButton;
-    CCSprite * m_pointButton;
-    CCSprite * m_panelButton;
-    CCSprite * m_springButton;    
-    */
+
+public:
+	vector<InventoryItem*> m_buttons;
 	
 public:
-    //////////////////////////////////////////////////// 
-    // Shows and hides inventory 
-    //////////////////////////////////////////////////// 
-    void setOnScreen(bool isOnscreen);
-    
-	//////////////////////////////////////////////////// 
+	////////////////////////////////////////////////////
+	// Shows and hides inventory
+	////////////////////////////////////////////////////
+	void setOnScreen(bool isOnscreen);
+
+	////////////////////////////////////////////////////
 	// Creates object if tap location is on any button,
 	// null othewise
-	//////////////////////////////////////////////////// 
+	////////////////////////////////////////////////////
 	GameObject* getGameObjectForTapLocation(CCPoint location);
-	
+
 	// quantity=-1 : infinite
 	void addInventoryItem( InventoryItem *item, int quantity = -1 );
-	
+	void removeInventoryItem( InventoryItem *item );
+
 	LAYER_NODE_FUNC(InventoryLayer);
 };
 

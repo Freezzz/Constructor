@@ -18,8 +18,15 @@ class SimpleBoxInventoryItem : public InventoryItem
 private:
 	ObjectType m_type;
 	bool init( );
+	bool init( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef );
 
-	SimpleBoxInventoryItem( ObjectType type ) : m_type(type) { }
+public:
+	// the fixture
+	b2FixtureDef *m_fixtureDef;
+
+private:
+	SimpleBoxInventoryItem( ) : InventoryItem(SimpleBox) { }
+	SimpleBoxInventoryItem( ObjectType type ) : InventoryItem(type), m_type(type) { }
 
 public:
 	GameObject* gameObjectNode( CCPoint p );
@@ -38,6 +45,15 @@ public:
 		delete r;
 		return NULL;
 	}
+	static SimpleBoxInventoryItem *node( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef ) {
+		SimpleBoxInventoryItem *r = new SimpleBoxInventoryItem();
+		if( r && r->init( itemPath, spritePath, fixtureDef ) ) {
+			r->autorelease();
+			return r;
+		}
+		delete r;
+		return NULL;
+	}
 
 };
 
@@ -46,20 +62,15 @@ public:
 ///////////////////////////////////////////////////
 class ObjectSimpleBox : public GameObject {
 protected:
-	virtual bool init();
-	ObjectType m_simpleType;
+	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 	b2FixtureDef *m_fixtureDef;
 
-	ObjectSimpleBox( ObjectType type, b2FixtureDef *fixtureDef ) {
-		m_simpleType = type;
-		m_fixtureDef = fixtureDef;
-	}
     void createBodyAtPosition( CCPoint position );
 	
 public:
-	static ObjectSimpleBox *node( CCPoint p, ObjectType type, b2FixtureDef *fixtureDef ) {
-		ObjectSimpleBox *r = new ObjectSimpleBox( type, fixtureDef );
-		if( r && r->init() ) {
+	static ObjectSimpleBox *node(  CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) {
+		ObjectSimpleBox *r = new ObjectSimpleBox;
+		if( r && r->init( spritePath, fixtureDef ) ) {
 			r->createBodyAtPosition( p );
 			r->autorelease();
 			return r;
