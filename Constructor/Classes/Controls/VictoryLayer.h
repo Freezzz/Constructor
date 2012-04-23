@@ -6,13 +6,9 @@
 #include "Constants.h"
 using namespace cocos2d;
 
-class UIButton;
-
-
 class VictoryLayer : public CCLayerColor
 {
 private:
-	UIButton *m_restartButton, *m_nextButton, *m_menuButton;
 	CCMenu *m_menu;
 
 private:

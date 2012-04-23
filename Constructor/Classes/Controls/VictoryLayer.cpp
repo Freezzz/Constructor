@@ -1,31 +1,33 @@
 
 #include "VictoryLayer.h"
-#include "UIButton.h"
 #include "GameLevelScene.h"
+#include "MainMenuScene.h"
 #include <iostream>
 
 bool VictoryLayer::init( )
 {
 	// center it
 	setAnchorPoint( CCPoint(0,0) );
+	CCSize  winSize = CCDirector::sharedDirector()->getWinSize();
 	
 	// background image
 	CCSprite * bg = CCSprite::spriteWithFile( "victorywin.png" );
 	setContentSize( bg->getContentSize() );
 	addChild( bg );
 
-	m_nextButton = UIButton::node( "Next", this, menu_selector(VictoryLayer::next) );
-	m_nextButton->setPosition( CCPoint( -getContentSize().width/4, -getContentSize().height/4 ) );
-
-	m_restartButton = UIButton::node( "Restart", this, menu_selector(VictoryLayer::restart) );
-	m_restartButton->setPosition( CCPoint( 0, -getContentSize().height/4 ) );
-
-	m_menuButton = UIButton::node( "Menu", this, menu_selector(VictoryLayer::menu) );
-	m_menuButton->setPosition( CCPoint( getContentSize().width/4, -getContentSize().height/4 ) );
-
-	m_menu = CCMenu::menuWithItems(m_nextButton, m_restartButton, m_menuButton, NULL);
-	m_menu->setIsRelativeAnchorPoint( true );
+	CCMenuItemImage * homeItem = CCMenuItemImage::itemFromNormalImage("menu_btn.png", "menu_btn.png", this, menu_selector(VictoryLayer::menu));
+	homeItem->setPosition(CCPoint(winSize.width*0.5- 150, winSize.height*0.5));
+	
+	CCMenuItemImage * restartItem = CCMenuItemImage::itemFromNormalImage("restart_btn.png", "restart_btn.png", this, menu_selector(VictoryLayer::restart));
+	restartItem->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
+	
+	CCMenuItemImage * nextItem = CCMenuItemImage::itemFromNormalImage("next_btn.png", "next_btn.png", this, menu_selector(VictoryLayer::next));
+	nextItem->setPosition(CCPoint(winSize.width*0.5 + 150, winSize.height*0.5));
+	
+	m_menu = CCMenu::menuWithItems(homeItem, restartItem, nextItem, NULL);
 	addChild( m_menu );
+	m_menu->setPosition(CCPointZero);
+    m_menu->setIsRelativeAnchorPoint( true );
 
 	setIsTouchEnabled( true );
 
@@ -50,7 +52,7 @@ void VictoryLayer::next( CCObject * sender )
 }
 void VictoryLayer::menu( CCObject * sender )
 {
-	std::cout << "TODO: go back to menu" << std::endl;
+	CCDirector::sharedDirector()->replaceScene(MainMenuScene::scene());
 }
 void VictoryLayer::restart( CCObject * sender )
 {
