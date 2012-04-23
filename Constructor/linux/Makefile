@@ -18,7 +18,7 @@ INCLUDES = -I${COCOS2DX_HOME}/cocos2dx/platform/third_party/linux \
 
 DEFINES = -DLINUX
 
-OBJECTS = $(shell find ${SOURCE_PATH} -iname '*.cpp' | sed -rs 's/.cpp/.o/g' ) main.o
+OBJECTS = $(shell find ${SOURCE_PATH} -iname '*.cpp' | sed -rs 's/\.cpp/.o/g' ) main.o
 
 STATICLIBS = ${COCOS2DX_HOME}/lib/linux/Debug/libbox2d.a
 SHAREDLIBS = -L${COCOS2DX_HOME}/lib/linux/Debug -lcocos2d -lGL -lrt -lz -Wl,-rpath,${COCOS2DX_HOME}/lib/linux/Debug/
