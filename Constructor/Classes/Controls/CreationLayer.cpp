@@ -16,7 +16,7 @@ bool CreationLayer::init(){
     CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
     
 	// Set achor point to top
-	setAnchorPoint( CCPoint(0.5,0) );
+	setAnchorPoint( CCPoint(0.5,0.5) );
     
     // Buttons
     m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
@@ -33,19 +33,20 @@ bool CreationLayer::init(){
     CCLabelTTF * labelReset = CCLabelTTF::labelWithString("Reset", "Arial", 30);
 	CCMenuItemLabel * menuItemReset = CCMenuItemLabel::itemWithLabel(labelReset, this, menu_selector(CreationLayer::onResetButton));
         
-	CCMenu* pMenu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemDelete,menuItemReset, NULL);
-	pMenu->setPosition(CCPointZero);
+	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemDelete,menuItemReset, NULL);
+	m_menu->setPosition( CCPoint(0,screenSize.height-30) );
+	m_menu->setContentSize( CCSize(screenSize.width, 60) );
     
-    menuItemPlay->setPosition(CCPoint(80, screenSize.height-30));
-	menuItemPause->setPosition(CCPoint(180, screenSize.height-30));
+    menuItemPlay->setPosition( CCPoint(80, 0) );
+	menuItemPause->setPosition( CCPoint(180, 0) );
 
-    menuItemDelete->setPosition(CCPoint(screenSize.width-200, screenSize.height-30));
-    menuItemDelete->setColor(ccc3(255, 0, 0));
+    menuItemDelete->setPosition( CCPoint(screenSize.width-200, 0) );
+    menuItemDelete->setColor(ccc3(255, 0, 0) );
 
-    menuItemReset->setPosition(CCPoint(screenSize.width-70, screenSize.height-30));
-    
-	addChild(pMenu, 1);
-	setContentSize( CCSize(screenSize.width, 30) );
+    menuItemReset->setPosition( CCPoint(screenSize.width-70, 0) );
+
+	addChild( m_menu, 1 );
+	setContentSize( m_menu->getContentSize() );
     
 	return true;
 }
@@ -58,30 +59,34 @@ void CreationLayer::setOnScreen( bool isOnscreen ){
 	location.y = 0; // assuming it will be always on the top of the screen
 	if ( ! isOnscreen) {
 		location.y += this->getContentSize().height;
+		m_menu->setIsTouchEnabled( 0 );
+	}
+	else {
+		m_menu->setIsTouchEnabled( 1 );
 	}
 	this->runAction( CCMoveTo::actionWithDuration(0.5, location) );
 }
 
 void CreationLayer::onPlayButton(CCObject *sender){
-    GameLevelScene::sharedGameScene()->runWorld();
-    m_labelPlay->setColor(ccc3(0, 254, 30));
-    m_labelPause->setColor(ccc3(255, 255, 255));
+	GameLevelScene::sharedGameScene()->runWorld();
+	m_labelPlay->setColor(ccc3(0, 254, 30));
+	m_labelPause->setColor(ccc3(255, 255, 255));
 }
 
 void CreationLayer::onPauseButton(CCObject *sender){
-    GameLevelScene::sharedGameScene()->pauseWorld();
-    m_labelPause->setColor(ccc3(0, 254, 30));
-    m_labelPlay->setColor(ccc3(255, 255, 255));    
+	GameLevelScene::sharedGameScene()->pauseWorld();
+	m_labelPause->setColor(ccc3(0, 254, 30));
+	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
 
 void CreationLayer::onDeleteButton(CCObject *sender){
-    GameLevelScene::sharedGameScene()->wipeWorld();  
-    m_labelPause->setColor(ccc3(0, 254, 30));
-    m_labelPlay->setColor(ccc3(255, 255, 255));       
+	GameLevelScene::sharedGameScene()->wipeWorld();
+	m_labelPause->setColor(ccc3(0, 254, 30));
+	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
 
 void CreationLayer::onResetButton(CCObject *sender){
-    GameLevelScene::sharedGameScene()->resetWorld();  
-    m_labelPause->setColor(ccc3(0, 254, 30));
-    m_labelPlay->setColor(ccc3(255, 255, 255));       
+	GameLevelScene::sharedGameScene()->resetWorld();
+	m_labelPause->setColor(ccc3(0, 254, 30));
+	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
