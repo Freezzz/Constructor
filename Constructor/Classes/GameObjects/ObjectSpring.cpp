@@ -19,8 +19,9 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( SpringInventoryItem, ObjectSpring )
 //////////////////////////////////////////////////// 
 // ObjectSpring init
 //////////////////////////////////////////////////// 
-bool ObjectSpring::init(){
-	m_objectSprite = CCSprite::spriteWithFile("spring.png");
+bool ObjectSpring::init( std::string spritePath )
+{
+	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
 	m_objectSprite->setScaleY(0.3);
 
 	// Adapt container to the graphical rapresentation

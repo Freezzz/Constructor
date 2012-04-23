@@ -33,9 +33,9 @@ bool InventoryLayer::init(){
 	addInventoryItem( SimpleBoxInventoryItem::node(SimpleBox) );
 	addInventoryItem( SimpleBoxInventoryItem::node(FixedPoint) );
 	addInventoryItem( SimpleBoxInventoryItem::node(Panel) );
-	addInventoryItem( SpringInventoryItem::node() );
-	addInventoryItem( PinInventoryItem::node() );
-	addInventoryItem( GlueInventoryItem::node() );	
+	addInventoryItem( SpringInventoryItem::node("spring_btn.png", "spring.png") );
+	addInventoryItem( PinInventoryItem::node("pin_btn.png", "pin.png") );
+	addInventoryItem( GlueInventoryItem::node("glue_btn.png", "glue.png") );	
 	
 	return true;
 }

@@ -86,6 +86,8 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 					int items = json["inventory items"].size();
 					for( int i = 0; i < items; ++i ) {
 						ObjectType type = static_cast<ObjectType>( json["inventory items"][i]["type"].asInt() );
+						std::string itemSprite = json["inventory items"][i]["item sprite path"].asString();
+						std::string objectSprite = json["inventory items"][i]["object sprite path"].asString();
 
 						InventoryItem *item;
 						switch( type ) {
@@ -93,8 +95,6 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 							case FixedPoint:
 							case Panel:
 								{
-									std::string itemSprite = json["inventory items"][i]["item sprite path"].asString();
-									std::string objectSprite = json["inventory items"][i]["object sprite path"].asString();
 									b2FixtureDef *fixtureDef = b2dj.j2b2FixtureDef( json["inventory items"][i]["fixtureDef"] );
 
 									// l->inventoryItems.push_back( SimpleBoxInventoryItem::node(type) ); // TODO: load fixtureDef
@@ -102,13 +102,13 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 									break;
 								}
 							case Spring:
-								item = SpringInventoryItem::node();
+								item = SpringInventoryItem::node( itemSprite, objectSprite );
 								break;
 							case Pin:
-								item = PinInventoryItem::node();
+								item = PinInventoryItem::node( itemSprite, objectSprite );
 								break;
 							case Glue:
-								item = GlueInventoryItem::node();
+								item = GlueInventoryItem::node( itemSprite, objectSprite );
 								break;
 							default:
 								std::cout << "Invalid inventory item" << std::endl;
@@ -183,11 +183,12 @@ bool LevelDef::saveToFile( const char *fileName )
 					json["inventory items"][i]["isRotatable"] = item->isRotatable;
 					json["inventory items"][i]["isDeletable"] = item->isDeletable;
 
+					json["inventory items"][i]["item sprite path"] = item->m_itemSpritePath;
+					json["inventory items"][i]["object sprite path"] = item->m_objectSpritePath;
+
 					if( item->getObjectType() == SimpleBox || item->getObjectType() == FixedPoint || item->getObjectType() == Panel ) {
 						SimpleBoxInventoryItem *sbitem = static_cast<SimpleBoxInventoryItem*>( item );
 						json["inventory items"][i]["fixtureDef"] = b2dj.b2j( sbitem->m_fixtureDef );
-						json["inventory items"][i]["item sprite path"] = sbitem->m_itemSpritePath;
-						json["inventory items"][i]["object sprite path"] = sbitem->m_objectSpritePath;
 					}
 				}
 			}

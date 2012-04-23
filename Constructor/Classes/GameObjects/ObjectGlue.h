@@ -14,7 +14,7 @@
 
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( GlueInventoryItem , ObjectGlue, "glue_btn.png", Glue )
+INVENTORYITEM_CLASS_DEF( GlueInventoryItem , ObjectGlue, Glue )
 
 
 
@@ -28,7 +28,7 @@ private:
 	
 	void weldObjectsAtContact(b2Contact *contact);
 protected:
-	virtual bool init();
+	bool init( std::string spritePath );
 	// State change handlers
 	virtual void onSimulationStarted();
 	virtual void onSimulationEnded();	

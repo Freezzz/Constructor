@@ -6,6 +6,7 @@
 //  Copyright 2012 The Epic Bean. All rights reserved.
 //
 
+#include <iostream>
 #include "ObjectPin.h"
 #include "../GameWorld.h"
 #define PTM_RATIO 32.0f
@@ -15,32 +16,33 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( PinInventoryItem , ObjectPin )
 //////////////////////////////////////////////////// 
 // ObjectPin init
 //////////////////////////////////////////////////// 
-bool ObjectPin::init(){
-	m_objectSprite = CCSprite::spriteWithFile("pin.png");
-    
+bool ObjectPin::init( std::string spritePath )
+{
+	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
-	m_objectSprite->setAnchorPoint(CCPoint(0,0));	
+	m_objectSprite->setAnchorPoint(CCPoint(0,0));
 	setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
-	
+
 	addChild(m_objectSprite);
-	
+
 	isStatic = true;
-	
+
 	isMovable = true;
 	isRotatable = false;
 	isDeletable = true;
-	
+
 	moveButtonOffset = CCPoint(0, 30);
 	rotateButtonOffset = CCPoint(0,-30);
 	deleteButtonOffset = CCPoint(-30,0);
 
 	// Permits to pin to be always over other objects
 	defaultZOrder = 20;
-	
+
 	m_type = Pin;
 	m_isPinned = false;
-	
+
 	scheduleUpdate();
 	return true;
 }

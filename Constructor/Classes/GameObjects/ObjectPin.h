@@ -13,7 +13,7 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, "pin_btn.png", Pin )
+INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, Pin )
 
 
 ////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ private:
 	b2RevoluteJoint * m_pinJoint;	
 	
 protected:
-	virtual bool init();
+	bool init( std::string spritePath );
 	
 	// State change handlers
 	virtual void onSimulationStarted();

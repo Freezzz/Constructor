@@ -15,8 +15,9 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( GlueInventoryItem , ObjectGlue )
 //////////////////////////////////////////////////// 
 // ObjectGlue init
 //////////////////////////////////////////////////// 
-bool ObjectGlue::init(){
-	m_objectSprite = CCSprite::spriteWithFile("glue.png");
+bool ObjectGlue::init( std::string spritePath )
+{
+	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
     
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());

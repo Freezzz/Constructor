@@ -9,6 +9,7 @@
 #ifndef __GameObject_H__
 #define __GameObject_H__
 
+#include <iostream>
 #include "cocos2d.h"
 #include <Box2D/Box2D.h>
 #include "Constants.h"
@@ -24,15 +25,17 @@ enum ObjectState{
 
 class GameObject;
 
-#define INVENTORYITEM_CLASS_DEF(INVENTORYITEM,GAMEOBJECT,SPRITE,TYPE) \
+#define INVENTORYITEM_CLASS_DEF(INVENTORYITEM,GAMEOBJECT,TYPE) \
 	class GAMEOBJECT; \
 	class INVENTORYITEM : public InventoryItem \
 	{ \
 	public: \
 		INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
-		bool init( ) { \
-			m_objectSprite = CCSprite::spriteWithFile(SPRITE); \
+		bool init( std::string itemSpritePath, std::string objectSpritePath ) { \
+			m_itemSpritePath = itemSpritePath; \
+			m_objectSpritePath = objectSpritePath; \
+			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
 			CCLOG("INIT"); \
 			return true;\
@@ -40,14 +43,14 @@ class GameObject;
 	};
 
 #define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static INVENTORYITEM* node(); \
+	static INVENTORYITEM* node( std::string itemPath, std::string spritePath ); \
 	GameObject* gameObjectNode( CCPoint p );
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node( CCPoint p ) \
+	static GAMEOBJECT* node( CCPoint p, std::string spritePath ) \
 	{ \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( r && r->init() ) { \
+		if( r && r->init(spritePath) ) { \
 			r->createBodyAtPosition( p ); \
 			r->autorelease(); \
 			return r; \
@@ -57,11 +60,11 @@ class GameObject;
 		return NULL; \
 	};
 
-#define GENERIC_NODE_DECL(layer) \
-	layer* layer::node() \
+#define INVENTORYITEM_NODE_DECL(layer) \
+	layer* layer::node( std::string itemSpritePath, std::string objectSpritePath ) \
 	{ \
 		layer *r = new layer(); \
-		if( r && r->init() ) { \
+		if( r && r->init( itemSpritePath, objectSpritePath ) ) { \
 			r->autorelease(); \
 			return r; \
 		} \
@@ -71,8 +74,8 @@ class GameObject;
 	};
 
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
-	GENERIC_NODE_DECL(INVENTORYITEM) \
-	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(p); } \
+	INVENTORYITEM_NODE_DECL(INVENTORYITEM) \
+	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(p, m_objectSpritePath); } \
 	
 	
 
