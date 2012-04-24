@@ -78,6 +78,9 @@ public:
 	bool checkDefeat();
 	void update(ccTime dt);
 
+	void saveFile( const char *file );
+	void loadFile( const char *file );
+
 	////////////////////////////////////////////////////
 	// Screen Touch delegates
 	////////////////////////////////////////////////////

@@ -27,7 +27,10 @@ private:
 	CCMenu *m_menu;
 
 	void onPlayButton(CCObject * sender);
-	void onPauseButton(CCObject * sender);	
+	void onPauseButton(CCObject * sender);
+
+	void onSaveButton(CCObject * sender);
+	void onLoadButton(CCObject * sender);
 
 	void onDeleteButton(CCObject * sender);
 	void onResetButton(CCObject * sender);

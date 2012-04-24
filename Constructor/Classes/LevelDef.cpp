@@ -31,7 +31,6 @@ LevelDef::LevelDef( )
 }
 LevelDef::~LevelDef( )
 {
-	delete gameWorld;
 }
 
 LevelDef* LevelDef::loadFromFile( const char *fileName )

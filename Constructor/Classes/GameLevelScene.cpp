@@ -47,47 +47,15 @@ bool GameLevelScene::init()
 
 	// Game World
 	if( true ) {
+		// creating it, instead of loading
 		gameWorld = GameWorld::node();
+		addChild( gameWorld );
 	}
 
 	// Invetory
 	m_inventoryLayer = InventoryLayer::node();
 	m_inventoryLayer->setPosition(CCPoint(0, winSize.height*0.5));
 	addChild( m_inventoryLayer );
-	
-	if( true ) // saving
-	{
-		LevelDef ld;
-		ld.name = "test level";
-		ld.difficulty = 1;
-		ld.theme = "test theme";
-		ld.gameWorld = gameWorld;
-		ld.inventoryItems = m_inventoryLayer->m_buttons;
-		ld.winConditions = LevelDef::EnterAreaWin;
-		ld.loseConditions = LevelDef::EnterAreaLose;
-
-		ld.saveToFile( "test" );
-	}
-	if( true ) // loading
-	{
-		m_levelDef = LevelDef::loadFromFile( "test" );
-		gameWorld = m_levelDef->gameWorld;
-
-		// removing inventory items
-		{
-			while( ! m_inventoryLayer->m_buttons.empty() ) {
-				m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
-			}
-		}
-		// adding new ones
-		{
-			vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
-			for( unsigned int i = 0; i < invItems.size(); ++i ) {
-				m_inventoryLayer->addInventoryItem( invItems.at(i) );
-			}
-		}
-	}
-	addChild(gameWorld);
 
 	// Game Menu
 	m_creationLayer = CreationLayer::node();
@@ -228,6 +196,42 @@ void GameLevelScene::update(ccTime dt)
 			std::cout << "TODO: defeat" << std::endl;
 		}
 	}
+}
+
+void GameLevelScene::saveFile( const char *file )
+{
+	LevelDef ld;
+	ld.name = "test level";
+	ld.difficulty = 1;
+	ld.theme = "test theme";
+	ld.gameWorld = gameWorld;
+	ld.inventoryItems = m_inventoryLayer->m_buttons;
+	ld.winConditions = LevelDef::EnterAreaWin;
+	ld.loseConditions = LevelDef::EnterAreaLose;
+
+	ld.saveToFile( file );
+}
+void GameLevelScene::loadFile( const char *file )
+{
+	removeChild( gameWorld, 1 );
+
+	m_levelDef = LevelDef::loadFromFile( file );
+	gameWorld = m_levelDef->gameWorld;
+
+	// removing inventory items
+	{
+		while( ! m_inventoryLayer->m_buttons.empty() ) {
+			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+		}
+	}
+	// adding new ones
+	{
+		vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
+		for( unsigned int i = 0; i < invItems.size(); ++i ) {
+			m_inventoryLayer->addInventoryItem( invItems.at(i) );
+		}
+	}
+	addChild( gameWorld );
 }
 
 

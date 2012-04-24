@@ -26,6 +26,10 @@ bool CreationLayer::init(){
     m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
 	CCMenuItemLabel * menuItemPlay = CCMenuItemLabel::itemWithLabel(m_labelPlay, this, menu_selector(CreationLayer::onPlayButton));
 
+    CCLabelTTF * labelSave = CCLabelTTF::labelWithString("Save", "Arial", 30);
+	CCMenuItemLabel * menuItemSave = CCMenuItemLabel::itemWithLabel(labelSave, this, menu_selector(CreationLayer::onSaveButton));
+    CCLabelTTF * labelLoad = CCLabelTTF::labelWithString("Load", "Arial", 30);
+	CCMenuItemLabel * menuItemLoad = CCMenuItemLabel::itemWithLabel(labelLoad, this, menu_selector(CreationLayer::onLoadButton));
     
     CCLabelTTF * labelDelete = CCLabelTTF::labelWithString("Delete", "Arial", 30);
 	CCMenuItemLabel * menuItemDelete = CCMenuItemLabel::itemWithLabel(labelDelete, this, menu_selector(CreationLayer::onDeleteButton));
@@ -33,12 +37,15 @@ bool CreationLayer::init(){
     CCLabelTTF * labelReset = CCLabelTTF::labelWithString("Reset", "Arial", 30);
 	CCMenuItemLabel * menuItemReset = CCMenuItemLabel::itemWithLabel(labelReset, this, menu_selector(CreationLayer::onResetButton));
         
-	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemDelete,menuItemReset, NULL);
+	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemSave,menuItemLoad,menuItemDelete,menuItemReset, NULL);
 	m_menu->setPosition( CCPoint(0,screenSize.height-30) );
 	m_menu->setContentSize( CCSize(screenSize.width, 60) );
-    
+
     menuItemPlay->setPosition( CCPoint(80, 0) );
 	menuItemPause->setPosition( CCPoint(180, 0) );
+
+    menuItemSave->setPosition( CCPoint(screenSize.width/2-50, 0) );
+    menuItemLoad->setPosition( CCPoint(screenSize.width/2+50, 0) );
 
     menuItemDelete->setPosition( CCPoint(screenSize.width-200, 0) );
     menuItemDelete->setColor(ccc3(255, 0, 0) );
@@ -77,6 +84,15 @@ void CreationLayer::onPauseButton(CCObject *sender){
 	GameLevelScene::sharedGameScene()->pauseWorld();
 	m_labelPause->setColor(ccc3(0, 254, 30));
 	m_labelPlay->setColor(ccc3(255, 255, 255));
+}
+
+void CreationLayer::onSaveButton(CCObject * sender)
+{
+	GameLevelScene::sharedGameScene()->saveFile( "test" );
+}
+void CreationLayer::onLoadButton(CCObject * sender)
+{
+	GameLevelScene::sharedGameScene()->loadFile( "test" );
 }
 
 void CreationLayer::onDeleteButton(CCObject *sender){
