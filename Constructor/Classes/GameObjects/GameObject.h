@@ -66,8 +66,7 @@ class GameObject;
 		GAMEOBJECT *r = new GAMEOBJECT(); \
 		if( r && r->init(spritePath) ) { \
 			r->m_inventoryItem = item; \
-			r->m_objectBody = b; \
-			r->m_objectBody->SetUserData( r ); \
+			r->setBody( b ); \
 			r->autorelease(); \
 			return r; \
 		} \
@@ -244,6 +243,10 @@ public:
 	// Creates object at location
 	////////////////////////////////////////////////////
 	virtual void createBodyAtPosition(CCPoint position)=0;
+	virtual void setBody( b2Body *b ) {
+		m_objectBody = b;
+		m_objectBody->SetUserData( this );
+	}
 };
 
 #endif

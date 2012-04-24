@@ -73,8 +73,7 @@ public:
 		ObjectSimpleBox *r = new ObjectSimpleBox;
 		if( r && r->init( spritePath, fixtureDef ) ) {
 			r->m_inventoryItem = item;
-			r->m_objectBody = b;
-			r->m_objectBody->SetUserData( r );
+			r->setBody( b );
 			r->autorelease();
 			return r;
 		}

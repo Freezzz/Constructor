@@ -62,38 +62,43 @@ void ObjectPin::onSimulationEnded(){
 }
 
 void ObjectPin::onMovementStarted(){
-	if (m_isPinned && m_pinJoint) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_pinJoint);		
-		m_pinJoint = NULL;
-	}
-	m_isPinned = false;
+	unPin( 1 );
 	GameObject::onMovementStarted();
 }
 
 void ObjectPin::onMovementEnded(){
 	GameObject::onMovementEnded();
-	
+	rePin( );
+}
+
+//////////////////////////////////////////////////// 
+// Unpins this pin from body
+//////////////////////////////////////////////////// 
+void ObjectPin::unPin( bool destroyJoint )
+{
+	if (destroyJoint && m_pinJoint) {
+		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_pinJoint);
+	}
+	m_pinJoint = NULL;
+	m_isPinned = false;
+}
+void ObjectPin::rePin( )
+{
 	// Check if our sensor object collides with other GameObjects
 	b2ContactEdge * cont = m_objectBody->GetContactList();
 	if (cont != NULL) {
-		//b2Vec2 pnt1 = cont->contact->GetManifold()->points[0].localPoint;
-		//b2Vec2 pnt2 = cont->contact->GetManifold()->points[1].localPoint;
-		
+
 		// If contanc between two gameObjects. TODO: Improve check
 		if (cont->contact->GetFixtureA()->GetBody()->GetUserData() != NULL && cont->contact->GetFixtureB()->GetBody()->GetUserData() != NULL) {
-			
+
 			b2Body * otherBody;
 			if (cont->contact->GetFixtureA()->GetBody() == m_objectBody) {
-				// Pin is A, other is B
-				otherBody = cont->contact->GetFixtureB()->GetBody();
-				
-			}else if (cont->contact->GetFixtureB()->GetBody() == m_objectBody) {
-				// Pin is B, other is A				
-				otherBody = cont->contact->GetFixtureA()->GetBody();
+				otherBody = cont->contact->GetFixtureB()->GetBody(); // Pin is A, other is B
 			}
-			
-			// CCPoint midPoint = CCPoint( (pnt1.x + pnt2.x) * 0.5, (pnt1.y + pnt2.y) * 0.5);
-			
+			else if (cont->contact->GetFixtureB()->GetBody() == m_objectBody) {
+				otherBody = cont->contact->GetFixtureA()->GetBody(); // Pin is B, other is A
+			}
+
 			// Pin object to it's position in the world alowing rotation
 			b2RevoluteJointDef md;
 			md.Initialize(m_objectBody, otherBody, m_objectBody->GetPosition());
@@ -102,22 +107,10 @@ void ObjectPin::onMovementEnded(){
 			m_pinJoint->SetUserData(this);
 			m_isPinned = true;
 		}
-		
 		if (cont->next){
 			CCLog("There are more objects coliding with pin but we ignore them");
 		}
 	}
-}
-
-//////////////////////////////////////////////////// 
-// Unpins this pin from body
-//////////////////////////////////////////////////// 
-void ObjectPin::unPin(bool destroyJoint){
-	if (destroyJoint && m_pinJoint) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_pinJoint);
-	}
-	m_pinJoint = NULL;
-	m_isPinned = false;
 }
 
 //////////////////////////////////////////////////// 
@@ -146,4 +139,21 @@ void ObjectPin::createBodyAtPosition(cocos2d::CCPoint position){
 	m_objectBody->SetUserData(this);
 	
 	setPosition(position);	
+}
+void ObjectPin::setBody( b2Body *b )
+{
+	GameObject::setBody( b );
+
+	m_pinJoint = NULL;
+	m_isPinned = false;
+	b2JointEdge *joint = b->GetJointList();
+	if( joint ) {
+		CCAssert( ! joint->next, "A pin is supposed to have at most one joint" );
+		CCAssert( dynamic_cast<b2RevoluteJoint*>(joint->joint), "This pin has a joint which is not a revoletu one" );
+		m_pinJoint = static_cast<b2RevoluteJoint*>( joint->joint );
+		m_isPinned = true;
+	}
+
+	unPin( 1 );
+	rePin();
 }

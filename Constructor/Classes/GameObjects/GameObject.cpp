@@ -234,7 +234,7 @@ void GameObject::destroy(){
 		jnt = jnt->next;
 	}
 	
-    GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_objectBody);	
+    GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_objectBody);
 	removeFromParentAndCleanup(true);
 }
 

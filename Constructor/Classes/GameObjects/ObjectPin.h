@@ -35,12 +35,14 @@ protected:
 	virtual void onMovementEnded();
 	
 	void createBodyAtPosition(CCPoint position);
+	void setBody( b2Body *b );
 	
 public:
 	//////////////////////////////////////////////////// 
 	// Unpins this pin from body
 	//////////////////////////////////////////////////// 
 	void unPin(bool destroyJoint);
+	void rePin();
 	
 	GAMEOBJECT_NODE_DEF( PinInventoryItem , ObjectPin )
 };

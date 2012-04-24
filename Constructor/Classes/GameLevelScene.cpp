@@ -215,18 +215,19 @@ void GameLevelScene::saveFile( const char *file )
 void GameLevelScene::loadFile( const char *file )
 {
 	removeChild( gameWorld, 1 );
+	// removing inventory items
+	{
+		while( ! m_inventoryLayer->m_buttons.empty() ) {
+			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+		}
+	}
+	wipeWorld(); // removing former objects
 
 	m_levelDef = LevelDef::loadFromFile( file );
 	gameWorld = m_levelDef->gameWorld;
 
 	// inventory items
 	{
-		// removing inventory items
-		{
-			while( ! m_inventoryLayer->m_buttons.empty() ) {
-				m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
-			}
-		}
 		// adding new ones
 		{
 			vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
@@ -238,7 +239,6 @@ void GameLevelScene::loadFile( const char *file )
 
 	// game objects
 	{
-		wipeWorld(); // removing former objects
 		// adding new ones
 		{
 			m_gameObjects->addObjectsFromArray( & m_levelDef->gameObjects );
