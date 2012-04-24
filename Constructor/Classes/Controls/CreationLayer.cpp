@@ -7,6 +7,8 @@
 //
 
 #include "CreationLayer.h"
+#include "UserLevelsLayer.h"
+#include "UserLevelSaveLayer.h"
 #include <GameLevelScene.h>
 
 //////////////////////////////////////////////////// 
@@ -55,6 +57,17 @@ bool CreationLayer::init(){
 	addChild( m_menu, 1 );
 	setContentSize( m_menu->getContentSize() );
     
+    // init user level save dialog
+	m_userLevelSaveLayer = UserLevelSaveLayer::node();
+	addChild(m_userLevelSaveLayer, 2);
+	m_userLevelSaveLayer->setPosition(CCPointZero);
+	m_userLevelSaveLayer->setIsVisible(false);
+	
+	// init user level list
+	m_userLevelsLayer = UserLevelsLayer::node();
+	addChild(m_userLevelsLayer, 2);
+	m_userLevelsLayer->setPosition(CCPointZero);
+	m_userLevelsLayer->setIsVisible(false);
 	return true;
 }
 
@@ -74,6 +87,13 @@ void CreationLayer::setOnScreen( bool isOnscreen ){
 	this->runAction( CCMoveTo::actionWithDuration(0.5, location) );
 }
 
+//////////////////////////////////////////////////// 
+// Disables/Enables menu interaction
+//////////////////////////////////////////////////// 
+void CreationLayer::setMenuEnable(bool isEnabled){
+	m_menu->setIsTouchEnabled(isEnabled);
+}
+
 void CreationLayer::onPlayButton(CCObject *sender){
 	GameLevelScene::sharedGameScene()->runWorld();
 	m_labelPlay->setColor(ccc3(0, 254, 30));
@@ -88,11 +108,15 @@ void CreationLayer::onPauseButton(CCObject *sender){
 
 void CreationLayer::onSaveButton(CCObject * sender)
 {
-	GameLevelScene::sharedGameScene()->saveFile( "test" );
+	setMenuEnable(false);
+	m_userLevelSaveLayer->setIsVisible(true);
 }
+
 void CreationLayer::onLoadButton(CCObject * sender)
 {
-	GameLevelScene::sharedGameScene()->loadFile( "test" );
+	setMenuEnable(false);
+	m_userLevelsLayer->refreshList();
+	m_userLevelsLayer->setIsVisible(true);
 }
 
 void CreationLayer::onDeleteButton(CCObject *sender){

@@ -14,7 +14,8 @@
 
 using namespace cocos2d;
 
-
+class UserLevelsLayer;
+class UserLevelSaveLayer;
 ////////////////////////////////////////////////////
 // CreationLayer - gui layer containing menus 
 // for creation screen
@@ -26,6 +27,8 @@ private:
 	CCLabelTTF * m_labelPlay;
 	CCMenu *m_menu;
 
+	UserLevelsLayer * m_userLevelsLayer;
+	UserLevelSaveLayer * m_userLevelSaveLayer;
 	void onPlayButton(CCObject * sender);
 	void onPauseButton(CCObject * sender);
 
@@ -37,6 +40,7 @@ private:
 
 public:
 	void setOnScreen(bool isOnscreen);
+	void setMenuEnable(bool isEnabled);
 
 public:
 	LAYER_NODE_FUNC(CreationLayer);

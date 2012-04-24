@@ -80,6 +80,7 @@ public:
 
 	void saveFile( const char *file );
 	void loadFile( const char *file );
+	LevelDef* getCurrentLevelDef();
 
 	////////////////////////////////////////////////////
 	// Screen Touch delegates

@@ -198,6 +198,22 @@ void GameLevelScene::update(ccTime dt)
 	}
 }
 
+//////////////////////////////////////////////////// 
+// Returns current level defenition
+//////////////////////////////////////////////////// 
+LevelDef* GameLevelScene::getCurrentLevelDef(){
+	LevelDef *ld = new LevelDef;
+	ld->name = "test level";
+	ld->difficulty = 1;
+	ld->theme = "test theme";
+	ld->gameWorld = gameWorld;
+	ld->inventoryItems = m_inventoryLayer->m_buttons;
+	ld->gameObjects.addObjectsFromArray( m_gameObjects );
+	ld->winConditions = LevelDef::EnterAreaWin;
+	ld->loseConditions = LevelDef::EnterAreaLose;
+	return ld;
+}
+
 void GameLevelScene::saveFile( const char *file )
 {
 	LevelDef ld;
@@ -212,6 +228,8 @@ void GameLevelScene::saveFile( const char *file )
 
 	ld.saveToFile( file );
 }
+
+
 void GameLevelScene::loadFile( const char *file )
 {
 	removeChild( gameWorld, 1 );

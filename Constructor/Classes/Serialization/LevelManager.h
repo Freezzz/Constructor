@@ -20,11 +20,11 @@ typedef struct StoryLevelDescribtion{
 
 class LevelManager {
 private:
-	vector<string*> m_userLevels;
-	vector<StoryLevelDescribtion*> m_storyLevels;
+	vector<string*> * m_userLevels;
+	vector<StoryLevelDescribtion*> * m_storyLevels;
 	
-	unsigned int m_userLevelCount;
-	unsigned int m_storyLevelCount;
+	int m_userLevelCount;
+	int m_storyLevelCount;
 	
 	void loadUserLevelList();
 	void loadStoryLevelList();
@@ -36,8 +36,8 @@ public:
 	LevelDef *loadUserLevel( const char *fileName );
 	bool saveUserLevel( LevelDef * level, const char *fileName );
 	
-	vector<string*> * getUserLevelList(){return &m_userLevels;}
-	vector<StoryLevelDescribtion*> * getStoryLevelList(){return &m_storyLevels;}
+	vector<string*> * getUserLevelList(){return m_userLevels;}
+	vector<StoryLevelDescribtion*> * getStoryLevelList(){return m_storyLevels;}
 	
 	//////////////////////////////////////////////////// 
     // Singleton pattern
