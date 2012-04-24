@@ -29,6 +29,7 @@ private:
 	SimpleBoxInventoryItem( ObjectType type ) : InventoryItem(type), m_type(type) { }
 
 public:
+	GameObject* gameObjectNode( b2Body *b );
 	GameObject* gameObjectNode( CCPoint p );
 
 	// TODO: instead of type, let node be fed with the physical
@@ -68,9 +69,22 @@ protected:
     void createBodyAtPosition( CCPoint position );
 	
 public:
-	static ObjectSimpleBox *node(  CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) {
+	static ObjectSimpleBox *node( InventoryItem *item, b2Body *b, std::string spritePath, b2FixtureDef *fixtureDef ) {
 		ObjectSimpleBox *r = new ObjectSimpleBox;
 		if( r && r->init( spritePath, fixtureDef ) ) {
+			r->m_inventoryItem = item;
+			r->m_objectBody = b;
+			r->m_objectBody->SetUserData( r );
+			r->autorelease();
+			return r;
+		}
+		delete r;
+		return NULL;
+	}
+	static ObjectSimpleBox *node( InventoryItem *item, CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) {
+		ObjectSimpleBox *r = new ObjectSimpleBox;
+		if( r && r->init( spritePath, fixtureDef ) ) {
+			r->m_inventoryItem = item;
 			r->createBodyAtPosition( p );
 			r->autorelease();
 			return r;

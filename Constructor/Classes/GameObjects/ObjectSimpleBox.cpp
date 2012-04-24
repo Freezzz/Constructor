@@ -102,9 +102,18 @@ bool SimpleBoxInventoryItem::init( std::string itemPath, std::string spritePath,
 
 	return true;
 }
+GameObject* SimpleBoxInventoryItem::gameObjectNode( b2Body *b )
+{
+	GameObject *go = ObjectSimpleBox::node( this, b, m_objectSpritePath, m_fixtureDef );
+	go->isStatic = isStatic;
+	go->isMovable = isMovable;
+	go->isRotatable = isRotatable;
+	go->isDeletable = isDeletable;
+	return go;
+}
 GameObject* SimpleBoxInventoryItem::gameObjectNode( CCPoint p )
 {
-	GameObject *go = ObjectSimpleBox::node( p, m_objectSpritePath, m_fixtureDef );
+	GameObject *go = ObjectSimpleBox::node( this, p, m_objectSpritePath, m_fixtureDef );
 	go->isStatic = isStatic;
 	go->isMovable = isMovable;
 	go->isRotatable = isRotatable;

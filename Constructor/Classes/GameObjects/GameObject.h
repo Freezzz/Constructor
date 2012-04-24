@@ -44,14 +44,30 @@ class GameObject;
 
 #define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static INVENTORYITEM* node( std::string itemPath, std::string spritePath ); \
+	GameObject* gameObjectNode( b2Body *b ); \
 	GameObject* gameObjectNode( CCPoint p );
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node( CCPoint p, std::string spritePath ) \
+	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath ) \
 	{ \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
 		if( r && r->init(spritePath) ) { \
+			r->m_inventoryItem = item; \
 			r->createBodyAtPosition( p ); \
+			r->autorelease(); \
+			return r; \
+		} \
+		\
+		delete r; \
+		return NULL; \
+	}; \
+	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath ) \
+	{ \
+		GAMEOBJECT *r = new GAMEOBJECT(); \
+		if( r && r->init(spritePath) ) { \
+			r->m_inventoryItem = item; \
+			r->m_objectBody = b; \
+			r->m_objectBody->SetUserData( r ); \
 			r->autorelease(); \
 			return r; \
 		} \
@@ -75,7 +91,8 @@ class GameObject;
 
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
 	INVENTORYITEM_NODE_DECL(INVENTORYITEM) \
-	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(p, m_objectSpritePath); } \
+	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { return GAMEOBJECT::node(this, b, m_objectSpritePath); } \
+	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(this, p, m_objectSpritePath); } \
 	
 	
 
@@ -97,6 +114,7 @@ public:
 	InventoryItem( ObjectType type ) : m_type(type), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
     
 public:
+	virtual GameObject* gameObjectNode( b2Body *b ) = 0;
 	virtual GameObject* gameObjectNode( CCPoint p ) = 0;
 	ObjectType getObjectType() { return m_type; }
 	
@@ -178,6 +196,9 @@ public:
 	// Object type
 	ObjectType m_type;
 	ObjectType getObjectType(){return m_type;}
+
+	InventoryItem *m_inventoryItem;
+	InventoryItem *getInventoryItem(){return m_inventoryItem;}
 
 	////////////////////////////////////////////////////
 	// Moves object to new location, if state is idile

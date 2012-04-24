@@ -101,7 +101,7 @@ bool GameLevelScene::initLevel( )
 	if( ! m_target ) {
 		return false;
 	}
-	m_gameObjects->addObject( m_target );
+	// m_gameObjects->addObject( m_target );
 	addChild( m_target, m_target->defaultZOrder );
 	m_target->setId( 1 );
 	m_target->setMutable( 0 );
@@ -167,7 +167,7 @@ void GameLevelScene::wipeWorld(){
 	m_selectedObject = NULL;
 
 	// reinitializing the level
-	initLevel( );
+	// initLevel( ); // TODO
 }
 
 bool GameLevelScene::checkVictory()
@@ -206,6 +206,7 @@ void GameLevelScene::saveFile( const char *file )
 	ld.theme = "test theme";
 	ld.gameWorld = gameWorld;
 	ld.inventoryItems = m_inventoryLayer->m_buttons;
+	ld.gameObjects.addObjectsFromArray( m_gameObjects );
 	ld.winConditions = LevelDef::EnterAreaWin;
 	ld.loseConditions = LevelDef::EnterAreaLose;
 
@@ -218,17 +219,33 @@ void GameLevelScene::loadFile( const char *file )
 	m_levelDef = LevelDef::loadFromFile( file );
 	gameWorld = m_levelDef->gameWorld;
 
-	// removing inventory items
+	// inventory items
 	{
-		while( ! m_inventoryLayer->m_buttons.empty() ) {
-			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+		// removing inventory items
+		{
+			while( ! m_inventoryLayer->m_buttons.empty() ) {
+				m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+			}
+		}
+		// adding new ones
+		{
+			vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
+			for( unsigned int i = 0; i < invItems.size(); ++i ) {
+				m_inventoryLayer->addInventoryItem( invItems.at(i) );
+			}
 		}
 	}
-	// adding new ones
+
+	// game objects
 	{
-		vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
-		for( unsigned int i = 0; i < invItems.size(); ++i ) {
-			m_inventoryLayer->addInventoryItem( invItems.at(i) );
+		wipeWorld(); // removing former objects
+		// adding new ones
+		{
+			m_gameObjects->addObjectsFromArray( & m_levelDef->gameObjects );
+			for( unsigned int i = 0; i < m_gameObjects->count(); ++i ) {
+				GameObject *object = m_gameObjects->getObjectAtIndex(i);
+				addChild( object, object->defaultZOrder );
+			}
 		}
 	}
 	addChild( gameWorld );

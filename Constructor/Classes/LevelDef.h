@@ -8,6 +8,7 @@ using namespace cocos2d;
 
 class InventoryItem;
 class GameWorld;
+class GameObject;
 
 struct LevelDef
 {
@@ -34,6 +35,9 @@ struct LevelDef
 
 	// inventory items
 	vector< InventoryItem* > inventoryItems;
+
+	// game objects
+	CCMutableArray<GameObject*> gameObjects;
 
 	// win and lose conditions
 	WinConditions winConditions;
