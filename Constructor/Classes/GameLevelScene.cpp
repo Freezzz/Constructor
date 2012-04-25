@@ -101,7 +101,7 @@ bool GameLevelScene::initLevel( )
 	if( ! m_target ) {
 		return false;
 	}
-	// m_gameObjects->addObject( m_target );
+	m_gameObjects->addObject( m_target );
 	addChild( m_target, m_target->defaultZOrder );
 	m_target->setId( 1 );
 	m_target->setMutable( 0 );
