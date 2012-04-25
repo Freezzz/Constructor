@@ -47,7 +47,7 @@ protected:
 	// Creates object at location
 	////////////////////////////////////////////////////
 	void createBodyAtPosition(CCPoint position);
-
+	void setBody( b2Body *b );
 public:
 	////////////////////////////////////////////////////
 	// Save object's properties pre-simulation

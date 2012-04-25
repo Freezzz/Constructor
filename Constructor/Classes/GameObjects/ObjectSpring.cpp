@@ -191,3 +191,30 @@ void ObjectSpring::destroy(){
     GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_secondBody);
     GameObject::destroy();
 }
+
+void ObjectSpring::setBody( b2Body *b )
+{
+	GameObject::setBody( b );
+	m_secondBody = NULL;
+	
+	m_joints.clear();
+	m_prismaticJoint = NULL;
+	
+	b2JointEdge *joint = b->GetJointList();
+	while( joint ) {
+		b2PrismaticJoint* jnt = dynamic_cast<b2PrismaticJoint*>(joint->joint);
+		if (jnt) {
+			m_prismaticJoint = jnt;
+			m_secondBody = joint->other;
+			m_secondBodyOriginalLocation = m_secondBody->GetPosition();
+			m_secondBodyOriginalRotation = m_secondBody->GetAngle();
+		}else {
+			b2DistanceJoint * j = dynamic_cast<b2DistanceJoint*>(joint->joint);
+			if (j) {
+				m_joints.push_back(j);
+			}
+		}
+		joint = joint->next;
+	}
+}
+
