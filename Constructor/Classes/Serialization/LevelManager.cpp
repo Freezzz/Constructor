@@ -39,7 +39,7 @@ LevelManager::~LevelManager(){
 // Loads story mode level describtions list from storage
 //////////////////////////////////////////////////// 
 void LevelManager::loadStoryLevelList(){
-	for (unsigned int i = 0; i< m_storyLevelCount; i++) {
+	for (int i = 0; i< m_storyLevelCount; i++) {
 		StoryLevelDescribtion * lvl = new StoryLevelDescribtion;
 
 		char temp[10];

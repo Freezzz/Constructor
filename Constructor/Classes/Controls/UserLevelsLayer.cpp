@@ -7,7 +7,7 @@
 //
 
 #include "UserLevelsLayer.h"
-#include "LevelManager.h"
+#include "Serialization/LevelManager.h"
 #include "CreationLayer.h"
 #include "GameLevelScene.h"
 
@@ -58,7 +58,7 @@ void UserLevelsLayer::populateMenu(){
 	m_levels = LevelManager::sharedManager()->getUserLevelList();
 	// Populate level list
     m_menu = CCMenu::menuWithItems(NULL);
-    for (int i = 0; i < m_levels->size(); ++i)
+    for (unsigned int i = 0; i < m_levels->size(); ++i)
     {
         CCLabelTTF* label = CCLabelTTF::labelWithString(m_levels->at(i)->c_str(), "Arial", 24);
         CCMenuItemLabel* pMenuItem = CCMenuItemLabel::itemWithLabel(label, this, menu_selector(UserLevelsLayer::levelTapCallback));
