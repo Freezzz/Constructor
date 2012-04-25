@@ -82,9 +82,7 @@ void UserLevelSaveLayer::menuSaveCallback(cocos2d::CCObject *sender){
 	CCLog("SAVNG TO LEVEL NAME: %s", 	m_textField->getString());
 
 	// TODO: empty check, filename sanitize
-	LevelDef * lvl = GameLevelScene::sharedGameScene()->getCurrentLevelDef();
-	lvl->name = m_textField->getString();
-	LevelManager::sharedManager()->saveUserLevel(lvl, m_textField->getString());
+	LevelManager::sharedManager()->saveUserLevel(m_textField->getString());
 	
 	m_textField->detachWithIME();	
 	setIsVisible(false);
