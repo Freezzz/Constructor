@@ -172,3 +172,21 @@ void ObjectGlue::weldObjectsAtContact(b2Contact *contact){
 	CCLog("Objects welded!");
 }
 
+void ObjectGlue::setBody( b2Body *b )
+{
+	GameObject::setBody( b );
+	
+	m_joints.clear();
+	m_isGlued = false;
+	
+	b2JointEdge *joint = b->GetJointList();
+	while( joint ) {
+		b2WeldJoint* jnt = dynamic_cast<b2WeldJoint*>(joint->joint);
+		if (jnt) {
+			m_joints.push_back(jnt);
+			m_isGlued = true;			
+		}
+		joint = joint->next;
+	}
+}
+

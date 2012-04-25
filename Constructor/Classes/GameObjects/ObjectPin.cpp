@@ -153,7 +153,4 @@ void ObjectPin::setBody( b2Body *b )
 		m_pinJoint = static_cast<b2RevoluteJoint*>( joint->joint );
 		m_isPinned = true;
 	}
-
-	unPin( 1 );
-	rePin();
 }

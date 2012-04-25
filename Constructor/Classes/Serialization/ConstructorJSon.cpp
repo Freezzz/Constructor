@@ -1,11 +1,11 @@
 
-#include "Serialization/ConstructorJSon.h"
+#include "ConstructorJSon.h"
 
-#include "GameObjects/GameObject.h"
-#include "GameObjects/ObjectSimpleBox.h"
-#include "GameObjects/ObjectGlue.h"
-#include "GameObjects/ObjectPin.h"
-#include "GameObjects/ObjectSpring.h"
+#include "../GameObjects/GameObject.h"
+#include "../GameObjects/ObjectSimpleBox.h"
+#include "../GameObjects/ObjectGlue.h"
+#include "../GameObjects/ObjectPin.h"
+#include "../GameObjects/ObjectSpring.h"
 
 #include "LevelDef.h"
 

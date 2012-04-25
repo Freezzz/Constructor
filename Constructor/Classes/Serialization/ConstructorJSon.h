@@ -3,11 +3,11 @@
 #define  _CONSTURCTOR_JSON_H_
 
 
-#include "Serialization/b2dJson.h"
+#include "b2dJson.h"
 
 class InventoryItem;
 class GameObject;
-class LevelDef;
+struct LevelDef;
 
 class ConstructorJSon : public b2dJson
 {

@@ -34,7 +34,7 @@ public:
 	~LevelManager( );
 
 	LevelDef *loadUserLevel( const char *fileName );
-	bool saveUserLevel( LevelDef * level, const char *fileName );
+	bool saveUserLevel(const char *fileName);
 	
 	vector<string*> * getUserLevelList(){return m_userLevels;}
 	vector<StoryLevelDescribtion*> * getStoryLevelList(){return m_storyLevels;}

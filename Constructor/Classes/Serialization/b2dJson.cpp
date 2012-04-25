@@ -18,8 +18,8 @@
 
 #include <istream>
 #include <fstream>
-#include "Serialization/b2dJson.h"
-#include "Serialization/json/json.h"
+#include "b2dJson.h"
+#include "json/json.h"
 
 b2dJson::b2dJson(bool useHumanReadableFloats)
 {

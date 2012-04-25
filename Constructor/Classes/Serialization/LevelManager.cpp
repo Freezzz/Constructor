@@ -7,7 +7,9 @@
 //
 
 #include "LevelManager.h"
-#define USER_LVL_PREFIX "level_user_%d"
+#include "GameLevelScene.h"
+
+#define USER_LVL_PREFIX "level_user_%d_name"
 
 #define STORY_LVL_NAME "level_story_%d_name"
 #define STORY_LVL_COMPLETE "level_story_%d_complete"
@@ -75,8 +77,12 @@ LevelDef * LevelManager::loadUserLevel( const char *fileName ){
 //////////////////////////////////////////////////// 
 // Saves user level and updates list of user created levels
 //////////////////////////////////////////////////// 
-bool LevelManager::saveUserLevel( LevelDef * level, const char *fileName ){
+bool LevelManager::saveUserLevel(const char *fileName){
 	// TODO: overwrite
+	
+	LevelDef * level = GameLevelScene::sharedGameScene()->getCurrentLevelDef();
+	level->name = string(fileName);
+	
 	if (level->saveToFile(fileName)) {
 		m_userLevelCount++;
 		char temp[10];
@@ -86,9 +92,11 @@ bool LevelManager::saveUserLevel( LevelDef * level, const char *fileName ){
 		
 		CCUserDefault::sharedUserDefault()->setStringForKey(temp, level->name);
 		CCUserDefault::sharedUserDefault()->setIntegerForKey("USER_LVL_COUNT", m_userLevelCount);
-		CCUserDefault::sharedUserDefault()->flush();		
+		CCUserDefault::sharedUserDefault()->flush();
+		delete level;
 		return true;
 	}
+	delete level;	
 	return false;
 }
 
