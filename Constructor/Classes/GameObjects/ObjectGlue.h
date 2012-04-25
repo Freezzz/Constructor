@@ -36,7 +36,7 @@ protected:
 	virtual void onMovementEnded();
 	
 	void createBodyAtPosition(CCPoint position);
-
+	void setBody( b2Body *b );
 	
 public:
 	void unPin(bool destroyJoint);
