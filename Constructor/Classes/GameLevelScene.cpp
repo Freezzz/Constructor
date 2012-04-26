@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////// 
 // GameLevelScene init
 //////////////////////////////////////////////////// 
-bool GameLevelScene::init()
+bool GameLevelScene::init( bool loadingLevel )
 {
 	if ( !CCLayer::init() )
 	{
@@ -46,7 +46,7 @@ bool GameLevelScene::init()
 	addChild(bg);
 
 	// Game World
-	if( true ) {
+	if( ! loadingLevel ) {
 		// creating it, instead of loading
 		gameWorld = GameWorld::node();
 		addChild( gameWorld );
@@ -81,16 +81,17 @@ bool GameLevelScene::init()
 
 	gameSceneInstance = this;
 
-	// initializing the level
-	initLevel( );
+	if( ! loadingLevel ) {
+		// initializing the level
+		initLevel( );
+		saveFile( "sandbox_level" );
+	}
 
 	// initializing the victory layer
 	m_victoryLayer = VictoryLayer::node();
 	m_victoryLayer->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
 	m_victoryLayer->setScale( 0 );
 	addChild( m_victoryLayer, 1000 );
-
-	saveFile( "sandbox_level" );
 
 	scheduleUpdate();
 	return true;
@@ -450,6 +451,21 @@ CCScene* GameLevelScene::scene()
 	
 	// return the scene
 	return scene;
+}
+GameLevelScene* GameLevelScene::nodeWithLevel( const char *file )
+{
+	GameLevelScene *r = new GameLevelScene;
+	if( r && r->init() ) {
+		LevelDef *ld = LevelDef::loadFromFile( file );
+		r->loadLevel( ld );
+		r->addChild( ld->gameWorld );
+		r->autorelease();
+		return r;
+	}
+
+	delete r;
+	return NULL;
+	
 }
 
 //////////////////////////////////////////////////// 

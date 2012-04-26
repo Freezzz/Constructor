@@ -34,8 +34,8 @@ private:
 	VictoryLayer * m_victoryLayer;
     bool m_isInEditMode;
     
-    virtual void registerWithTouchDispatcher();
-	virtual bool init();
+    void registerWithTouchDispatcher( );
+	bool init( bool loadingLevel = 0 );
 
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
@@ -113,6 +113,7 @@ public:
 	////////////////////////////////////////////////////
 	static cocos2d::CCScene* scene();
 	LAYER_NODE_FUNC(GameLevelScene);
+	static GameLevelScene* nodeWithLevel( const char *file );
 
 	////////////////////////////////////////////////////
 	// Singleton pattern
