@@ -7,7 +7,7 @@ bool UIButton::init( const char *str, CCObject *rec, SEL_MenuHandler selector )
 	initWithTarget( rec, selector );
 
 	// background image
-	CCSprite * bg = CCSprite::spriteWithFile( "uibutton.png" );
+	CCSprite * bg = CCSprite::spriteWithFile( "level_btn.png" );
 	setContentSize( bg->getContentSize() );
 	bg->setAnchorPoint( CCPoint(0,0) );
 	addChild( bg );
@@ -17,6 +17,7 @@ bool UIButton::init( const char *str, CCObject *rec, SEL_MenuHandler selector )
 	label->setAnchorPoint( CCPoint(0,0) );
 	label->setPosition( CCPoint(getContentSize().width/2-label->getContentSize().width/2,
 								getContentSize().height/2-label->getContentSize().height/2) );
+	label->setColor(ccc3(0, 55, 73));
 	addChild( label );
 
 	return true;

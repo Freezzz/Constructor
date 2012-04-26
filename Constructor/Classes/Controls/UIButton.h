@@ -6,6 +6,7 @@
 #include "Constants.h"
 using namespace cocos2d;
 
+// ALL UR BASE BELONG TO US! lol using it as level button, refacoring inc XD
 class UIButton : public CCMenuItemLabel
 {
 private:

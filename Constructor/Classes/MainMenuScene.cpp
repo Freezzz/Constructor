@@ -8,6 +8,7 @@
 
 #include "MainMenuScene.h"
 #include "GameLevelScene.h"
+#include "StoryLevelsScene.h"
 
 //////////////////////////////////////////////////// 
 // MainMenuScene init
@@ -36,6 +37,7 @@ bool MainMenuScene::init(){
 
 
 void MainMenuScene::newGameTap(cocos2d::CCObject *sender){
+	CCDirector::sharedDirector()->replaceScene(StoryLevelsScene::scene());
 }
 
 void MainMenuScene::sanboxtap(cocos2d::CCObject *sender){
