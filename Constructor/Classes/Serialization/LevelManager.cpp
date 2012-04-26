@@ -8,6 +8,8 @@
 
 #include "LevelManager.h"
 #include "GameLevelScene.h"
+#include <dirent.h>
+#include <iostream>
 
 #define USER_LVL_PREFIX "level_user_%d_name"
 
@@ -17,11 +19,10 @@
 //////////////////////////////////////////////////// 
 // LevelManager constructor
 //////////////////////////////////////////////////// 
-LevelManager::LevelManager(){
+LevelManager::LevelManager( )
+{
 	m_userLevels = new vector<string*>();
-	m_storyLevels = new vector<StoryLevelDescribtion*>();	
-	m_userLevelCount = CCUserDefault::sharedUserDefault()->getIntegerForKey("USER_LVL_COUNT", 0);	
-	m_storyLevelCount = CCUserDefault::sharedUserDefault()->getIntegerForKey("STORY_LVL_COUNT", 0);	
+	m_userLevelCount = CCUserDefault::sharedUserDefault()->getIntegerForKey("USER_LVL_COUNT", 0);
 	loadStoryLevelList();
 	loadUserLevelList();
 	
@@ -37,19 +38,37 @@ LevelManager::~LevelManager(){
 
 //////////////////////////////////////////////////// 
 // Loads story mode level describtions list from storage
-//////////////////////////////////////////////////// 
-void LevelManager::loadStoryLevelList(){
-	for (int i = 0; i< m_storyLevelCount; i++) {
-		StoryLevelDescribtion * lvl = new StoryLevelDescribtion;
+////////////////////////////////////////////////////
+void LevelManager::loadStoryLevelList( string chapter )
+{
+	DIR *dir = opendir( ( string(CCFileUtils::fullPathFromRelativePath("levels/story_levels/"))+chapter ).c_str() );
 
-		char temp[10];
-		sprintf(temp, STORY_LVL_NAME, i);
-		lvl->name = CCUserDefault::sharedUserDefault()->getStringForKey(temp, "");		
-		
-		sprintf(temp, STORY_LVL_COMPLETE, i);
-		lvl->name = CCUserDefault::sharedUserDefault()->getBoolForKey(temp, false);
-		
-		m_storyLevels->push_back(lvl);
+	struct dirent *f = readdir( dir );
+	while( f ) {
+		if( f->d_type == DT_REG ) {
+			//std::cout << "  Level: " << f->d_name << std::endl;
+			StoryLevelDescribtion *lvl = new StoryLevelDescribtion;
+			lvl->isConmplete = 0;
+			lvl->chapter = chapter;
+			lvl->name = f->d_name;
+			m_storyLevels.push_back( lvl );
+		}
+
+		f = readdir( dir );
+	}
+}
+void LevelManager::loadStoryLevelList( )
+{
+	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath("levels/story_levels") );
+
+	struct dirent *f = readdir( dir );
+	while( f ) {
+		if( f->d_type == DT_DIR ) {
+			//std::cout << "Chapter: " << f->d_name << std::endl;
+			loadStoryLevelList( f->d_name );
+		}
+
+		f = readdir( dir );
 	}
 }
 

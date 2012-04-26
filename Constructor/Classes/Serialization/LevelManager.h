@@ -15,18 +15,19 @@ using namespace cocos2d;
 
 typedef struct StoryLevelDescribtion{
 	bool isConmplete;
+	string chapter;
 	string name;
 }StoryLevelDescribtion;
 
 class LevelManager {
 private:
 	vector<string*> * m_userLevels;
-	vector<StoryLevelDescribtion*> * m_storyLevels;
+	vector<StoryLevelDescribtion*> m_storyLevels;
 	
 	int m_userLevelCount;
-	int m_storyLevelCount;
 	
 	void loadUserLevelList();
+	void loadStoryLevelList( string chapter );
 	void loadStoryLevelList();
 	
 public:
@@ -36,8 +37,14 @@ public:
 	LevelDef *loadUserLevel( const char *fileName );
 	bool saveUserLevel(const char *fileName);
 	
-	vector<string*> * getUserLevelList(){return m_userLevels;}
-	vector<StoryLevelDescribtion*> * getStoryLevelList(){return m_storyLevels;}
+	vector<string*> * getUserLevelList()
+	{
+		return m_userLevels;
+	}
+	vector<StoryLevelDescribtion*> * getStoryLevelList( )
+	{
+		return & m_storyLevels;
+	}
 	
 	//////////////////////////////////////////////////// 
     // Singleton pattern
