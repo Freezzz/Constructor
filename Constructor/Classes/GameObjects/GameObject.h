@@ -133,9 +133,6 @@ protected:
 	CCPoint m_originalPosition;
     float m_originalRotation;
 
-	int m_id;
-	bool m_mutable;
-
 	
 	//////////////////////////////////////////////////// 
 	// GameObject init
@@ -155,12 +152,6 @@ protected:
 	virtual void onMovementEnded();	
 	virtual void onRotationStarted();
 	virtual void onRotationEnded();
-
-public:
-	int id( ) const { return m_id; }
-	void setId( int id ) { m_id = id; }
-	bool isMutable( ) const { return m_mutable; }
-	void setMutable( bool mut ) { m_mutable = mut; }
 
 public:
 	// Properties

@@ -22,7 +22,7 @@ std::ostream& operator<<( std::ostream &out, LevelDef &l )
 }
 
 LevelDef::LevelDef( )
-	: difficulty(0), gameWorld(0)
+	: difficulty(0), gameWorld(0), target(0)
 {
 }
 LevelDef::~LevelDef( )

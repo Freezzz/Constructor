@@ -26,7 +26,6 @@ private:
     GameObject * m_selectedObject;
 	
 	CCMutableArray<GameObject*> * m_gameObjects;
-	GameObject * m_target;
 	
     CCRect m_gameZoneRect;
 
@@ -35,8 +34,8 @@ private:
 	VictoryLayer * m_victoryLayer;
     bool m_isInEditMode;
     
-    virtual void registerWithTouchDispatcher();
-	virtual bool init();
+    void registerWithTouchDispatcher( );
+	bool init( bool loadingLevel = 0 );
 
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
@@ -47,6 +46,7 @@ private:
 
 public:
 	GameWorld * gameWorld;
+	GameObject * m_target;
 
 	// initializing the level
 	bool initLevel( );
@@ -66,11 +66,13 @@ public:
 	////////////////////////////////////////////////////
 	void resetWorld();
 
+protected:
 	////////////////////////////////////////////////////
 	// Deletes all GameObjects from world
 	////////////////////////////////////////////////////
 	void wipeWorld();
 
+public:
 	////////////////////////////////////////////////////
 	// Checks whether the user won or lost
 	////////////////////////////////////////////////////
@@ -78,7 +80,9 @@ public:
 	bool checkDefeat();
 	void update(ccTime dt);
 
+	void reloadLevel();
 	void saveFile( const char *file );
+	void loadLevel( LevelDef *ld );
 	void loadFile( const char *file );
 	LevelDef* getCurrentLevelDef();
 
@@ -109,6 +113,7 @@ public:
 	////////////////////////////////////////////////////
 	static cocos2d::CCScene* scene();
 	LAYER_NODE_FUNC(GameLevelScene);
+	static GameLevelScene* nodeWithLevel( const char *file );
 
 	////////////////////////////////////////////////////
 	// Singleton pattern
