@@ -38,6 +38,7 @@ private:
 	void onDeleteButton(CCObject * sender);
 	void onResetButton(CCObject * sender);
 
+	void mainMenuTap(cocos2d::CCObject *sender);
 public:
 	void setOnScreen(bool isOnscreen);
 	void setMenuEnable(bool isEnabled);

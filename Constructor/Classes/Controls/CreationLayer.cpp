@@ -9,6 +9,7 @@
 #include "CreationLayer.h"
 #include "UserLevelsLayer.h"
 #include "UserLevelSaveLayer.h"
+#include "MainMenuScene.h"
 #include <GameLevelScene.h>
 
 //////////////////////////////////////////////////// 
@@ -39,7 +40,10 @@ bool CreationLayer::init(){
     CCLabelTTF * labelReset = CCLabelTTF::labelWithString("Reset", "Arial", 30);
 	CCMenuItemLabel * menuItemReset = CCMenuItemLabel::itemWithLabel(labelReset, this, menu_selector(CreationLayer::onResetButton));
         
-	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemSave,menuItemLoad,menuItemDelete,menuItemReset, NULL);
+	CCLabelTTF * maiMenuLabel = CCLabelTTF::labelWithString("MainMenu", "Arial", 22);
+	CCMenuItemLabel * mainMenuItem = CCMenuItemLabel::itemWithLabel(maiMenuLabel, this, menu_selector(CreationLayer::mainMenuTap));
+
+	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemSave,menuItemLoad,menuItemDelete,menuItemReset,mainMenuItem, NULL);
 	m_menu->setPosition( CCPoint(0,screenSize.height-30) );
 	m_menu->setContentSize( CCSize(screenSize.width, 60) );
 
@@ -53,9 +57,13 @@ bool CreationLayer::init(){
     menuItemDelete->setColor(ccc3(255, 0, 0) );
 
     menuItemReset->setPosition( CCPoint(screenSize.width-70, 0) );
+	
+	mainMenuItem->setPosition(CCPoint(screenSize.width - 100, -screenSize.height + 50));
 
 	addChild( m_menu, 1 );
 	setContentSize( m_menu->getContentSize() );
+	
+
     
     // init user level save dialog
 	m_userLevelSaveLayer = UserLevelSaveLayer::node();
@@ -129,4 +137,8 @@ void CreationLayer::onResetButton(CCObject *sender){
 	GameLevelScene::sharedGameScene()->resetWorld();
 	m_labelPause->setColor(ccc3(0, 254, 30));
 	m_labelPlay->setColor(ccc3(255, 255, 255));
+}
+
+void CreationLayer::mainMenuTap(cocos2d::CCObject *sender){
+	CCDirector::sharedDirector()->replaceScene(MainMenuScene::scene());
 }
