@@ -92,7 +92,7 @@ void LevelManager::loadStoryLevelList( )
 void LevelManager::completeUserLevel(const char *levelName){
 	CCLOG("LEVELE %s complete", levelName);
 	m_lastComleteIndex = -1;
-	for (int i = 0; i < m_storyLevels.size(); i++) {
+	for (unsigned int i = 0; i < m_storyLevels.size(); i++) {
 		if (m_storyLevels.at(i)->getPath() == levelName) {
 			m_lastComleteIndex = i;
 			break;
@@ -110,8 +110,9 @@ void LevelManager::completeUserLevel(const char *levelName){
 	
 }
 
-void LevelManager::loadNextStoryLevel(){
-	if (m_lastComleteIndex != -1 && m_lastComleteIndex+1 < m_storyLevels.size()) {
+void LevelManager::loadNextStoryLevel( )
+{
+	if (m_lastComleteIndex != -1 && m_lastComleteIndex+1 < (int) m_storyLevels.size()) {
 		CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel(m_storyLevels.at(m_lastComleteIndex+1)->getPath().c_str()));			
 	}
 }

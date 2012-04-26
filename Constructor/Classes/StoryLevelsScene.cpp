@@ -32,7 +32,7 @@ bool StoryLevelsScene::init(){
 
 	
 	m_levels = LevelManager::sharedManager()->getStoryLevelList();
-	for (int i = 0; i < m_levels->size(); i++) {
+	for (int i = 0; i < (int) m_levels->size(); i++) {
 		UIButton * btn = UIButton::node(m_levels->at(i)->name.c_str(), this, menu_selector(StoryLevelsScene::levelSelectedTap));
 		menu->addChild(btn,i);
 		btn->setPosition(CCPoint(140+(i%7* 150), 500 - (int(i/8) * 150)));

@@ -17,7 +17,7 @@
 #include "Controls/CreationLayer.h"
 #include "Constants.h"
 
-#include "LevelManager.h"
+#include "Serialization/LevelManager.h"
 
 #include "LevelDef.h"
 
