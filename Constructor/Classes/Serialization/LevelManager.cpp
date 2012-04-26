@@ -41,7 +41,7 @@ LevelManager::~LevelManager(){
 ////////////////////////////////////////////////////
 void LevelManager::loadStoryLevelList( string chapter )
 {
-	DIR *dir = opendir( ( string(CCFileUtils::fullPathFromRelativePath("levels/story_levels/"))+chapter ).c_str() );
+	DIR *dir = opendir( ( string(CCFileUtils::fullPathFromRelativePath(CONSTRUCTOR_STORY_LEVEL_PATH))+chapter ).c_str() );
 
 	struct dirent *f = readdir( dir );
 	while( f ) {
@@ -59,7 +59,7 @@ void LevelManager::loadStoryLevelList( string chapter )
 }
 void LevelManager::loadStoryLevelList( )
 {
-	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath("levels/story_levels") );
+	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath(CONSTRUCTOR_STORY_LEVEL_PATH) );
 
 	struct dirent *f = readdir( dir );
 	while( f ) {

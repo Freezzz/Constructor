@@ -13,11 +13,19 @@
 
 using namespace cocos2d;
 
-typedef struct StoryLevelDescribtion{
+#define CONSTRUCTOR_LEVEL_PATH "levels/"
+#define CONSTRUCTOR_STORY_LEVEL_PATH CONSTRUCTOR_LEVEL_PATH "story_levels/"
+
+struct StoryLevelDescribtion
+{
 	bool isConmplete;
 	string chapter;
 	string name;
-}StoryLevelDescribtion;
+	string getPath( ) const
+	{
+		return string( string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name );
+	}
+};
 
 class LevelManager {
 private:
