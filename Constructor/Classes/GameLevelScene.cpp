@@ -91,19 +91,6 @@ bool GameLevelScene::init( const char *file )
 	return true;
 }
 
-bool GameLevelScene::initLevel( )
-{
-	m_target = SimpleBoxInventoryItem::node( SimpleBox )->gameObjectNode( CCPoint(500,300) );
-	m_target->m_objectSprite->setColor(ccc3(255, 10, 10));
-	if( ! m_target ) {
-		return false;
-	}
-	m_gameObjects->addObject( m_target );
-	addChild( m_target, m_target->defaultZOrder );
-	m_target->isMovable = m_target->isRotatable = m_target->isDeletable = 0;
-	return true;
-}
-
 //////////////////////////////////////////////////// 
 // Starts world simulation
 ////////////////////////////////////////////////////

@@ -235,7 +235,7 @@
          "isStatic" : true,
          "item sprite path" : "fixed.png",
          "object sprite path" : "circle.png",
-         "type" : 1
+         "type" : 0
       },
       
       {
@@ -263,7 +263,7 @@
          "isStatic" : false,
          "item sprite path" : "panel_btn.png",
          "object sprite path" : "panel.png",
-         "type" : 2
+         "type" : 0
       },
       
       {

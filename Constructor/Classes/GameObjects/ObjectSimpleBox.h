@@ -32,20 +32,6 @@ public:
 	GameObject* gameObjectNode( b2Body *b );
 	GameObject* gameObjectNode( CCPoint p );
 
-	// TODO: instead of type, let node be fed with the physical
-	//       and graphical properties of the inventory item
-	//       and of the relative game object.
-	//       ObjectType will have "SimpleObject" then for any
-	//       instance of this class...
-	static SimpleBoxInventoryItem *node( ObjectType type ) {
-		SimpleBoxInventoryItem *r = new SimpleBoxInventoryItem(type);
-		if( r && r->init() ) {
-			r->autorelease();
-			return r;
-		}
-		delete r;
-		return NULL;
-	}
 	static SimpleBoxInventoryItem *node( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef ) {
 		SimpleBoxInventoryItem *r = new SimpleBoxInventoryItem();
 		if( r && r->init( itemPath, spritePath, fixtureDef ) ) {

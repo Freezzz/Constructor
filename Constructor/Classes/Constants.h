@@ -12,8 +12,6 @@
 typedef enum ObjectType{
     Undefined   = -1,
     SimpleBox   = 0,
-    FixedPoint  = 1,
-    Panel       = 2,
     Spring      = 3,
 	Pin			= 4,
 	Glue		= 5 

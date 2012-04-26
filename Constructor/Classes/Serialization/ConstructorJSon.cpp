@@ -164,7 +164,7 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 	itemValue["item sprite path"] = item->m_itemSpritePath;
 	itemValue["object sprite path"] = item->m_objectSpritePath;
 
-	if( item->getObjectType() == SimpleBox || item->getObjectType() == FixedPoint || item->getObjectType() == Panel ) {
+	if( item->getObjectType() == SimpleBox ) {
 		SimpleBoxInventoryItem *sbitem = static_cast<SimpleBoxInventoryItem*>( item );
 		itemValue["fixtureDef"] = b2j( sbitem->m_fixtureDef );
 	}
@@ -332,8 +332,6 @@ InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 	InventoryItem *item;
 	switch( type ) {
 		case SimpleBox:
-		case FixedPoint:
-		case Panel:
 			{
 				b2FixtureDef *fixtureDef = j2b2FixtureDef( itemValue["fixtureDef"] );
 
