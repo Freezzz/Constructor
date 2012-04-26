@@ -9,6 +9,8 @@
 #include "LevelManager.h"
 #include "GameLevelScene.h"
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <iostream>
 
 #define USER_LVL_PREFIX "level_user_%d_name"
@@ -21,6 +23,9 @@
 //////////////////////////////////////////////////// 
 LevelManager::LevelManager( )
 {
+	// creating user level directory
+	mkdir( CONSTRUCTOR_USER_LEVEL_PATH, 0755 );
+
 	loadStoryLevelList();
 	loadUserLevelList();
 }
@@ -37,13 +42,16 @@ LevelManager::~LevelManager(){
 ////////////////////////////////////////////////////
 void LevelManager::loadStoryLevelList( string chapter )
 {
-	DIR *dir = opendir(string(CCFileUtils::fullPathFromRelativePath( string(CONSTRUCTOR_STORY_LEVEL_PATH+chapter).c_str())).c_str());
+	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath( string(CONSTRUCTOR_STORY_LEVEL_PATH+chapter).c_str()) );
+	if( ! dir ) {
+		std::cout << "Couldn't find story level directory for chapter: " << chapter << std::endl;
+		return ;
+	}
 
 	struct dirent *f = readdir( dir );
 	while( f ) {
-			std::cout << "  Level: " << f->d_name << std::endl;		
-		if( f->d_type != DT_DIR && string(f->d_name) != "." && string(f->d_name) != ".." ) {
-
+		if( f->d_type == DT_REG ) {
+			std::cout << "  Level: " << f->d_name << std::endl;
 			StoryLevelDescribtion *lvl = new StoryLevelDescribtion;
 			lvl->isConmplete = 0;
 			lvl->chapter = chapter;
@@ -57,11 +65,15 @@ void LevelManager::loadStoryLevelList( string chapter )
 void LevelManager::loadStoryLevelList( )
 {
 	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath(CONSTRUCTOR_STORY_LEVEL_PATH) );
+	if( ! dir ) {
+		std::cout << "Couldn't find story level directory: " << CONSTRUCTOR_STORY_LEVEL_PATH << std::endl;
+		return ;
+	}
 
 	struct dirent *f = readdir( dir );
 	while( f ) {
-		if( f->d_type == DT_DIR ) {
-			//std::cout << "Chapter: " << f->d_name << std::endl;
+		if( f->d_type == DT_DIR && strcmp(f->d_name,".") && strcmp(f->d_name,"..") ) {
+			std::cout << "Chapter: " << f->d_name << std::endl;
 			loadStoryLevelList( f->d_name );
 		}
 
@@ -72,14 +84,18 @@ void LevelManager::loadStoryLevelList( )
 //////////////////////////////////////////////////// 
 // Loads user create level list from storage
 //////////////////////////////////////////////////// 
-void LevelManager::loadUserLevelList(){
-	DIR *dir = opendir(string(CCFileUtils::fullPathFromRelativePath( (CCFileUtils::getWriteablePath()).c_str())).c_str());
+void LevelManager::loadUserLevelList( )
+{
+	DIR *dir = opendir( CONSTRUCTOR_USER_LEVEL_PATH );
+	if( ! dir ) {
+		std::cout << "Couldn't find user directory: " << CONSTRUCTOR_USER_LEVEL_PATH << std::endl;
+		return ;
+	}
     
 	struct dirent *f = readdir( dir );
 	while( f ) {
-		std::cout << " USER Level: " << f->d_name << std::endl;		
-		if( f->d_type != DT_DIR && string(f->d_name) != "." && string(f->d_name) != ".." ) {
-			
+		if( f->d_type != DT_DIR && strcmp(f->d_name,".") && strcmp(f->d_name,"..") ) {
+			std::cout << " USER Level: " << f->d_name << std::endl;
 			UserLevelDescribtion *lvl = new UserLevelDescribtion;
 			lvl->name = f->d_name;
 			m_userLevels.push_back( lvl );

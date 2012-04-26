@@ -17,6 +17,8 @@ using namespace cocos2d;
 #define CONSTRUCTOR_STORY_LEVEL_PATH      CONSTRUCTOR_LEVEL_PATH "story_levels/"
 #define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CONSTRUCTOR_LEVEL_PATH "sandboxes/"
 
+#define CONSTRUCTOR_USER_LEVEL_PATH       ( ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels" ).c_str() )
+
 struct StoryLevelDescribtion
 {
 	bool isConmplete;
