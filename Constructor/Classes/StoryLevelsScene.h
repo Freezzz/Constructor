@@ -10,7 +10,7 @@
 #define __StoryLevelsScene_H__
 
 #include "cocos2d.h"
-#include "LevelManager.h"
+#include "Serialization/LevelManager.h"
 using namespace cocos2d;
 
 

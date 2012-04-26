@@ -13,8 +13,9 @@
 
 using namespace cocos2d;
 
-#define CONSTRUCTOR_LEVEL_PATH "levels/"
-#define CONSTRUCTOR_STORY_LEVEL_PATH CONSTRUCTOR_LEVEL_PATH "story_levels/"
+#define CONSTRUCTOR_LEVEL_PATH            "levels/"
+#define CONSTRUCTOR_STORY_LEVEL_PATH      CONSTRUCTOR_LEVEL_PATH "story_levels/"
+#define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CONSTRUCTOR_LEVEL_PATH "sandboxes/"
 
 struct StoryLevelDescribtion
 {

@@ -9,8 +9,8 @@
 #include "StoryLevelsScene.h"
 #include "GameLevelScene.h"
 #include "MainMenuScene.h"
-#include "LevelManager.h"
-#include "UIButton.h"
+#include "Serialization/LevelManager.h"
+#include "Controls/UIButton.h"
 
 //////////////////////////////////////////////////// 
 // MainMenuScene init

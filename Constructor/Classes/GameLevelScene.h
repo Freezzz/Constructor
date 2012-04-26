@@ -35,21 +35,23 @@ private:
     bool m_isInEditMode;
     
     void registerWithTouchDispatcher( );
-	bool init( bool loadingLevel = 0 );
+	bool init( const char *file );
 
 	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;
 	bool m_gameOver;
 
-	LevelDef *m_levelDef;
+	const char *m_levelFile;
 
 public:
+	GameLevelScene( )
+		: m_selectedObject(0), m_levelFile(0)
+	{
+	}
+
 	GameWorld * gameWorld;
 	GameObject * m_target;
-
-	// initializing the level
-	bool initLevel( );
 
 	////////////////////////////////////////////////////
 	// Starts world simulation
@@ -111,8 +113,7 @@ public:
 	////////////////////////////////////////////////////
 	// Static factory creation methods
 	////////////////////////////////////////////////////
-	static cocos2d::CCScene* scene();
-	LAYER_NODE_FUNC(GameLevelScene);
+	static cocos2d::CCScene* scene( const char *file );
 	static GameLevelScene* nodeWithLevel( const char *file );
 
 	////////////////////////////////////////////////////

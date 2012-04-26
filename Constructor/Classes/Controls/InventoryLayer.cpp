@@ -28,14 +28,6 @@ bool InventoryLayer::init(){
 	setContentSize(bg->getContentSize());
 	addChild(bg);
 	bg->setAnchorPoint(CCPoint(0,0.5));
-
-	// Buttons
-	addInventoryItem( SimpleBoxInventoryItem::node(SimpleBox) );
-	addInventoryItem( SimpleBoxInventoryItem::node(FixedPoint) );
-	addInventoryItem( SimpleBoxInventoryItem::node(Panel) );
-	addInventoryItem( SpringInventoryItem::node("spring_btn.png", "spring.png") );
-	addInventoryItem( PinInventoryItem::node("pin_btn.png", "pin.png") );
-	addInventoryItem( GlueInventoryItem::node("glue_btn.png", "glue.png") );	
 	
 	return true;
 }

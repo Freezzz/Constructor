@@ -8,8 +8,8 @@
          "body" : 0,
          "inventory item" : 0,
          "isDeletable" : false,
-         "isMovable" : false,
-         "isRotatable" : false,
+         "isMovable" : true,
+         "isRotatable" : true,
          "isStatic" : false
       }
    ],
@@ -30,7 +30,7 @@
                [
                   
                   {
-                     "density" : 0.1,
+                     "density" : 1,
                      "friction" : 0.3000000119209290,
                      "polygon" : 
                      {
@@ -46,8 +46,8 @@
                "linearVelocity" : 0,
                "position" : 
                {
-                  "x" : 5,
-                  "y" : 3
+                  "x" : 15.6250,
+                  "y" : 9.3750
                },
                "type" : 0 //static
             },
@@ -235,7 +235,7 @@
          "isStatic" : true,
          "item sprite path" : "fixed.png",
          "object sprite path" : "circle.png",
-         "type" : 1
+         "type" : 0
       },
       
       {
@@ -263,7 +263,7 @@
          "isStatic" : false,
          "item sprite path" : "panel_btn.png",
          "object sprite path" : "panel.png",
-         "type" : 2
+         "type" : 0
       },
       
       {
