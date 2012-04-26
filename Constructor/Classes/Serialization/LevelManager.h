@@ -21,7 +21,7 @@ using namespace cocos2d;
 
 struct StoryLevelDescribtion
 {
-	bool isConmplete;
+	bool isComplete;
 	string chapter;
 	string name;
 	string getPath( ) const
@@ -42,6 +42,8 @@ class LevelManager {
 private:
 	vector<UserLevelDescribtion*>  m_userLevels;
 	vector<StoryLevelDescribtion*> m_storyLevels;
+	int m_currentUserLevel;
+	int m_lastComleteIndex;
 	
 	void loadUserLevelList();
 	void loadStoryLevelList( string chapter );
@@ -62,6 +64,13 @@ public:
 	{
 		return & m_storyLevels;
 	}
+
+	int getCurrentUserLevelIndex(){
+		return m_currentUserLevel;
+	}
+	
+	void completeUserLevel(const char * levelName);
+	void loadNextStoryLevel();
 	
 	//////////////////////////////////////////////////// 
     // Singleton pattern

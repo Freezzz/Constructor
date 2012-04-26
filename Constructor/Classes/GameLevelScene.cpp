@@ -17,6 +17,8 @@
 #include "Controls/CreationLayer.h"
 #include "Constants.h"
 
+#include "LevelManager.h"
+
 #include "LevelDef.h"
 
 #include <iostream>
@@ -174,6 +176,8 @@ void GameLevelScene::update(ccTime dt)
 	if( ! m_gameOver ) {
 		if( checkVictory() ) {
 			m_gameOver = 1;
+			
+			LevelManager::sharedManager()->completeUserLevel(m_levelFile);
 			
 			// disabling creation layer
 			m_creationLayer->setOnScreen( false );

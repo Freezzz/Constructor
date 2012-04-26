@@ -9,7 +9,7 @@
 #include "UserLevelSaveLayer.h"
 #include "GameLevelScene.h"
 #include "CreationLayer.h"
-#include "Serialization/LevelManager.h"
+#include "LevelManager.h"
 #include "LevelDef.h"
 
 //////////////////////////////////////////////////// 

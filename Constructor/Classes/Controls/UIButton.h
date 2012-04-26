@@ -22,7 +22,7 @@ public:
 		delete r;
 		return NULL;
 	}
-
+	void setIsLocked(bool isLocked);
 };
 
 #endif

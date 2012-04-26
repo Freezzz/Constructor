@@ -2,6 +2,7 @@
 #include "VictoryLayer.h"
 #include "GameLevelScene.h"
 #include "MainMenuScene.h"
+#include "LevelManager.h"
 #include <iostream>
 
 bool VictoryLayer::init( )
@@ -48,7 +49,7 @@ void VictoryLayer::setOnScreen( bool isOnscreen )
 
 void VictoryLayer::next( CCObject * sender )
 {
-	std::cout << "TODO: go to next level" << std::endl;
+	LevelManager::sharedManager()->loadNextStoryLevel();
 }
 void VictoryLayer::menu( CCObject * sender )
 {

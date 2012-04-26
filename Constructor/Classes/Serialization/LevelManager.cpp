@@ -25,16 +25,20 @@ LevelManager::LevelManager( )
 {
 	// creating user level directory
 	mkdir( CONSTRUCTOR_USER_LEVEL_PATH, 0755 );
-
+	
+	m_currentUserLevel = CCUserDefault::sharedUserDefault()->getIntegerForKey("CURRENT_USER_LEVEL", 0);
+	m_lastComleteIndex = -1;
+	
 	loadStoryLevelList();
 	loadUserLevelList();
+	
 }
 
 //////////////////////////////////////////////////// 
 // LevelManagerDestructor
 //////////////////////////////////////////////////// 
 LevelManager::~LevelManager(){
-
+	
 }
 
 //////////////////////////////////////////////////// 
@@ -47,18 +51,21 @@ void LevelManager::loadStoryLevelList( string chapter )
 		std::cout << "Couldn't find story level directory for chapter: " << chapter << std::endl;
 		return ;
 	}
-
+	
+	int i = 0;
+	
 	struct dirent *f = readdir( dir );
 	while( f ) {
 		if( f->d_type == DT_REG ) {
 			std::cout << "  Level: " << f->d_name << std::endl;
 			StoryLevelDescribtion *lvl = new StoryLevelDescribtion;
-			lvl->isConmplete = 0;
+			lvl->isComplete = i < m_currentUserLevel;
 			lvl->chapter = chapter;
 			lvl->name = f->d_name;
 			m_storyLevels.push_back( lvl );
+			i++;
 		}
-
+		
 		f = readdir( dir );
 	}
 }
@@ -69,15 +76,43 @@ void LevelManager::loadStoryLevelList( )
 		std::cout << "Couldn't find story level directory: " << CONSTRUCTOR_STORY_LEVEL_PATH << std::endl;
 		return ;
 	}
-
+	
 	struct dirent *f = readdir( dir );
 	while( f ) {
 		if( f->d_type == DT_DIR && strcmp(f->d_name,".") && strcmp(f->d_name,"..") ) {
 			std::cout << "Chapter: " << f->d_name << std::endl;
 			loadStoryLevelList( f->d_name );
 		}
-
+		
 		f = readdir( dir );
+	}
+}
+
+
+void LevelManager::completeUserLevel(const char *levelName){
+	CCLOG("LEVELE %s complete", levelName);
+	m_lastComleteIndex = -1;
+	for (int i = 0; i < m_storyLevels.size(); i++) {
+		if (m_storyLevels.at(i)->getPath() == levelName) {
+			m_lastComleteIndex = i;
+			break;
+		}
+	}
+	if (m_lastComleteIndex != -1) {
+		m_storyLevels.at(m_lastComleteIndex)->isComplete = true;
+		if (m_lastComleteIndex == m_currentUserLevel) {
+			m_currentUserLevel = m_lastComleteIndex+1;
+			CCUserDefault::sharedUserDefault()->setIntegerForKey("CURRENT_USER_LEVEL", m_currentUserLevel);
+			CCUserDefault::sharedUserDefault()->flush();
+		}
+	}
+	
+	
+}
+
+void LevelManager::loadNextStoryLevel(){
+	if (m_lastComleteIndex != -1 && m_lastComleteIndex+1 < m_storyLevels.size()) {
+		CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel(m_storyLevels.at(m_lastComleteIndex+1)->getPath().c_str()));			
 	}
 }
 
