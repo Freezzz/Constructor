@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////// 
 // GameLevelScene init
 //////////////////////////////////////////////////// 
-bool GameLevelScene::init( bool loadingLevel )
+bool GameLevelScene::init( const char *file )
 {
 	if ( !CCLayer::init() )
 	{
@@ -44,13 +44,6 @@ bool GameLevelScene::init( bool loadingLevel )
 	CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
 	bg->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
 	addChild(bg);
-
-	// Game World
-	if( ! loadingLevel ) {
-		// creating it, instead of loading
-		gameWorld = GameWorld::node();
-		addChild( gameWorld );
-	}
 
 	// Invetory
 	m_inventoryLayer = InventoryLayer::node();
@@ -81,17 +74,18 @@ bool GameLevelScene::init( bool loadingLevel )
 
 	gameSceneInstance = this;
 
-	if( ! loadingLevel ) {
-		// initializing the level
-		initLevel( );
-		saveFile( "sandbox_level" );
-	}
-
 	// initializing the victory layer
 	m_victoryLayer = VictoryLayer::node();
 	m_victoryLayer->setPosition( CCPoint(winSize.width*0.5, winSize.height*0.5) );
 	m_victoryLayer->setScale( 0 );
 	addChild( m_victoryLayer, 1000 );
+
+	// loading the level
+	// not using loadFile because it also resets the current state
+	// but that would give problems, since it's not initialized yet.
+	LevelDef *ld = LevelDef::loadFromFile( file );
+	m_levelFile = strdup( file );
+	loadLevel( ld );
 
 	scheduleUpdate();
 	return true;
@@ -173,10 +167,8 @@ void GameLevelScene::wipeWorld( )
 }
 void GameLevelScene::reloadLevel( )
 {
-	wipeWorld();
-
 	// reinitializing the level
-	loadFile( "sandbox_level" );
+	loadFile( m_levelFile );
 }
 
 bool GameLevelScene::checkVictory()
@@ -232,7 +224,6 @@ void GameLevelScene::saveFile( const char *file )
 
 void GameLevelScene::loadLevel( LevelDef *ld )
 {
-	m_levelDef = ld;
 	gameWorld = ld->gameWorld;
 	addChild( gameWorld );
 
@@ -262,7 +253,8 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 }
 void GameLevelScene::loadFile( const char *file )
 {
-	removeChild( gameWorld, 1 );
+	m_levelFile = strdup( file );
+
 	// removing inventory items
 	{
 		while( ! m_inventoryLayer->m_buttons.empty() ) {
@@ -270,6 +262,7 @@ void GameLevelScene::loadFile( const char *file )
 		}
 	}
 	wipeWorld(); // removing former objects
+	removeChild( gameWorld, 1 );
 
 	LevelDef *ld = LevelDef::loadFromFile( file );
 	loadLevel( ld );
@@ -437,33 +430,30 @@ void GameLevelScene::registerWithTouchDispatcher()
 //////////////////////////////////////////////////// 
 // Static factory creation methods
 //////////////////////////////////////////////////// 
-CCScene* GameLevelScene::scene()
+CCScene* GameLevelScene::scene( const char *file )
 {
 	// 'scene' is an autorelease object
-	CCScene *scene = CCScene::node();
-	
+	CCScene *scene = CCScene::node( );
+
 	// 'layer' is an autorelease object
-	GameLevelScene *layer = GameLevelScene::node();
-	
+	GameLevelScene *layer = GameLevelScene::nodeWithLevel( file );
+
 	// add layer as a child to scene
-	scene->addChild(layer);
-	
+	scene->addChild( layer );
+
 	// return the scene
 	return scene;
 }
 GameLevelScene* GameLevelScene::nodeWithLevel( const char *file )
 {
 	GameLevelScene *r = new GameLevelScene;
-	if( r && r->init(1) ) {
-		LevelDef *ld = LevelDef::loadFromFile( file );
-		r->loadLevel( ld );
+	if( r && r->init( file ) ) {
 		r->autorelease();
 		return r;
 	}
 
 	delete r;
 	return NULL;
-	
 }
 
 //////////////////////////////////////////////////// 
