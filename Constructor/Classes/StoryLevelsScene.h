@@ -10,6 +10,7 @@
 #define __StoryLevelsScene_H__
 
 #include "cocos2d.h"
+#include "LevelManager.h"
 using namespace cocos2d;
 
 
@@ -18,6 +19,8 @@ using namespace cocos2d;
 // StoryLevelsScene
 ///////////////////////////////////////////////////
 class StoryLevelsScene : public CCLayer {
+private:
+	vector<StoryLevelDescribtion*> * m_levels;
 protected:
 	virtual bool init();
 	

@@ -31,11 +31,12 @@ bool StoryLevelsScene::init(){
 	menu->setPosition(CCPointZero);
 
 	
-	vector<StoryLevelDescribtion*> * levels = LevelManager::sharedManager()->getStoryLevelList();
+	m_levels = LevelManager::sharedManager()->getStoryLevelList();
 	for (int i = 0; i < 20; i++) {
 		UIButton * btn = UIButton::node("1-1", this, menu_selector(StoryLevelsScene::levelSelectedTap));
 		menu->addChild(btn,i);
 		btn->setPosition(CCPoint(200+(i%8* 100), 500 - (int(i/8) * 100)));
+		btn->setTag(i);
 	}
 	
 
@@ -44,7 +45,8 @@ bool StoryLevelsScene::init(){
 
 
 void StoryLevelsScene::levelSelectedTap(cocos2d::CCObject *sender){
-	CCDirector::sharedDirector()->replaceScene(GameLevelScene::scene());	
+//	CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel(m_levels->at(((CCNode*)sender)->getTag())));	
+	CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel("levels/story_levels/test_chapter/level1.clz"));	
 }
 
 void StoryLevelsScene::mainMenuTap(cocos2d::CCObject *sender){
