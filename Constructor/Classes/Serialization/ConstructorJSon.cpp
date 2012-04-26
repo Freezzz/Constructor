@@ -14,11 +14,13 @@
 ConstructorJSon::ConstructorJSon( )
 	: b2dJson(1)
 {
-	m_inventoryItemIndexMap.clear();
 }
 
 Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 {
+	m_inventoryItemIndexMap.clear();
+	m_gameObjectIndexMap.clear();
+	
 	Json::Value value;
 	
 	// level description
@@ -46,7 +48,11 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	// game objects
 	for( unsigned int i = 0; i < levelDef->gameObjects.count(); i++ ) {
 		GameObject *object = levelDef->gameObjects.getObjectAtIndex(i);
+		m_gameObjectIndexMap[object] = i;
 		value["game objects"][i] = cj( object );
+	}
+	{
+		value["target"] = this->lookupGameObjectIndex( levelDef->target );
 	}
 
 	// win and lose conditions
@@ -172,6 +178,11 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 	objectValue["body"] = lookupBodyIndex( gameObject->getObjectBody() );
 	objectValue["inventory item"] = lookupInventoryItemIndex( gameObject->getInventoryItem() );
 
+	objectValue["isStatic"] = gameObject->isStatic;
+	objectValue["isMovable"] = gameObject->isMovable;
+	objectValue["isRotatable"] = gameObject->isRotatable;
+	objectValue["isDeletable"] = gameObject->isDeletable;
+
 	return objectValue;
 }
 
@@ -214,6 +225,13 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		for( int i = 0; i < items; ++i ) {
 			GameObject *object = j2cGameObject( value["game objects"][i] );
 			l->gameObjects.addObject( object );
+			m_gameObjects.push_back( object );
+		}
+	}
+	{
+		int targetIndex = value["target"].asInt();
+		if( targetIndex < (int) m_bodies.size() ) {
+			l->target = m_gameObjects[targetIndex];
 		}
 	}
 
@@ -359,29 +377,79 @@ GameObject* ConstructorJSon::j2cGameObject( Json::Value objectValue )
 	b2Body *body = m_bodies[bodyIndex];
 	
 	GameObject *object = item->gameObjectNode( body );
+
+	object->isStatic = objectValue["isStatic"].asBool();
+	object->isMovable = objectValue["isMovable"].asBool();
+	object->isRotatable = objectValue["isRotatable"].asBool();
+	object->isDeletable = objectValue["isDeletable"].asBool();
 	
 	return object;
 }
 
 
+void ConstructorJSon::setInventoryItemName( InventoryItem* item, const char* name )
+{
+    m_inventoryItemToNameMap[item] = name;
+}
+void ConstructorJSon::setGameObjectName( GameObject* object, const char* name )
+{
+    m_gameObjectToNameMap[object] = name;
+}
+
+
+InventoryItem* ConstructorJSon::getInventoryItemByName( std::string name )
+{
+	std::map<InventoryItem*,std::string>::iterator it = m_inventoryItemToNameMap.begin();
+	while( it != m_inventoryItemToNameMap.end() ) {
+		if( it->second == name )
+			return it->first;
+		++it;
+	}
+	return 0;
+}
+GameObject* ConstructorJSon::getGameObjectByName( std::string name )
+{
+	std::map<GameObject*,std::string>::iterator it = m_gameObjectToNameMap.begin();
+	while( it != m_gameObjectToNameMap.end() ) {
+		if( it->second == name )
+			return it->first;
+		++it;
+	}
+	return 0;
+}
+
 
 int ConstructorJSon::lookupInventoryItemIndex( InventoryItem* item )
 {
 	std::map<InventoryItem*,int>::iterator it = m_inventoryItemIndexMap.find( item );
-	if ( it != m_inventoryItemIndexMap.end() ) {
+	if( it != m_inventoryItemIndexMap.end() ) {
+		return it->second;
+	}
+	return 0;
+}
+int ConstructorJSon::lookupGameObjectIndex( GameObject* object )
+{
+	std::map<GameObject*,int>::iterator it = m_gameObjectIndexMap.find( object );
+	if( it != m_gameObjectIndexMap.end() ) {
 		return it->second;
 	}
 	return 0;
 }
 
 
-
-string ConstructorJSon::getInventoryItemName( InventoryItem* item )
+std::string ConstructorJSon::getInventoryItemName( InventoryItem* item )
 {
-	map<InventoryItem*,string>::iterator it = m_inventoryItemToNameMap.find( item );
+	std::map<InventoryItem*,std::string>::iterator it = m_inventoryItemToNameMap.find( item );
 	if ( it == m_inventoryItemToNameMap.end() ) {
 		return "";
 	}
 	return it->second;
 }
-
+std::string ConstructorJSon::getGameObjectName( GameObject* object )
+{
+	std::map<GameObject*,std::string>::iterator it = m_gameObjectToNameMap.find( object );
+	if ( it == m_gameObjectToNameMap.end() ) {
+		return "";
+	}
+	return it->second;
+}

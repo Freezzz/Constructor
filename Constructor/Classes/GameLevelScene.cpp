@@ -90,6 +90,8 @@ bool GameLevelScene::init()
 	m_victoryLayer->setScale( 0 );
 	addChild( m_victoryLayer, 1000 );
 
+	saveFile( "sandbox_level" );
+
 	scheduleUpdate();
 	return true;
 }
@@ -103,8 +105,7 @@ bool GameLevelScene::initLevel( )
 	}
 	m_gameObjects->addObject( m_target );
 	addChild( m_target, m_target->defaultZOrder );
-	m_target->setId( 1 );
-	m_target->setMutable( 0 );
+	m_target->isMovable = m_target->isRotatable = m_target->isDeletable = 0;
 	return true;
 }
 
@@ -126,48 +127,55 @@ void GameLevelScene::runWorld(){
 //////////////////////////////////////////////////// 
 // Pause world simulation without reseting initial state
 //////////////////////////////////////////////////// 
-void GameLevelScene::pauseWorld(){
-    m_isInEditMode = true;
-    m_inventoryLayer->setOnScreen(true);
-    m_creationLayer->setOnScreen(true);
+void GameLevelScene::pauseWorld( )
+{
+	m_isInEditMode = true;
+	m_inventoryLayer->setOnScreen(true);
+	m_creationLayer->setOnScreen(true);
 	m_victoryLayer->setOnScreen( false );
 	m_gameOver = 0;
-	
-    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
+
+	for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
-    }
-	
+	}
+
 	// If before simulation objec was selecteed restore selction and buttons
 	if (m_selectedObject) {
 		m_selectedObject->setSelected(true);
-	}	
-    setUtilityButtonsVisibleFoSelectedObject(true);	
+	}
+	setUtilityButtonsVisibleFoSelectedObject(true);
 }
 
 
 //////////////////////////////////////////////////// 
 // Restore original GameObjects postions before simulation
 //////////////////////////////////////////////////// 
-void GameLevelScene::resetWorld(){    
-    gameWorld->physicsWorld->ClearForces();    
+void GameLevelScene::resetWorld( )
+{    
+	gameWorld->physicsWorld->ClearForces();    
 	pauseWorld();
 }
 
 //////////////////////////////////////////////////// 
 // Deletes all GameObjects from world
 //////////////////////////////////////////////////// 
-void GameLevelScene::wipeWorld(){
-	pauseWorld();  
-    gameWorld->physicsWorld->ClearForces();    
-    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
+void GameLevelScene::wipeWorld( )
+{
+	pauseWorld();
+	gameWorld->physicsWorld->ClearForces();
+	for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
 		m_gameObjects->getObjectAtIndex(i)->destroy();
-    }
-    m_gameObjects->removeAllObjects();
-	setUtilityButtonsVisibleFoSelectedObject(false);	
+	}
+	m_gameObjects->removeAllObjects();
+	setUtilityButtonsVisibleFoSelectedObject(false);
 	m_selectedObject = NULL;
+}
+void GameLevelScene::reloadLevel( )
+{
+	wipeWorld();
 
 	// reinitializing the level
-	// initLevel( ); // TODO
+	loadFile( "sandbox_level" );
 }
 
 bool GameLevelScene::checkVictory()
@@ -209,6 +217,7 @@ LevelDef* GameLevelScene::getCurrentLevelDef(){
 	ld->gameWorld = gameWorld;
 	ld->inventoryItems = m_inventoryLayer->m_buttons;
 	ld->gameObjects.addObjectsFromArray( m_gameObjects );
+	ld->target = m_target;
 	ld->winConditions = LevelDef::EnterAreaWin;
 	ld->loseConditions = LevelDef::EnterAreaLose;
 	return ld;
@@ -216,20 +225,39 @@ LevelDef* GameLevelScene::getCurrentLevelDef(){
 
 void GameLevelScene::saveFile( const char *file )
 {
-	LevelDef ld;
-	ld.name = "test level";
-	ld.difficulty = 1;
-	ld.theme = "test theme";
-	ld.gameWorld = gameWorld;
-	ld.inventoryItems = m_inventoryLayer->m_buttons;
-	ld.gameObjects.addObjectsFromArray( m_gameObjects );
-	ld.winConditions = LevelDef::EnterAreaWin;
-	ld.loseConditions = LevelDef::EnterAreaLose;
-
-	ld.saveToFile( file );
+	getCurrentLevelDef()->saveToFile( file );
 }
 
 
+void GameLevelScene::loadLevel( LevelDef *ld )
+{
+	m_levelDef = ld;
+	gameWorld = ld->gameWorld;
+
+	// inventory items
+	{
+		// adding new ones
+		{
+			vector<InventoryItem*> invItems = ld->inventoryItems;
+			for( unsigned int i = 0; i < invItems.size(); ++i ) {
+				m_inventoryLayer->addInventoryItem( invItems.at(i) );
+			}
+		}
+	}
+
+	// game objects
+	{
+		// adding new ones
+		{
+			m_gameObjects->addObjectsFromArray( & ld->gameObjects );
+			for( unsigned int i = 0; i < m_gameObjects->count(); ++i ) {
+				GameObject *object = m_gameObjects->getObjectAtIndex(i);
+				addChild( object, object->defaultZOrder );
+			}
+		}
+	}
+	m_target = ld->target;
+}
 void GameLevelScene::loadFile( const char *file )
 {
 	removeChild( gameWorld, 1 );
@@ -241,31 +269,9 @@ void GameLevelScene::loadFile( const char *file )
 	}
 	wipeWorld(); // removing former objects
 
-	m_levelDef = LevelDef::loadFromFile( file );
-	gameWorld = m_levelDef->gameWorld;
-
-	// inventory items
-	{
-		// adding new ones
-		{
-			vector<InventoryItem*> invItems = m_levelDef->inventoryItems;
-			for( unsigned int i = 0; i < invItems.size(); ++i ) {
-				m_inventoryLayer->addInventoryItem( invItems.at(i) );
-			}
-		}
-	}
-
-	// game objects
-	{
-		// adding new ones
-		{
-			m_gameObjects->addObjectsFromArray( & m_levelDef->gameObjects );
-			for( unsigned int i = 0; i < m_gameObjects->count(); ++i ) {
-				GameObject *object = m_gameObjects->getObjectAtIndex(i);
-				addChild( object, object->defaultZOrder );
-			}
-		}
-	}
+	LevelDef *ld = LevelDef::loadFromFile( file );
+	loadLevel( ld );
+	
 	addChild( gameWorld );
 }
 
@@ -310,14 +316,13 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 		// Take in account threshold, to make easier touch selection
         for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
             GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
-			if( ! tmp->isMutable() ) {
-				continue ;
-			}
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {
                 m_selectedObject = tmp;
                 m_selectedObject->setSelected(true);
-                m_selectedObject->setObjectState(Moving);
-                m_selectedObject->move(location);
+				if( m_selectedObject->isMovable ) {
+					m_selectedObject->setObjectState(Moving);
+					m_selectedObject->move(location);
+				}
 				setUtilityButtonsVisibleFoSelectedObject(true);
                 return true;
             }

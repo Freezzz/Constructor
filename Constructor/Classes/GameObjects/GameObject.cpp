@@ -16,7 +16,7 @@
 // GameObject init
 ////////////////////////////////////////////////////
 GameObject::GameObject( )
-: m_id(0), m_mutable(true), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
+: isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
 {
 }
 

@@ -13,9 +13,12 @@ class ConstructorJSon : public b2dJson
 {
 protected:
     std::map<InventoryItem*,int> m_inventoryItemIndexMap;
+    std::map<GameObject*,int> m_gameObjectIndexMap;
 	std::vector<InventoryItem*> m_inventoryItems;
-	
+	std::vector<GameObject*> m_gameObjects;
+
     std::map<InventoryItem*,string> m_inventoryItemToNameMap;
+    std::map<GameObject*,string> m_gameObjectToNameMap;
 
 public:
 	ConstructorJSon( );
@@ -23,8 +26,8 @@ public:
 	Json::Value cj( LevelDef* levelDef );
 	Json::Value b2j( const b2Shape* shape );
 	Json::Value b2j( const b2FixtureDef* fixtureDef );
-	Json::Value cj( InventoryItem* inventoryItem );
-	Json::Value cj( GameObject* gameObject );
+	Json::Value cj( InventoryItem* item );
+	Json::Value cj( GameObject* object );
 	using b2dJson::b2j;
 
 	LevelDef* j2cLevelDef( Json::Value levelDefValue );
@@ -32,11 +35,19 @@ public:
 	b2FixtureDef* j2b2FixtureDef( Json::Value fixtureDefValue );
 	InventoryItem* j2cInventoryItem( Json::Value inventoryItemValue );
 	GameObject* j2cGameObject( Json::Value gameObjectValue );
-	
-	std::string getInventoryItemName( InventoryItem* item );
+
+	void setInventoryItemName( InventoryItem* item, const char* name );
+	void setGameObjectName( GameObject* object, const char* name );
+
+	InventoryItem* getInventoryItemByName( string name );
+	GameObject* getGameObjectByName( string name );
 
 protected:
-	int lookupInventoryItemIndex( InventoryItem* inventoryItem );
+	int lookupInventoryItemIndex( InventoryItem* item );
+	int lookupGameObjectIndex( GameObject* object );
+
+    std::string getInventoryItemName( InventoryItem* item );
+    std::string getGameObjectName( GameObject* object );
 
 };
 

@@ -56,6 +56,6 @@ void VictoryLayer::menu( CCObject * sender )
 }
 void VictoryLayer::restart( CCObject * sender )
 {
-	GameLevelScene::sharedGameScene()->wipeWorld();
+	GameLevelScene::sharedGameScene()->reloadLevel();
 }
 

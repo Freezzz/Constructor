@@ -120,7 +120,7 @@ void CreationLayer::onLoadButton(CCObject * sender)
 }
 
 void CreationLayer::onDeleteButton(CCObject *sender){
-	GameLevelScene::sharedGameScene()->wipeWorld();
+	GameLevelScene::sharedGameScene()->reloadLevel();
 	m_labelPause->setColor(ccc3(0, 254, 30));
 	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
