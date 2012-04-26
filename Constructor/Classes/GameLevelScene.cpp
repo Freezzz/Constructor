@@ -234,6 +234,7 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 {
 	m_levelDef = ld;
 	gameWorld = ld->gameWorld;
+	addChild( gameWorld );
 
 	// inventory items
 	{
@@ -272,8 +273,6 @@ void GameLevelScene::loadFile( const char *file )
 
 	LevelDef *ld = LevelDef::loadFromFile( file );
 	loadLevel( ld );
-	
-	addChild( gameWorld );
 }
 
 
@@ -455,10 +454,9 @@ CCScene* GameLevelScene::scene()
 GameLevelScene* GameLevelScene::nodeWithLevel( const char *file )
 {
 	GameLevelScene *r = new GameLevelScene;
-	if( r && r->init() ) {
+	if( r && r->init(1) ) {
 		LevelDef *ld = LevelDef::loadFromFile( file );
 		r->loadLevel( ld );
-		r->addChild( ld->gameWorld );
 		r->autorelease();
 		return r;
 	}
@@ -472,7 +470,8 @@ GameLevelScene* GameLevelScene::nodeWithLevel( const char *file )
 // Singleton pattern
 ////////////////////////////////////////////////////     
 GameLevelScene* GameLevelScene::gameSceneInstance = NULL;
-GameLevelScene* GameLevelScene::sharedGameScene(){
+GameLevelScene* GameLevelScene::sharedGameScene( )
+{
 	CCAssert(gameSceneInstance!=NULL, "Game world not yet initialized");
 	return gameSceneInstance;
 }
