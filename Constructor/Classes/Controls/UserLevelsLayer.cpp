@@ -7,7 +7,6 @@
 //
 
 #include "UserLevelsLayer.h"
-#include "Serialization/LevelManager.h"
 #include "CreationLayer.h"
 #include "GameLevelScene.h"
 
@@ -60,11 +59,12 @@ void UserLevelsLayer::populateMenu(){
     m_menu = CCMenu::menuWithItems(NULL);
     for (unsigned int i = 0; i < m_levels->size(); ++i)
     {
-        CCLabelTTF* label = CCLabelTTF::labelWithString(m_levels->at(i)->c_str(), "Arial", 24);
+        CCLabelTTF* label = CCLabelTTF::labelWithString(m_levels->at(i)->name.c_str(), "Arial", 24);
         CCMenuItemLabel* pMenuItem = CCMenuItemLabel::itemWithLabel(label, this, menu_selector(UserLevelsLayer::levelTapCallback));
 		label->setColor(ccc3(0, 55, 73));
         m_menu->addChild(pMenuItem, i + 100);
         pMenuItem->setPosition( CCPointMake( s.width / 2, (s.height - (i + 1) * ROW_HEIGHT) - HEADER_OFFSET ));
+		pMenuItem->setTag(i);
     }
 	
     m_menu->setContentSize(CCSizeMake(s.width, (m_levels->size() + 1) * (ROW_HEIGHT)));
@@ -83,8 +83,7 @@ void UserLevelsLayer::refreshList(){
 }
 
 void UserLevelsLayer::levelTapCallback(cocos2d::CCObject *sender){
-	CCLog("LEVEL NAME: %s", ((CCLabelTTF*)((CCMenuItemLabel*)sender)->getLabel())->getString());
-	GameLevelScene::sharedGameScene()->loadFile( ((CCLabelTTF*)((CCMenuItemLabel*)sender)->getLabel())->getString() );	
+	GameLevelScene::sharedGameScene()->loadFile( m_levels->at(((CCMenuItemLabel*)sender)->getTag())->getPath().c_str());	
 	setIsVisible(false);	
 	((CreationLayer*)getParent())->setMenuEnable(true);
 }

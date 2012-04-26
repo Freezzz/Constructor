@@ -31,7 +31,7 @@ LevelDef::~LevelDef( )
 
 LevelDef* LevelDef::loadFromFile( const char *fileName )
 {
-	std::string filePath = CCFileUtils::getWriteablePath() + fileName;
+	std::string filePath = CCFileUtils::fullPathFromRelativePath(fileName);
 	
 	LevelDef *l = new LevelDef;
 	std::cout << "Loading level " << filePath << "..." << std::endl;

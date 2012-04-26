@@ -21,12 +21,8 @@
 //////////////////////////////////////////////////// 
 LevelManager::LevelManager( )
 {
-	m_userLevels = new vector<string*>();
-	m_userLevelCount = CCUserDefault::sharedUserDefault()->getIntegerForKey("USER_LVL_COUNT", 0);
 	loadStoryLevelList();
 	loadUserLevelList();
-	
-	CCLog("LevelManager::m_userLevelCount: %d", m_userLevelCount);
 }
 
 //////////////////////////////////////////////////// 
@@ -41,12 +37,13 @@ LevelManager::~LevelManager(){
 ////////////////////////////////////////////////////
 void LevelManager::loadStoryLevelList( string chapter )
 {
-	DIR *dir = opendir( ( string(CCFileUtils::fullPathFromRelativePath(CONSTRUCTOR_STORY_LEVEL_PATH))+chapter ).c_str() );
+	DIR *dir = opendir(string(CCFileUtils::fullPathFromRelativePath( string(CONSTRUCTOR_STORY_LEVEL_PATH+chapter).c_str())).c_str());
 
 	struct dirent *f = readdir( dir );
 	while( f ) {
-		if( f->d_type == DT_REG ) {
-			//std::cout << "  Level: " << f->d_name << std::endl;
+			std::cout << "  Level: " << f->d_name << std::endl;		
+		if( f->d_type != DT_DIR && string(f->d_name) != "." && string(f->d_name) != ".." ) {
+
 			StoryLevelDescribtion *lvl = new StoryLevelDescribtion;
 			lvl->isConmplete = 0;
 			lvl->chapter = chapter;
@@ -76,13 +73,19 @@ void LevelManager::loadStoryLevelList( )
 // Loads user create level list from storage
 //////////////////////////////////////////////////// 
 void LevelManager::loadUserLevelList(){
-	for (int i = 1; i< m_userLevelCount+1; i++) {
-		char temp[20];
-		sprintf(temp, USER_LVL_PREFIX, i);
-		string lvlName = CCUserDefault::sharedUserDefault()->getStringForKey(temp, "");
-		if (lvlName != "") {
-			m_userLevels->push_back(new string(lvlName));
+	DIR *dir = opendir(string(CCFileUtils::fullPathFromRelativePath( (CCFileUtils::getWriteablePath()).c_str())).c_str());
+    
+	struct dirent *f = readdir( dir );
+	while( f ) {
+		std::cout << " USER Level: " << f->d_name << std::endl;		
+		if( f->d_type != DT_DIR && string(f->d_name) != "." && string(f->d_name) != ".." ) {
+			
+			UserLevelDescribtion *lvl = new UserLevelDescribtion;
+			lvl->name = f->d_name;
+			m_userLevels.push_back( lvl );
 		}
+		
+		f = readdir( dir );
 	}
 }
 
@@ -102,20 +105,15 @@ bool LevelManager::saveUserLevel(const char *fileName){
 	LevelDef * level = GameLevelScene::sharedGameScene()->getCurrentLevelDef();
 	level->name = string(fileName);
 	
-	if (level->saveToFile(fileName)) {
-		m_userLevelCount++;
-		char temp[10];
-		sprintf(temp, USER_LVL_PREFIX, m_userLevelCount);
-
-		m_userLevels->push_back(new string(level->name));
-		
-		CCUserDefault::sharedUserDefault()->setStringForKey(temp, level->name);
-		CCUserDefault::sharedUserDefault()->setIntegerForKey("USER_LVL_COUNT", m_userLevelCount);
-		CCUserDefault::sharedUserDefault()->flush();
-		delete level;
+	UserLevelDescribtion * dscr = new UserLevelDescribtion;
+	dscr->name = fileName;
+	
+	if (level->saveToFile(dscr->getPath().c_str())) {
+		m_userLevels.push_back(dscr);
+		delete dscr;
 		return true;
 	}
-	delete level;	
+	delete dscr;	
 	return false;
 }
 

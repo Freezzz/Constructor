@@ -26,13 +26,19 @@ struct StoryLevelDescribtion
 		return string( string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name );
 	}
 };
+struct UserLevelDescribtion
+{
+	string name;
+	string getPath( ) const
+	{
+		return string( string(CCFileUtils::getWriteablePath() + "/" + name ));
+	}
+};
 
 class LevelManager {
 private:
-	vector<string*> * m_userLevels;
+	vector<UserLevelDescribtion*>  m_userLevels;
 	vector<StoryLevelDescribtion*> m_storyLevels;
-	
-	int m_userLevelCount;
 	
 	void loadUserLevelList();
 	void loadStoryLevelList( string chapter );
@@ -45,9 +51,9 @@ public:
 	LevelDef *loadUserLevel( const char *fileName );
 	bool saveUserLevel(const char *fileName);
 	
-	vector<string*> * getUserLevelList()
+	vector<UserLevelDescribtion*> * getUserLevelList()
 	{
-		return m_userLevels;
+		return & m_userLevels;
 	}
 	vector<StoryLevelDescribtion*> * getStoryLevelList( )
 	{

@@ -10,6 +10,7 @@
 #define __UserLevelsLayer_H__
 
 #include "cocos2d.h"
+#include "Serialization/LevelManager.h"
 using namespace cocos2d;
 
 
@@ -20,7 +21,7 @@ class UserLevelsLayer : public CCLayer {
 private:
 	CCPoint m_beginPos;
 	CCMenu* m_menu;
-	vector<string*> * m_levels;
+	vector<UserLevelDescribtion*> * m_levels;
 	
 	virtual bool init();
 	
