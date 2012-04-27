@@ -37,7 +37,6 @@ private:
     void registerWithTouchDispatcher( );
 	bool init( const char *file );
 
-	CCSprite * m_moveButton;
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;
 	bool m_gameOver;

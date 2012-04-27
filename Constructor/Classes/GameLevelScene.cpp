@@ -57,10 +57,6 @@ bool GameLevelScene::init( const char *file )
 	m_creationLayer = CreationLayer::node();
 	addChild( m_creationLayer, 10 );
 
-	m_moveButton = CCSprite::spriteWithFile("move_btn.png");
-	this->addChild(m_moveButton, 100);
-	m_moveButton->setIsVisible(false);
-
 	m_deleteButton = CCSprite::spriteWithFile("delete_btn.png");
 	this->addChild(m_deleteButton, 100);
 	m_deleteButton->setIsVisible(false);
@@ -409,13 +405,7 @@ void GameLevelScene::ccTouchCancelled(cocos2d::CCTouch *pTouch, cocos2d::CCEvent
 // and performs tapped button operation
 // returns true if button was activated, false otherwise 
 //////////////////////////////////////////////////// 
-bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
-	if (m_selectedObject && m_moveButton->getIsVisible() && CCRect::CCRectContainsPoint(m_moveButton->boundingBox(), location)) {
-		m_selectedObject->setSelected(true);
-		m_selectedObject->setObjectState(Moving);
-		m_selectedObject->move(location);
-		return true;	
-	}	
+bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){	
 	if (m_selectedObject && m_deleteButton->getIsVisible() && CCRect::CCRectContainsPoint(m_deleteButton->boundingBox(), location)) {
 		m_selectedObject->setSelected(false);
 		m_gameObjects->removeObject(m_selectedObject);
@@ -438,16 +428,11 @@ bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
 //////////////////////////////////////////////////// 
 void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject(bool visibility){
 	if (!visibility || !m_selectedObject) {
-		m_moveButton->setIsVisible(false);
 		m_deleteButton->setIsVisible(false);
 		m_rotareButton->setIsVisible(false);
 		return;
 	}
 	if (m_selectedObject && m_selectedObject->m_state == Idile) {
-		if (m_selectedObject->isMovable) {
-			m_moveButton->setIsVisible(true);
-			m_moveButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->moveButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->moveButtonOffset.y));							
-		}
 		if (m_selectedObject->isRotatable) {
 			m_rotareButton->setIsVisible(true);
 			m_rotareButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->rotateButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->rotateButtonOffset.y));							

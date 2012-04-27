@@ -170,7 +170,6 @@ public:
 	int defaultZOrder;
 
 	// Utility buttons offsets
-	CCPoint moveButtonOffset;
 	CCPoint rotateButtonOffset;
 	CCPoint deleteButtonOffset;
 

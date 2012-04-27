@@ -10,7 +10,7 @@
 #define __UserLevelsLayer_H__
 
 #include "cocos2d.h"
-#include "Serialization/LevelManager.h"
+#include "LevelManager.h"
 using namespace cocos2d;
 
 

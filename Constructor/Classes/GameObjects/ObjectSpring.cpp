@@ -36,7 +36,6 @@ bool ObjectSpring::init( std::string spritePath )
 	isRotatable = false;
 	isDeletable = true;
 	
-	moveButtonOffset = CCPoint(0, 10);
 	rotateButtonOffset = CCPoint(0,-30);
 	deleteButtonOffset = CCPoint(-30,0);
 

@@ -61,8 +61,7 @@ bool ObjectSimpleBox::init( std::string spritePath, b2FixtureDef *fixtureDef )
 
 	defaultZOrder = 1;
 
-	moveButtonOffset = CCPoint( 0, getContentSize().height/2 + 10 );
-	rotateButtonOffset = CCPoint( 0,-getContentSize().height/2 - 10 );
+	rotateButtonOffset = CCPoint( getContentSize().width/2 + 10, 0 );
 	deleteButtonOffset = CCPoint( -getContentSize().width/2 - 10, 0 );
 
 	m_type = SimpleBox;

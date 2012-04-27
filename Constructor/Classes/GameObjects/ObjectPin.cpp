@@ -33,8 +33,7 @@ bool ObjectPin::init( std::string spritePath )
 	isRotatable = false;
 	isDeletable = true;
 
-	moveButtonOffset = CCPoint(0, 30);
-	rotateButtonOffset = CCPoint(0,-30);
+	rotateButtonOffset = CCPoint(30,0);
 	deleteButtonOffset = CCPoint(-30,0);
 
 	// Permits to pin to be always over other objects

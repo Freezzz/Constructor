@@ -161,10 +161,9 @@ bool LevelManager::saveUserLevel(const char *fileName){
 	
 	if (level->saveToFile(dscr->getPath().c_str())) {
 		m_userLevels.push_back(dscr);
-		delete dscr;
 		return true;
 	}
-	delete dscr;	
+	delete dscr;
 	return false;
 }
 
