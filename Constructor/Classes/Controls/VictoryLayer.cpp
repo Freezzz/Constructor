@@ -2,7 +2,7 @@
 #include "VictoryLayer.h"
 #include "GameLevelScene.h"
 #include "MainMenuScene.h"
-#include "LevelManager.h"
+#include "Serialization/LevelManager.h"
 #include <iostream>
 
 bool VictoryLayer::init( )
