@@ -38,6 +38,7 @@ bool GameLevelScene::init( const char *file )
 	setIsAccelerometerEnabled( true );
 
 	m_gameOver = 0;
+	m_touchCount = 0;
 
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	setContentSize( winSize );
@@ -264,12 +265,33 @@ void GameLevelScene::loadFile( const char *file )
 // Screen Touch delegates - touch started
 //////////////////////////////////////////////////// 
 bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-    if (!m_isInEditMode ) {
+	if (!m_isInEditMode ) {
         return false;
     }
-    CCPoint location = pTouch->locationInView();
+	
+	if(!(
+	   (m_touchCount == 0 ) || // FIRST TOUCH
+	   (m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == Moving || m_selectedObject->m_state == Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
+	   )){
+		CCLog("ALREADY TOUCHING skiping touch! %d", m_touchCount);
+		return false;
+	}
+	m_touchCount++;
+	CCLog("NEW TOUCH! %d", m_touchCount);
+
+	CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
-    
+
+	if (m_touchCount == 1) {
+		m_firstTouchID = pTouch->m_uID;
+	}else if( m_selectedObject->isRotatable){
+		m_secondTouchID = pTouch->m_uID;
+		m_selectedObject->setObjectState(Rotating);
+		m_selectedObject->rotate(location);
+		return true;
+	}
+	
+
 	// If user taped on utility buttons
 	if (tapUtilityButtons(location)) {
 		return true;
@@ -312,7 +334,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
             }
         }
     }
-    return false;
+    return true;
 }
 
 //////////////////////////////////////////////////// 
@@ -325,6 +347,16 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     CCPoint location = pTouch->locationInView();
     location = CCDirector::sharedDirector()->convertToGL(location);
     
+	setUtilityButtonsVisibleFoSelectedObject(false);
+	
+	if (m_selectedObject->m_state == Rotating && m_touchCount == 2 && pTouch->m_uID == m_secondTouchID) {
+		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
+						); //this grabs the radians for us
+		
+		m_selectedObject->rotate(CC_RADIANS_TO_DEGREES(radians));
+		return;
+	}
+	
 	if (m_selectedObject->m_state == Moving) {
 		m_selectedObject->move(location);
 	}else if (m_selectedObject->m_state == Rotating) {
@@ -332,13 +364,24 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
 	}
 
 
-	setUtilityButtonsVisibleFoSelectedObject(false);
+
 }
 
 //////////////////////////////////////////////////// 
 // Screen Touch delegates - touch finished
 //////////////////////////////////////////////////// 
 void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
+	m_touchCount--;	
+	
+	CCLog("TOUCH ENDED! %d id: %d", m_touchCount, pTouch->m_uID);
+	// Initial finger is still taped
+	if (m_touchCount == 1 && pTouch->m_uID == m_secondTouchID) {
+		m_selectedObject->setObjectState(Idile);		
+		m_selectedObject->setObjectState(Moving);
+		return;
+	}
+	
+
     if (m_selectedObject == NULL) {
         return;
     }
@@ -355,6 +398,10 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
     }
     m_selectedObject->setObjectState(Idile);	
 	setUtilityButtonsVisibleFoSelectedObject(true);
+}
+
+void GameLevelScene::ccTouchCancelled(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent){
+	CCLog("TOUCH CANCELLED!");
 }
 
 //////////////////////////////////////////////////// 

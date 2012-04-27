@@ -43,7 +43,10 @@ private:
 	bool m_gameOver;
 
 	const char *m_levelFile;
-
+	
+	int m_touchCount;
+	int m_firstTouchID;
+	int m_secondTouchID;	
 public:
 	GameLevelScene( )
 		: m_selectedObject(0), m_levelFile(0)
@@ -94,7 +97,8 @@ public:
 	virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent);
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent);
-
+	virtual void ccTouchCancelled(CCTouch *pTouch, CCEvent* pEvent);
+	
 	////////////////////////////////////////////////////
 	// Checks if user taped on one of ultility bottons
 	// and performs tapped button operation
