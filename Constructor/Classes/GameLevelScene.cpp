@@ -354,7 +354,7 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     
 	setUtilityButtonsVisibleFoSelectedObject(false);
 	
-	if (m_selectedObject->m_state == Rotating && m_touchCount == 2 && pTouch->m_uID == m_secondTouchID) {
+	if (m_selectedObject->m_state == Rotating && m_touchCount == 2 && (int) pTouch->m_uID == m_secondTouchID) {
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
 						); //this grabs the radians for us
 		
@@ -380,12 +380,11 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
 	
 	CCLog("TOUCH ENDED! %d id: %d", m_touchCount, pTouch->m_uID);
 	// Initial finger is still taped
-	if (m_touchCount == 1 && pTouch->m_uID == m_secondTouchID) {
+	if (m_touchCount == 1 && (int) pTouch->m_uID == m_secondTouchID) {
 		m_selectedObject->setObjectState(Idile);		
 		m_selectedObject->setObjectState(Moving);
 		return;
 	}
-	
 
     if (m_selectedObject == NULL) {
         return;
