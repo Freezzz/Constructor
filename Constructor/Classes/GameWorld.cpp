@@ -7,7 +7,6 @@
 //
 
 #include "GameWorld.h"
-#define PTM_RATIO 32.0f
 
 //////////////////////////////////////////////////// 
 // GameWorld init

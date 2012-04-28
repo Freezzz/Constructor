@@ -30,7 +30,9 @@ class GameObject;
 	class INVENTORYITEM : public InventoryItem \
 	{ \
 	public: \
-		INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
+		static INVENTORYITEM* node( std::string itemPath, std::string spritePath ); \
+		GameObject* gameObjectNode( b2Body *b ); \
+		GameObject* gameObjectNode( CCPoint p ); \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
 		bool init( std::string itemSpritePath, std::string objectSpritePath ) { \
 			m_itemSpritePath = itemSpritePath; \
@@ -41,11 +43,6 @@ class GameObject;
 			return true;\
 		} \
 	};
-
-#define INVENTORYITEM_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static INVENTORYITEM* node( std::string itemPath, std::string spritePath ); \
-	GameObject* gameObjectNode( b2Body *b ); \
-	GameObject* gameObjectNode( CCPoint p );
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath ) \
@@ -75,10 +72,10 @@ class GameObject;
 		return NULL; \
 	};
 
-#define INVENTORYITEM_NODE_DECL(layer) \
-	layer* layer::node( std::string itemSpritePath, std::string objectSpritePath ) \
+#define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
+	INVENTORYITEM* INVENTORYITEM::node( std::string itemSpritePath, std::string objectSpritePath ) \
 	{ \
-		layer *r = new layer(); \
+		INVENTORYITEM *r = new INVENTORYITEM(); \
 		if( r && r->init( itemSpritePath, objectSpritePath ) ) { \
 			r->autorelease(); \
 			return r; \
@@ -86,10 +83,7 @@ class GameObject;
 		\
 		delete r; \
 		return NULL; \
-	};
-
-#define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
-	INVENTORYITEM_NODE_DECL(INVENTORYITEM) \
+	}; \
 	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { return GAMEOBJECT::node(this, b, m_objectSpritePath); } \
 	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(this, p, m_objectSpritePath); } \
 	

@@ -9,7 +9,6 @@
 #include <iostream>
 #include "ObjectPin.h"
 #include "../GameWorld.h"
-#define PTM_RATIO 32.0f
 
 INVENTORYITEM_GAMEOBJECT_NODE_DECL( PinInventoryItem , ObjectPin )
 

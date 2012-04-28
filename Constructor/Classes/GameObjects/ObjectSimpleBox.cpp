@@ -9,7 +9,6 @@
 #include "ObjectSimpleBox.h"
 #include "../GameWorld.h"
 #include <iostream>
-#define PTM_RATIO 32.0f
 
 
 bool SimpleBoxInventoryItem::init( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef )

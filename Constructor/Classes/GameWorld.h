@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include <Box2D/Box2D.h>
 #include "GLES-Render.h"
+#include "Constants.h"
 
 using namespace cocos2d;
 class GameObject;

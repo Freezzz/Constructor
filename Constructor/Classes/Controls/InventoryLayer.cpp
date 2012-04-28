@@ -8,10 +8,6 @@
 
 #include "InventoryLayer.h"
 #include "../GameObjects/GameObject.h"
-#include "../GameObjects/ObjectSimpleBox.h"
-#include "../GameObjects/ObjectSpring.h"
-#include "../GameObjects/ObjectPin.h"
-#include "../GameObjects/ObjectGlue.h"
 #include <iostream>
 
 #define BUTTON_SIZE 90

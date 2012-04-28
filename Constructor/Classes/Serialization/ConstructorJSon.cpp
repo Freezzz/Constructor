@@ -3,6 +3,7 @@
 
 #include "../GameObjects/GameObject.h"
 #include "../GameObjects/ObjectSimpleBox.h"
+#include "../GameObjects/ObjectArea.h"
 #include "../GameObjects/ObjectGlue.h"
 #include "../GameObjects/ObjectPin.h"
 #include "../GameObjects/ObjectSpring.h"
@@ -339,6 +340,9 @@ InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 				item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, fixtureDef );
 				break;
 			}
+		case Area:
+			item = AreaInventoryItem::node( itemSprite, objectSprite );
+			break;
 		case Spring:
 			item = SpringInventoryItem::node( itemSprite, objectSprite );
 			break;
@@ -349,7 +353,7 @@ InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 			item = GlueInventoryItem::node( itemSprite, objectSprite );
 			break;
 		default:
-			std::cout << "Invalid inventory item" << std::endl;
+			CCAssert( false, "Invalid inventory item" );
 	}
 
 	item->isStatic = itemValue["isStatic"].asBool();

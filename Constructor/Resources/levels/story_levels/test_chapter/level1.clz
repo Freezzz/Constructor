@@ -270,6 +270,16 @@
          "isDeletable" : true,
          "isMovable" : true,
          "isRotatable" : true,
+         "isStatic" : true,
+         "item sprite path" : "fixed.png",
+         "object sprite path" : "circle.png",
+         "type" : 1
+      },
+      
+      {
+         "isDeletable" : true,
+         "isMovable" : true,
+         "isRotatable" : true,
          "isStatic" : false,
          "item sprite path" : "spring_btn.png",
          "object sprite path" : "spring.png",
