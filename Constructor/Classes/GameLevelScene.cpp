@@ -315,20 +315,29 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     // If touch is in game zone look for touched object
     if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
         
-		// Take in account threshold, to make easier touch selection
+		// Search for selected object taking in account z-order
         for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
             GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {
-                m_selectedObject = tmp;
-                m_selectedObject->setSelected(true);
-				if( m_selectedObject->isMovable ) {
-					m_selectedObject->setObjectState(Moving);
-					m_selectedObject->move(location);
+				if (m_selectedObject == NULL) {
+					m_selectedObject = tmp;
+					continue;
 				}
-				setUtilityButtonsVisibleFoSelectedObject(true);
-                return true;
+				if (m_selectedObject->defaultZOrder < tmp->defaultZOrder) {
+					m_selectedObject = tmp;
+				}
             }
         }
+		if (!m_selectedObject) {
+			return true;
+		}
+		m_selectedObject->setSelected(true);
+		if( m_selectedObject->isMovable ) {
+			m_selectedObject->setObjectState(Moving);
+			m_selectedObject->move(location);
+		}
+		setUtilityButtonsVisibleFoSelectedObject(true);
+		return true;
     }
     return true;
 }

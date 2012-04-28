@@ -8,16 +8,16 @@
          "body" : 6,
          "inventory item" : 0,
          "isDeletable" : false,
-         "isMovable" : true,
-         "isRotatable" : true,
+         "isMovable" : false,
+         "isRotatable" : false,
          "isStatic" : false
       },
       
       {
          "body" : 3,
          "inventory item" : 1,
-         "isDeletable" : true,
-         "isMovable" : true,
+         "isDeletable" : false,
+         "isMovable" : false,
          "isRotatable" : false,
          "isStatic" : true
       },
@@ -25,8 +25,8 @@
       {
          "body" : 2,
          "inventory item" : 1,
-         "isDeletable" : true,
-         "isMovable" : true,
+         "isDeletable" : false,
+         "isMovable" : false,
          "isRotatable" : false,
          "isStatic" : true
       },
@@ -34,17 +34,17 @@
       {
          "body" : 1,
          "inventory item" : 2,
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
+         "isDeletable" : false,
+         "isMovable" : false,
+         "isRotatable" : false,
          "isStatic" : false
       },
       
       {
          "body" : 0,
          "inventory item" : 4,
-         "isDeletable" : true,
-         "isMovable" : true,
+         "isDeletable" : false,
+         "isMovable" : false,
          "isRotatable" : false,
          "isStatic" : true
       }

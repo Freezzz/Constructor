@@ -22,7 +22,7 @@ std::ostream& operator<<( std::ostream &out, LevelDef &l )
 }
 
 LevelDef::LevelDef( )
-	: difficulty(0), gameWorld(0), target(0)
+: difficulty(0), gameWorld(0), target(0)
 {
 }
 LevelDef::~LevelDef( )
@@ -35,7 +35,7 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 	
 	LevelDef *l = new LevelDef;
 	std::cout << "Loading level " << filePath << "..." << std::endl;
-
+    
 	{
 		std::ifstream ifs;
 		ifs.open( filePath.c_str(), std::ios::in );
@@ -43,11 +43,11 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 			std::cout << "Could not open file " << filePath << " for reading" << std::endl;
 			return NULL;
 		}
-
+        
 		Json::Reader reader;
 		ConstructorJSon cjs;
 		Json::Value json;
-	
+        
 		if( ! reader.parse(ifs, json) )
 		{
 			std::cout  << "Failed to parse " << filePath << std::endl << reader.getFormattedErrorMessages();
@@ -55,24 +55,30 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
 			delete l;
 			return NULL;
 		}
-
+        
 		l = cjs.j2cLevelDef( json );
-
+        
 		ifs.close();
 	}
-
+    
 	std::cout << "Level loaded:" << std::endl;
 	std::cout << *l << std::endl;
-
+    
 	return l;
 }
 bool LevelDef::saveToFile( const char *fileName )
 {
-	std::string filePath = CCFileUtils::getWriteablePath() + fileName;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	std::string filePath = fileName;
+#else
+    std::string filePath = CCFileUtils::getWriteablePath() + fileName;
+#endif  
+    
+    
 	
 	std::cout << "Saving level " << filePath << "..." << std::endl;
 	std::cout << (*this) << std::endl;
-
+    
 	{
 		std::ofstream ofs;
 		ofs.open( filePath.c_str(), std::ios::out );
@@ -80,15 +86,15 @@ bool LevelDef::saveToFile( const char *fileName )
 			std::cout << "Could not open file " << filePath << " for writing" << std::endl;
 			return 0;
 		}
-
+        
 		Json::StyledStreamWriter writer( "   " );
 		ConstructorJSon cjs;
 		Json::Value json = cjs.cj( this );
-
+        
 		writer.write( ofs, json );
 		ofs.close();
 	}
-
+    
 	std::cout << "Level saved." << std::endl;
 	return 1;
 }

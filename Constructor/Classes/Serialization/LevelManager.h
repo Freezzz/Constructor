@@ -34,7 +34,11 @@ struct UserLevelDescribtion
 	string name;
 	string getPath( ) const
 	{
-		return string( string(CCFileUtils::getWriteablePath() + "/" + name ));
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		return string( string(CCFileUtils::getWriteablePath() + "levels/" + name ));
+#else
+        return string( string(CCFileUtils::getWriteablePath() + "/" + name ));
+#endif
 	}
 };
 
