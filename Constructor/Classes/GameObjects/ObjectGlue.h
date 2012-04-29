@@ -28,7 +28,7 @@ private:
 	
 	void weldObjectsAtContact(b2Contact *contact);
 protected:
-	bool init( std::string spritePath );
+	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 	// State change handlers
 	virtual void onSimulationStarted();
 	virtual void onSimulationEnded();	

@@ -18,10 +18,12 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( SpringInventoryItem, ObjectSpring )
 //////////////////////////////////////////////////// 
 // ObjectSpring init
 //////////////////////////////////////////////////// 
-bool ObjectSpring::init( std::string spritePath )
+bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
 	m_objectSprite->setScaleY(0.3);
+
+	m_fixtureDef = fixtureDef;
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -49,64 +51,54 @@ bool ObjectSpring::init( std::string spritePath )
 //////////////////////////////////////////////////// 
 // Create two bodyes and a joint to represent a spring
 //////////////////////////////////////////////////// 
-void ObjectSpring::createBodyAtPosition(cocos2d::CCPoint position){
+void ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
+{
 	// Player physical body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
-	
-	// Rib shape
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(m_objectSprite->getContentSize().width/2/PTM_RATIO, 10/2/PTM_RATIO);
-	
-	// Rib body def
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.3f;
-    fixtureDef.restitution = 0.3f;
-	
+
 	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-	m_objectBody->CreateFixture(&fixtureDef);
+	m_objectBody->CreateFixture(m_fixtureDef);
 	m_objectBody->SetUserData(this);
-    m_objectBody->SetFixedRotation(true);
+	m_objectBody->SetFixedRotation(true);
 	m_objectBody->SetBullet(true);
-		
-    
+
+
 	m_secondBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-	m_secondBody->CreateFixture(&fixtureDef);
+	m_secondBody->CreateFixture(m_fixtureDef);
 	m_secondBody->SetUserData(this);
-    m_secondBody->SetFixedRotation(true);
-	m_secondBody->SetBullet(true);	
-    
-    b2DistanceJointDef jointDef1;
-    jointDef1.bodyA = m_objectBody;
-    jointDef1.bodyB = m_secondBody;
+	m_secondBody->SetFixedRotation(true);
+	m_secondBody->SetBullet(true);
+
+	b2DistanceJointDef jointDef1;
+	jointDef1.bodyA = m_objectBody;
+	jointDef1.bodyB = m_secondBody;
 	jointDef1.localAnchorA.Set(1, 0);
-	jointDef1.localAnchorB.Set(1, 0);	
-    jointDef1.length = MIN_LENGHT / PTM_RATIO;
-    jointDef1.frequencyHz = 20;
+	jointDef1.localAnchorB.Set(1, 0);
+	jointDef1.length = MIN_LENGHT / PTM_RATIO;
+	jointDef1.frequencyHz = 20;
 	jointDef1.dampingRatio = 1;
-    jointDef1.collideConnected = true;
+	jointDef1.collideConnected = true;
 
 	b2PrismaticJointDef jointDef2;
 	jointDef2.Initialize(m_objectBody, m_secondBody, b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), b2Vec2(0,1));
-    jointDef2.collideConnected = true;
+	jointDef2.collideConnected = true;
 
 	b2DistanceJointDef jointDef3;
-    jointDef3.bodyA = m_objectBody;
-    jointDef3.bodyB = m_secondBody;
+	jointDef3.bodyA = m_objectBody;
+	jointDef3.bodyB = m_secondBody;
 	jointDef3.localAnchorA.Set(-1, 0);
-	jointDef3.localAnchorB.Set(-1, 0);	
-    jointDef3.length = MIN_LENGHT / PTM_RATIO;
-    jointDef3.frequencyHz = 20;
+	jointDef3.localAnchorB.Set(-1, 0);
+	jointDef3.length = MIN_LENGHT / PTM_RATIO;
+	jointDef3.frequencyHz = 20;
 	jointDef3.dampingRatio = 1;
-    jointDef3.collideConnected = true;
+	jointDef3.collideConnected = true;
 
 	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef1));
 	m_prismaticJoint = (b2PrismaticJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef2);
-	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef3));	
-	setPosition(position);	
+	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef3));
+	setPosition(position);
 }
 
 

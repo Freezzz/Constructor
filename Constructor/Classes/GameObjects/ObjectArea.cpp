@@ -8,9 +8,11 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( AreaInventoryItem, ObjectArea )
 ////////////////////////////////////////////////////
 // ObjectArae init
 ////////////////////////////////////////////////////
-bool ObjectArea::init( std::string spritePath )
+bool ObjectArea::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+
+	m_fixtureDef = fixtureDef;
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -47,18 +49,7 @@ void ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
 	bodyDef.position.Set( position.x/PTM_RATIO, position.y/PTM_RATIO );
 	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
 
-	// Define another box shape for our dynamic body.
-    b2CircleShape circle;
-    circle.m_radius = 100/PTM_RATIO;
-
-	// Define the dynamic body fixture.
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &circle;
-	fixtureDef.density = 0;
-	fixtureDef.friction = 0.1f;
-    fixtureDef.restitution = 0.5f;
-	fixtureDef.isSensor = true;
-	m_objectBody->CreateFixture(&fixtureDef);
+	m_objectBody->CreateFixture(m_fixtureDef);
 	m_objectBody->SetUserData(this);
 
 	setPosition(position);

@@ -33,7 +33,7 @@ private:
 	b2PrismaticJoint * m_prismaticJoint;
 	vector<b2DistanceJoint*> m_joints;
 protected:
-	bool init( std::string spritePath );
+	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 	virtual void destroy();
 	virtual void update(ccTime dt);
 

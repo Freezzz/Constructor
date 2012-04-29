@@ -10,37 +10,7 @@
 #include "../GameWorld.h"
 #include <iostream>
 
-
-bool SimpleBoxInventoryItem::init( std::string itemPath, std::string spritePath, b2FixtureDef *fixtureDef )
-{
-	m_itemSpritePath = itemPath;
-	m_objectSpritePath = spritePath;
-	m_fixtureDef = fixtureDef;
-	
-	m_objectSprite = CCSprite::spriteWithFile( m_itemSpritePath.c_str() );
-
-	addChild( m_objectSprite );
-
-	return true;
-}
-GameObject* SimpleBoxInventoryItem::gameObjectNode( b2Body *b )
-{
-	GameObject *go = ObjectSimpleBox::node( this, b, m_objectSpritePath, m_fixtureDef );
-	go->isStatic = isStatic;
-	go->isMovable = isMovable;
-	go->isRotatable = isRotatable;
-	go->isDeletable = isDeletable;
-	return go;
-}
-GameObject* SimpleBoxInventoryItem::gameObjectNode( CCPoint p )
-{
-	GameObject *go = ObjectSimpleBox::node( this, p, m_objectSpritePath, m_fixtureDef );
-	go->isStatic = isStatic;
-	go->isMovable = isMovable;
-	go->isRotatable = isRotatable;
-	go->isDeletable = isDeletable;
-	return go;
-}
+INVENTORYITEM_GAMEOBJECT_NODE_DECL( SimpleBoxInventoryItem , ObjectSimpleBox )
 
 //////////////////////////////////////////////////// 
 // ObjectSimpleBox init

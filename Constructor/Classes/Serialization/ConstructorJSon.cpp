@@ -54,6 +54,7 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	}
 	{
 		value["target"] = this->lookupGameObjectIndex( levelDef->target );
+		value["win area"] = this->lookupGameObjectIndex( levelDef->winArea );
 	}
 
 	// win and lose conditions
@@ -165,10 +166,7 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 	itemValue["item sprite path"] = item->m_itemSpritePath;
 	itemValue["object sprite path"] = item->m_objectSpritePath;
 
-	if( item->getObjectType() == SimpleBox ) {
-		SimpleBoxInventoryItem *sbitem = static_cast<SimpleBoxInventoryItem*>( item );
-		itemValue["fixtureDef"] = b2j( sbitem->m_fixtureDef );
-	}
+	itemValue["fixtureDef"] = b2j( item->m_fixtureDef );
 
 	return itemValue;
 }
@@ -231,9 +229,12 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 	}
 	{
 		int targetIndex = value["target"].asInt();
-		if( targetIndex < (int) m_bodies.size() ) {
-			l->target = m_gameObjects[targetIndex];
-		}
+		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
+		l->target = m_gameObjects[targetIndex];
+		
+		targetIndex = value["win area"].asInt();
+		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
+		l->winArea = m_gameObjects[targetIndex];
 	}
 
 	// win and lose conditions
@@ -329,28 +330,25 @@ InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 	ObjectType type = static_cast<ObjectType>( itemValue["type"].asInt() );
 	std::string itemSprite = itemValue["item sprite path"].asString();
 	std::string objectSprite = itemValue["object sprite path"].asString();
+	
+	b2FixtureDef *fixtureDef = j2b2FixtureDef( itemValue["fixtureDef"] );
 
 	InventoryItem *item;
 	switch( type ) {
 		case SimpleBox:
-			{
-				b2FixtureDef *fixtureDef = j2b2FixtureDef( itemValue["fixtureDef"] );
-
-				// l->inventoryItems.push_back( SimpleBoxInventoryItem::node(type) ); // TODO: load fixtureDef
-				item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, fixtureDef );
-				break;
-			}
+			item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, fixtureDef );
+			break;
 		case Area:
-			item = AreaInventoryItem::node( itemSprite, objectSprite );
+			item = AreaInventoryItem::node( itemSprite, objectSprite, fixtureDef );
 			break;
 		case Spring:
-			item = SpringInventoryItem::node( itemSprite, objectSprite );
+			item = SpringInventoryItem::node( itemSprite, objectSprite, fixtureDef );
 			break;
 		case Pin:
-			item = PinInventoryItem::node( itemSprite, objectSprite );
+			item = PinInventoryItem::node( itemSprite, objectSprite, fixtureDef );
 			break;
 		case Glue:
-			item = GlueInventoryItem::node( itemSprite, objectSprite );
+			item = GlueInventoryItem::node( itemSprite, objectSprite, fixtureDef );
 			break;
 		default:
 			CCAssert( false, "Invalid inventory item" );

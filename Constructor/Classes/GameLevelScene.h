@@ -54,6 +54,7 @@ public:
 
 	GameWorld * gameWorld;
 	GameObject * m_target;
+	GameObject * m_winArea;
 
 	////////////////////////////////////////////////////
 	// Starts world simulation

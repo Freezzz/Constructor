@@ -15,7 +15,7 @@ class ObjectArea : public GameObject
 {
 
 protected:
-	bool init( std::string spritePath );
+	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 
 	void createBodyAtPosition(CCPoint position);
 

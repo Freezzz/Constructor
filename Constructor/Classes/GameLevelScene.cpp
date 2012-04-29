@@ -159,9 +159,18 @@ void GameLevelScene::reloadLevel( )
 
 bool GameLevelScene::checkVictory()
 {
+	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
+	while( cont ) {
+		if( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target ) {
+			return 1;
+		}
+		cont = cont->next;
+	}
+	/*
 	if( m_target->boundingBox().origin.x > 500 ) {
 		return 1;
 	}
+	*/
 	return 0;
 }
 bool GameLevelScene::checkDefeat()
@@ -199,6 +208,7 @@ LevelDef* GameLevelScene::getCurrentLevelDef(){
 	ld->inventoryItems = m_inventoryLayer->m_buttons;
 	ld->gameObjects.addObjectsFromArray( m_gameObjects );
 	ld->target = m_target;
+	ld->winArea = m_winArea;
 	ld->winConditions = LevelDef::EnterAreaWin;
 	ld->loseConditions = LevelDef::EnterAreaLose;
 	return ld;
@@ -238,6 +248,7 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 		}
 	}
 	m_target = ld->target;
+	m_winArea = ld->winArea;
 }
 void GameLevelScene::loadFile( const char *file )
 {

@@ -15,9 +15,11 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( PinInventoryItem , ObjectPin )
 //////////////////////////////////////////////////// 
 // ObjectPin init
 //////////////////////////////////////////////////// 
-bool ObjectPin::init( std::string spritePath )
+bool ObjectPin::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+
+	m_fixtureDef = fixtureDef;
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -115,28 +117,18 @@ void ObjectPin::rePin( )
 // Creates a dummy sensor object to check collisions
 // with other objects
 //////////////////////////////////////////////////// 
-void ObjectPin::createBodyAtPosition(cocos2d::CCPoint position){
+void ObjectPin::createBodyAtPosition( cocos2d::CCPoint position )
+{
 	// Player physical body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
 	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
 	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-	
-	// Define another box shape for our dynamic body.
-    b2CircleShape circle;
-    circle.m_radius = 1/2/PTM_RATIO;
-	
-	// Define the dynamic body fixture.
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &circle;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.1f;
-    fixtureDef.restitution = 0.5f;
-	fixtureDef.isSensor = true;
-	m_objectBody->CreateFixture(&fixtureDef);
+
+	m_objectBody->CreateFixture(m_fixtureDef);
 	m_objectBody->SetUserData(this);
-	
-	setPosition(position);	
+
+	setPosition(position);
 }
 void ObjectPin::setBody( b2Body *b )
 {

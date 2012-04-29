@@ -30,25 +30,36 @@ class GameObject;
 	class INVENTORYITEM : public InventoryItem \
 	{ \
 	public: \
-		static INVENTORYITEM* node( std::string itemPath, std::string spritePath ); \
 		GameObject* gameObjectNode( b2Body *b ); \
 		GameObject* gameObjectNode( CCPoint p ); \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
-		bool init( std::string itemSpritePath, std::string objectSpritePath ) { \
+		/* init */ \
+		bool init( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef ) { \
 			m_itemSpritePath = itemSpritePath; \
 			m_objectSpritePath = objectSpritePath; \
+			m_fixtureDef = fixtureDef; \
 			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
 			CCLOG("INIT"); \
 			return true;\
 		} \
+		/* node */ \
+		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef ) { \
+			INVENTORYITEM *r = new INVENTORYITEM(); \
+			if( r && r->init( itemSpritePath, objectSpritePath, fixtureDef ) ) { \
+				r->autorelease(); \
+				return r; \
+			} \
+			\
+			delete r; \
+			return NULL; \
+		}; \
 	};
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath ) \
-	{ \
+	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( r && r->init(spritePath) ) { \
+		if( r && r->init(spritePath, fixtureDef) ) { \
 			r->m_inventoryItem = item; \
 			r->createBodyAtPosition( p ); \
 			r->autorelease(); \
@@ -58,10 +69,9 @@ class GameObject;
 		delete r; \
 		return NULL; \
 	}; \
-	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath ) \
-	{ \
+	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath, b2FixtureDef *fixtureDef ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( r && r->init(spritePath) ) { \
+		if( r && r->init(spritePath, fixtureDef) ) { \
 			r->m_inventoryItem = item; \
 			r->setBody( b ); \
 			r->autorelease(); \
@@ -73,21 +83,24 @@ class GameObject;
 	};
 
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
-	INVENTORYITEM* INVENTORYITEM::node( std::string itemSpritePath, std::string objectSpritePath ) \
-	{ \
-		INVENTORYITEM *r = new INVENTORYITEM(); \
-		if( r && r->init( itemSpritePath, objectSpritePath ) ) { \
-			r->autorelease(); \
-			return r; \
-		} \
-		\
-		delete r; \
-		return NULL; \
-	}; \
-	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { return GAMEOBJECT::node(this, b, m_objectSpritePath); } \
-	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { return GAMEOBJECT::node(this, p, m_objectSpritePath); } \
-	
-	
+	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { \
+		GAMEOBJECT *go = GAMEOBJECT::node(this, b, m_objectSpritePath, m_fixtureDef); \
+		go->isStatic = isStatic; \
+		go->isMovable = isMovable; \
+		go->isRotatable = isRotatable; \
+		go->isDeletable = isDeletable; \
+		return go; \
+	} \
+	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { \
+		GAMEOBJECT *go = GAMEOBJECT::node(this, p, m_objectSpritePath, m_fixtureDef); \
+		go->isStatic = isStatic; \
+		go->isMovable = isMovable; \
+		go->isRotatable = isRotatable; \
+		go->isDeletable = isDeletable; \
+		return go; \
+	}
+
+
 
 // the inventory item
 class InventoryItem : public CCNode
@@ -97,6 +110,7 @@ public:
 	std::string m_objectSpritePath;
 	CCSprite * m_objectSprite;
 	ObjectType m_type;
+	b2FixtureDef *m_fixtureDef;
 
 	// Is a static object in simulation
 	bool isStatic;
@@ -118,6 +132,8 @@ public:
 ///////////////////////////////////////////////////
 class GameObject : public CCNode {
 protected:
+	b2FixtureDef *m_fixtureDef;
+	
 	b2MouseJoint * m_moveJoint;
 
 	b2RevoluteJoint * m_objectBodyPin;

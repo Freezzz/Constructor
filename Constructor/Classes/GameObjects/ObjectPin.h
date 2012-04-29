@@ -26,7 +26,7 @@ private:
 	b2RevoluteJoint * m_pinJoint;	
 	
 protected:
-	bool init( std::string spritePath );
+	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 	
 	// State change handlers
 	virtual void onSimulationStarted();
