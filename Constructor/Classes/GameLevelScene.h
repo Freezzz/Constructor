@@ -39,14 +39,33 @@ private:
 
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;
-	bool m_gameOver;
 
 	const char *m_levelFile;
 	
 	int m_touchCount;
 	int m_firstTouchID;
-	int m_secondTouchID;	
+	int m_secondTouchID;
+
 public:
+	enum GameState
+	{
+		Editing,
+		Simulating,
+		Victory,
+		Defeat
+	} m_gameState;
+
+	void enterEditing();
+	void enterSimulating();
+	void enterVictory();
+	void enterDefeat();
+
+	bool isEditing( ) const { return m_gameState == Editing; }
+	bool isSimulating( ) const { return m_gameState == Simulating; }
+	bool isVictory( ) const { return m_gameState == Victory; }
+	bool isDefeat( ) const { return m_gameState == Defeat; }
+	bool isGameOver( ) const { return isVictory() || isDefeat(); }
+
 	GameLevelScene( )
 		: m_selectedObject(0), m_levelFile(0)
 	{
@@ -110,9 +129,6 @@ public:
 	// Shows and hides utility buttons near selected object
 	////////////////////////////////////////////////////
 	void setUtilityButtonsVisibleFoSelectedObject(bool visibility);
-
-
-	bool isInEditMode(){return m_isInEditMode;}
 
 	////////////////////////////////////////////////////
 	// Static factory creation methods

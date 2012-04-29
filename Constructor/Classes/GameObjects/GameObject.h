@@ -15,13 +15,6 @@
 #include "Constants.h"
 using namespace cocos2d;
 
-enum ObjectState{
-    Idile       = 0,
-    Moving      = 1,
-    Rotating    = 2,
-    Simulating  = 3
-};
-
 
 class GameObject;
 
@@ -130,7 +123,17 @@ public:
 ////////////////////////////////////////////////////
 // GameObject
 ///////////////////////////////////////////////////
-class GameObject : public CCNode {
+class GameObject : public CCNode
+{
+public:
+	enum ObjectState
+	{
+		Idile       = 0,
+		Moving      = 1,
+		Rotating    = 2,
+		Simulating  = 3
+	};
+
 protected:
 	b2FixtureDef *m_fixtureDef;
 	

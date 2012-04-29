@@ -37,7 +37,6 @@ bool GameLevelScene::init( const char *file )
 	setIsTouchEnabled( true );
 	setIsAccelerometerEnabled( true );
 
-	m_gameOver = 0;
 	m_touchCount = 0;
 
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
@@ -90,16 +89,47 @@ bool GameLevelScene::init( const char *file )
 	return true;
 }
 
+void GameLevelScene::enterEditing( )
+{
+	m_gameState = Editing;
+	m_inventoryLayer->setOnScreen( true );
+	m_creationLayer->setOnScreen( true );
+	m_victoryLayer->setOnScreen( false );
+	setUtilityButtonsVisibleFoSelectedObject( true );
+}
+void GameLevelScene::enterSimulating( )
+{
+	m_gameState = Simulating;
+	m_inventoryLayer->setOnScreen( false );
+	m_creationLayer->setOnScreen( true );
+	m_victoryLayer->setOnScreen( false );
+	setUtilityButtonsVisibleFoSelectedObject( false );
+}
+void GameLevelScene::enterVictory( )
+{
+	LevelManager::sharedManager()->completeUserLevel(m_levelFile);
+
+	m_gameState = Victory;
+	m_inventoryLayer->setOnScreen( false );
+	m_creationLayer->setOnScreen( false );
+	m_victoryLayer->setOnScreen( true );
+	setUtilityButtonsVisibleFoSelectedObject( false );
+}
+void GameLevelScene::enterDefeat( )
+{
+	CCAssert( false, "not implemented..." );
+}
+
 //////////////////////////////////////////////////// 
 // Starts world simulation
 ////////////////////////////////////////////////////
-void GameLevelScene::runWorld(){
-    m_isInEditMode = false;
-    m_inventoryLayer->setOnScreen(false);
-    setUtilityButtonsVisibleFoSelectedObject(false);
-    for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
-		m_gameObjects->getObjectAtIndex(i)->setObjectState(Simulating);
-    }
+void GameLevelScene::runWorld( )
+{
+	enterSimulating();
+
+	for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
+		m_gameObjects->getObjectAtIndex(i)->setObjectState( GameObject::Simulating );
+	}
 	if (m_selectedObject) {
 		m_selectedObject->setSelected(false);
 	}
@@ -110,21 +140,16 @@ void GameLevelScene::runWorld(){
 //////////////////////////////////////////////////// 
 void GameLevelScene::pauseWorld( )
 {
-	m_isInEditMode = true;
-	m_inventoryLayer->setOnScreen(true);
-	m_creationLayer->setOnScreen(true);
-	m_victoryLayer->setOnScreen( false );
-	m_gameOver = 0;
+	enterEditing();
 
 	for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
-		m_gameObjects->getObjectAtIndex(i)->setObjectState(Idile);
+		m_gameObjects->getObjectAtIndex(i)->setObjectState( GameObject::Idile );
 	}
 
 	// If before simulation objec was selecteed restore selction and buttons
 	if (m_selectedObject) {
 		m_selectedObject->setSelected(true);
 	}
-	setUtilityButtonsVisibleFoSelectedObject(true);
 }
 
 
@@ -148,7 +173,6 @@ void GameLevelScene::wipeWorld( )
 		m_gameObjects->getObjectAtIndex(i)->destroy();
 	}
 	m_gameObjects->removeAllObjects();
-	setUtilityButtonsVisibleFoSelectedObject(false);
 	m_selectedObject = NULL;
 }
 void GameLevelScene::reloadLevel( )
@@ -159,6 +183,10 @@ void GameLevelScene::reloadLevel( )
 
 bool GameLevelScene::checkVictory()
 {
+	if( ! isSimulating() ) {
+		return 0;
+	}
+
 	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
 	while( cont ) {
 		if( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target ) {
@@ -166,32 +194,24 @@ bool GameLevelScene::checkVictory()
 		}
 		cont = cont->next;
 	}
-	/*
-	if( m_target->boundingBox().origin.x > 500 ) {
-		return 1;
-	}
-	*/
 	return 0;
 }
 bool GameLevelScene::checkDefeat()
 {
+	if( ! isSimulating() ) {
+		return 0;
+	}
+
 	return 0;
 }
-void GameLevelScene::update(ccTime dt)
+void GameLevelScene::update( ccTime dt )
 {
-	if( ! m_gameOver ) {
+	if( isSimulating() ) {
 		if( checkVictory() ) {
-			m_gameOver = 1;
-			
-			LevelManager::sharedManager()->completeUserLevel(m_levelFile);
-			
-			// disabling creation layer
-			m_creationLayer->setOnScreen( false );
-			m_victoryLayer->setOnScreen( true );
+			enterVictory();
 		}
 		if( checkDefeat() ) {
-			m_gameOver = 1;
-			std::cout << "TODO: defeat" << std::endl;
+			enterDefeat();
 		}
 	}
 }
@@ -199,7 +219,8 @@ void GameLevelScene::update(ccTime dt)
 //////////////////////////////////////////////////// 
 // Returns current level defenition
 //////////////////////////////////////////////////// 
-LevelDef* GameLevelScene::getCurrentLevelDef(){
+LevelDef* GameLevelScene::getCurrentLevelDef( )
+{
 	LevelDef *ld = new LevelDef;
 	ld->name = "test level";
 	ld->difficulty = 1;
@@ -213,13 +234,10 @@ LevelDef* GameLevelScene::getCurrentLevelDef(){
 	ld->loseConditions = LevelDef::EnterAreaLose;
 	return ld;
 }
-
 void GameLevelScene::saveFile( const char *file )
 {
 	getCurrentLevelDef()->saveToFile( file );
 }
-
-
 void GameLevelScene::loadLevel( LevelDef *ld )
 {
 	gameWorld = ld->gameWorld;
@@ -249,6 +267,8 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 	}
 	m_target = ld->target;
 	m_winArea = ld->winArea;
+
+	enterEditing();
 }
 void GameLevelScene::loadFile( const char *file )
 {
@@ -271,14 +291,16 @@ void GameLevelScene::loadFile( const char *file )
 //////////////////////////////////////////////////// 
 // Screen Touch delegates - touch started
 //////////////////////////////////////////////////// 
-bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-	if (!m_isInEditMode ) {
+bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
+{
+	if ( ! isEditing() ) {
         return false;
     }
 	
 	if(!(
 	   (m_touchCount == 0 ) || // FIRST TOUCH
-	   (m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == Moving || m_selectedObject->m_state == Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
+	   (m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == GameObject::Moving ||
+	    m_selectedObject->m_state == GameObject::Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
 	   )){
 		CCLog("ALREADY TOUCHING skiping touch! %d", m_touchCount);
 		return false;
@@ -293,7 +315,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 		m_firstTouchID = pTouch->m_uID;
 	}else if( m_selectedObject->isRotatable){
 		m_secondTouchID = pTouch->m_uID;
-		m_selectedObject->setObjectState(Rotating);
+		m_selectedObject->setObjectState( GameObject::Rotating );
 		m_selectedObject->rotate(location);
 		return true;
 	}
@@ -315,7 +337,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
     if (newObject != NULL) {
 		m_gameObjects->addObject(newObject);		
 		addChild(newObject, newObject->defaultZOrder);		
-        newObject->setObjectState(Moving);
+        newObject->setObjectState( GameObject::Moving );
         newObject->setSelected(true);     
 		newObject->move(location);		
 		m_selectedObject = newObject;
@@ -344,7 +366,7 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 		}
 		m_selectedObject->setSelected(true);
 		if( m_selectedObject->isMovable ) {
-			m_selectedObject->setObjectState(Moving);
+			m_selectedObject->setObjectState( GameObject::Moving );
 			m_selectedObject->move(location);
 		}
 		setUtilityButtonsVisibleFoSelectedObject(true);
@@ -356,7 +378,8 @@ bool GameLevelScene::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 //////////////////////////////////////////////////// 
 // Screen Touch delegates - touch moved
 //////////////////////////////////////////////////// 
-void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
+void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
+{
     if (m_selectedObject == NULL) {
         return;
     }
@@ -365,7 +388,7 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
     
 	setUtilityButtonsVisibleFoSelectedObject(false);
 	
-	if (m_selectedObject->m_state == Rotating && m_touchCount == 2 && (int) pTouch->m_uID == m_secondTouchID) {
+	if (m_selectedObject->m_state == GameObject::Rotating && m_touchCount == 2 && (int) pTouch->m_uID == m_secondTouchID) {
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
 						); //this grabs the radians for us
 		
@@ -373,27 +396,25 @@ void GameLevelScene::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent){
 		return;
 	}
 	
-	if (m_selectedObject->m_state == Moving) {
+	if (m_selectedObject->m_state == GameObject::Moving) {
 		m_selectedObject->move(location);
-	}else if (m_selectedObject->m_state == Rotating) {
+	}else if (m_selectedObject->m_state == GameObject::Rotating) {
 		m_selectedObject->rotate(location);
 	}
-
-
-
 }
 
 //////////////////////////////////////////////////// 
 // Screen Touch delegates - touch finished
 //////////////////////////////////////////////////// 
-void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
+void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
+{
 	m_touchCount--;	
 	
 	CCLog("TOUCH ENDED! %d id: %d", m_touchCount, pTouch->m_uID);
 	// Initial finger is still taped
 	if (m_touchCount == 1 && (int) pTouch->m_uID == m_secondTouchID) {
-		m_selectedObject->setObjectState(Idile);		
-		m_selectedObject->setObjectState(Moving);
+		m_selectedObject->setObjectState( GameObject::Idile);
+		m_selectedObject->setObjectState( GameObject::Moving );
 		return;
 	}
 
@@ -405,17 +426,18 @@ void GameLevelScene::ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent){
     location = CCDirector::sharedDirector()->convertToGL(location);
     
     // If touch is not in game zone
-    if (!CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == Moving) {
+    if (!CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving) {
 		m_gameObjects->removeObject(m_selectedObject);
         m_selectedObject->destroy();
         m_selectedObject=NULL;        
         return;
     }
-    m_selectedObject->setObjectState(Idile);	
+    m_selectedObject->setObjectState( GameObject::Idile );
 	setUtilityButtonsVisibleFoSelectedObject(true);
 }
 
-void GameLevelScene::ccTouchCancelled(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent){
+void GameLevelScene::ccTouchCancelled( cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent )
+{
 	CCLog("TOUCH CANCELLED!");
 }
 
@@ -424,7 +446,12 @@ void GameLevelScene::ccTouchCancelled(cocos2d::CCTouch *pTouch, cocos2d::CCEvent
 // and performs tapped button operation
 // returns true if button was activated, false otherwise 
 //////////////////////////////////////////////////// 
-bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){	
+bool GameLevelScene::tapUtilityButtons( cocos2d::CCPoint location )
+{
+	if( ! isEditing() ) {
+		return false;
+	}
+
 	if (m_selectedObject && m_deleteButton->getIsVisible() && CCRect::CCRectContainsPoint(m_deleteButton->boundingBox(), location)) {
 		m_selectedObject->setSelected(false);
 		m_gameObjects->removeObject(m_selectedObject);
@@ -435,7 +462,7 @@ bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
 	}
 	if (m_selectedObject && m_rotareButton->getIsVisible() && CCRect::CCRectContainsPoint(m_rotareButton->boundingBox(), location)) {
 		m_selectedObject->setSelected(true);
-		m_selectedObject->setObjectState(Rotating);
+		m_selectedObject->setObjectState( GameObject::Rotating );
 		m_selectedObject->rotate(location);
 		return true;	
 	}	
@@ -445,13 +472,14 @@ bool GameLevelScene::tapUtilityButtons(cocos2d::CCPoint location){
 //////////////////////////////////////////////////// 
 // Shows and hides utility buttons near selected object
 //////////////////////////////////////////////////// 
-void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject(bool visibility){
+void GameLevelScene::setUtilityButtonsVisibleFoSelectedObject( bool visibility )
+{
 	if (!visibility || !m_selectedObject) {
 		m_deleteButton->setIsVisible(false);
 		m_rotareButton->setIsVisible(false);
 		return;
 	}
-	if (m_selectedObject && m_selectedObject->m_state == Idile) {
+	if (m_selectedObject && m_selectedObject->m_state == GameObject::Idile) {
 		if (m_selectedObject->isRotatable) {
 			m_rotareButton->setIsVisible(true);
 			m_rotareButton->setPosition(CCPoint(m_selectedObject->getPosition().x + m_selectedObject->rotateButtonOffset.x, m_selectedObject->getPosition().y + m_selectedObject->rotateButtonOffset.y));							

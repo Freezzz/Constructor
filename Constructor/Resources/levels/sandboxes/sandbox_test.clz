@@ -16,7 +16,7 @@
       {
          "body" : 3,
          "inventory item" : 3,
-         "isDeletable" : true,
+         "isDeletable" : false,
          "isMovable" : true,
          "isRotatable" : true,
          "isStatic" : true
