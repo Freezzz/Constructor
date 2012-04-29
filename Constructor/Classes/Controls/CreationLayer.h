@@ -11,7 +11,6 @@
 
 #include "cocos2d.h"
 
-
 using namespace cocos2d;
 
 class UserLevelsLayer;
@@ -27,6 +26,12 @@ private:
 	CCLabelTTF * m_labelPlay;
 	CCMenu *m_menu;
 
+	CCMenuItemLabel *m_menuItemPause, *m_menuItemPlay, *m_menuItemSave,
+	                *m_menuItemLoad, *m_menuItemDelete, *m_mainMenuItem;
+
+	void disable( CCMenuItemLabel *item );
+	void enable( CCMenuItemLabel *item );
+
 	UserLevelsLayer * m_userLevelsLayer;
 	UserLevelSaveLayer * m_userLevelSaveLayer;
 	void onPlayButton(CCObject * sender);
@@ -36,12 +41,14 @@ private:
 	void onLoadButton(CCObject * sender);
 
 	void onDeleteButton(CCObject * sender);
-	void onResetButton(CCObject * sender);
 
 	void mainMenuTap(cocos2d::CCObject *sender);
 public:
 	void setOnScreen(bool isOnscreen);
 	void setMenuEnable(bool isEnabled);
+
+	void enterEditing( );
+	void enterSimulating( );
 
 public:
 	LAYER_NODE_FUNC(CreationLayer);

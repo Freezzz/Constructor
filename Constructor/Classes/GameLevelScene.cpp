@@ -94,6 +94,7 @@ void GameLevelScene::enterEditing( )
 	m_gameState = Editing;
 	m_inventoryLayer->setOnScreen( true );
 	m_creationLayer->setOnScreen( true );
+	m_creationLayer->enterEditing();
 	m_victoryLayer->setOnScreen( false );
 	setUtilityButtonsVisibleFoSelectedObject( true );
 }
@@ -102,6 +103,7 @@ void GameLevelScene::enterSimulating( )
 	m_gameState = Simulating;
 	m_inventoryLayer->setOnScreen( false );
 	m_creationLayer->setOnScreen( true );
+	m_creationLayer->enterSimulating();
 	m_victoryLayer->setOnScreen( false );
 	setUtilityButtonsVisibleFoSelectedObject( false );
 }

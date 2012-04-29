@@ -15,62 +15,65 @@
 //////////////////////////////////////////////////// 
 // CreationLayer init
 //////////////////////////////////////////////////// 
-bool CreationLayer::init(){
-    CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-    
+bool CreationLayer::init( )
+{
+	CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
+
 	// Set achor point to top
 	setAnchorPoint( CCPoint(0.5,0.5) );
-    
-    // Buttons
-    m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
-	CCMenuItemLabel * menuItemPause = CCMenuItemLabel::itemWithLabel(m_labelPause, this, menu_selector(CreationLayer::onPauseButton));
-    m_labelPause->setColor(ccc3(0, 254, 30));
-    
-    m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
-	CCMenuItemLabel * menuItemPlay = CCMenuItemLabel::itemWithLabel(m_labelPlay, this, menu_selector(CreationLayer::onPlayButton));
 
-    CCLabelTTF * labelSave = CCLabelTTF::labelWithString("Save", "Arial", 30);
-	CCMenuItemLabel * menuItemSave = CCMenuItemLabel::itemWithLabel(labelSave, this, menu_selector(CreationLayer::onSaveButton));
-    CCLabelTTF * labelLoad = CCLabelTTF::labelWithString("Load", "Arial", 30);
-	CCMenuItemLabel * menuItemLoad = CCMenuItemLabel::itemWithLabel(labelLoad, this, menu_selector(CreationLayer::onLoadButton));
-    
-    CCLabelTTF * labelDelete = CCLabelTTF::labelWithString("Delete", "Arial", 30);
-	CCMenuItemLabel * menuItemDelete = CCMenuItemLabel::itemWithLabel(labelDelete, this, menu_selector(CreationLayer::onDeleteButton));
+	// Buttons
+	m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
+	m_menuItemPause = CCMenuItemLabel::itemWithLabel(m_labelPause, this, menu_selector(CreationLayer::onPauseButton));
+	m_labelPause->setColor(ccc3(0, 254, 30));
 
-    CCLabelTTF * labelReset = CCLabelTTF::labelWithString("Reset", "Arial", 30);
-	CCMenuItemLabel * menuItemReset = CCMenuItemLabel::itemWithLabel(labelReset, this, menu_selector(CreationLayer::onResetButton));
-        
+	m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
+	m_menuItemPlay = CCMenuItemLabel::itemWithLabel(m_labelPlay, this, menu_selector(CreationLayer::onPlayButton));
+
+	CCLabelTTF * labelSave = CCLabelTTF::labelWithString("Save", "Arial", 30);
+	m_menuItemSave = CCMenuItemLabel::itemWithLabel(labelSave, this, menu_selector(CreationLayer::onSaveButton));
+	CCLabelTTF * labelLoad = CCLabelTTF::labelWithString("Load", "Arial", 30);
+	m_menuItemLoad = CCMenuItemLabel::itemWithLabel(labelLoad, this, menu_selector(CreationLayer::onLoadButton));
+
+	CCLabelTTF * labelDelete = CCLabelTTF::labelWithString("Delete", "Arial", 30);
+	m_menuItemDelete = CCMenuItemLabel::itemWithLabel(labelDelete, this, menu_selector(CreationLayer::onDeleteButton));
+
 	CCLabelTTF * maiMenuLabel = CCLabelTTF::labelWithString("MainMenu", "Arial", 22);
-	CCMenuItemLabel * mainMenuItem = CCMenuItemLabel::itemWithLabel(maiMenuLabel, this, menu_selector(CreationLayer::mainMenuTap));
+	m_mainMenuItem = CCMenuItemLabel::itemWithLabel(maiMenuLabel, this, menu_selector(CreationLayer::mainMenuTap));
 
-	m_menu = CCMenu::menuWithItems(menuItemPause,menuItemPlay,menuItemSave,menuItemLoad,menuItemDelete,menuItemReset,mainMenuItem, NULL);
+	m_menu = CCMenu::menuWithItems(m_menuItemPause,m_menuItemPlay,m_menuItemSave,m_menuItemLoad,m_menuItemDelete,m_mainMenuItem, NULL);
 	m_menu->setPosition( CCPoint(0,screenSize.height-30) );
 	m_menu->setContentSize( CCSize(screenSize.width, 60) );
 
-    menuItemPlay->setPosition( CCPoint(80, 0) );
-	menuItemPause->setPosition( CCPoint(180, 0) );
+	m_menuItemPlay->setPosition( CCPoint(200, 0) );
+	m_menuItemPause->setPosition( CCPoint(200, 0) );
 
-    menuItemSave->setPosition( CCPoint(screenSize.width/2-50, 0) );
-    menuItemLoad->setPosition( CCPoint(screenSize.width/2+50, 0) );
+	m_menuItemSave->setPosition( CCPoint(screenSize.width/2-50, 0) );
+	m_menuItemLoad->setPosition( CCPoint(screenSize.width/2+50, 0) );
 
-    menuItemDelete->setPosition( CCPoint(screenSize.width-200, 0) );
-    menuItemDelete->setColor(ccc3(255, 0, 0) );
+	m_menuItemDelete->setPosition( CCPoint(screenSize.width-200, 0) );
+	m_menuItemDelete->setColor(ccc3(255, 0, 0) );
 
-    menuItemReset->setPosition( CCPoint(screenSize.width-70, 0) );
-	
-	mainMenuItem->setPosition(CCPoint(screenSize.width - 100, -screenSize.height + 50));
+	m_mainMenuItem->setPosition(CCPoint(screenSize.width - 100, -screenSize.height + 50));
+
+#define CONSTRUCTOR_INIT_MENUITEM(item) item->setOpacity(0); item->setDisabledColor( item->getColor() );
+	CONSTRUCTOR_INIT_MENUITEM( m_menuItemPlay )
+	CONSTRUCTOR_INIT_MENUITEM( m_menuItemPause )
+	CONSTRUCTOR_INIT_MENUITEM( m_menuItemSave )
+	CONSTRUCTOR_INIT_MENUITEM( m_menuItemLoad )
+#undef CONSTRUCTOR_INIT_MENUITEM
 
 	addChild( m_menu, 1 );
 	setContentSize( m_menu->getContentSize() );
-	
 
-    
-    // init user level save dialog
+
+
+	// init user level save dialog
 	m_userLevelSaveLayer = UserLevelSaveLayer::node();
 	addChild(m_userLevelSaveLayer, 2);
 	m_userLevelSaveLayer->setPosition(CCPointZero);
 	m_userLevelSaveLayer->setIsVisible(false);
-	
+
 	// init user level list
 	m_userLevelsLayer = UserLevelsLayer::node();
 	addChild(m_userLevelsLayer, 2);
@@ -133,10 +136,30 @@ void CreationLayer::onDeleteButton(CCObject *sender){
 	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
 
-void CreationLayer::onResetButton(CCObject *sender){
-	GameLevelScene::sharedGameScene()->resetWorld();
-	m_labelPause->setColor(ccc3(0, 254, 30));
-	m_labelPlay->setColor(ccc3(255, 255, 255));
+void CreationLayer::enterEditing( )
+{
+	disable( m_menuItemPause );
+	enable( m_menuItemPlay );
+	enable( m_menuItemSave );
+	enable( m_menuItemLoad );
+}
+void CreationLayer::enterSimulating( )
+{
+	disable( m_menuItemPlay );
+	disable( m_menuItemSave );
+	disable( m_menuItemLoad );
+	enable( m_menuItemPause );
+}
+
+void CreationLayer::disable( CCMenuItemLabel *item )
+{
+	item->runAction( CCFadeTo::actionWithDuration(0.5, 0) );
+	item->setIsEnabled( 0 );
+}
+void CreationLayer::enable( CCMenuItemLabel *item )
+{
+	item->runAction( CCFadeTo::actionWithDuration(0.5, 255) );
+	item->setIsEnabled( 1 );
 }
 
 void CreationLayer::mainMenuTap(cocos2d::CCObject *sender){
