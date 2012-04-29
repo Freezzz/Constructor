@@ -17,12 +17,18 @@
 GameObject::GameObject( )
 : isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
 {
+	// m_inventoryItem->m_quantity already increased by node()...
+}
+GameObject::~GameObject( )
+{
+	-- m_inventoryItem->m_quantity;
 }
 
 //////////////////////////////////////////////////// 
 // Sets object state
 //////////////////////////////////////////////////// 
-void GameObject::setObjectState(ObjectState newState){
+void GameObject::setObjectState( ObjectState newState )
+{
 	// Movement started
 	if (m_state == Idile && newState == Moving) {
 		onMovementStarted();
@@ -45,7 +51,8 @@ void GameObject::setObjectState(ObjectState newState){
 //////////////////////////////////////////////////// 
 // Callback when simulation just started
 //////////////////////////////////////////////////// 
-void GameObject::onSimulationStarted(){
+void GameObject::onSimulationStarted( )
+{
 	saveOriginalProperties();
 	m_objectBody->SetAwake(true);
 	if (!isStatic) {
@@ -56,7 +63,8 @@ void GameObject::onSimulationStarted(){
 //////////////////////////////////////////////////// 
 // Callback when simulation just ended
 //////////////////////////////////////////////////// 
-void GameObject::onSimulationEnded(){
+void GameObject::onSimulationEnded( )
+{
 	m_objectBody->SetType(b2_staticBody);	
 	restoreToOriginalProperties();
 }
@@ -64,7 +72,8 @@ void GameObject::onSimulationEnded(){
 //////////////////////////////////////////////////// 
 // Callback when movement just started
 //////////////////////////////////////////////////// 
-void GameObject::onMovementStarted(){
+void GameObject::onMovementStarted( )
+{
 	// Movement started set as dynamic so it can interact with other objects
 	m_objectBody->SetType(b2_dynamicBody);
 	// Disable rotation
@@ -74,7 +83,8 @@ void GameObject::onMovementStarted(){
 //////////////////////////////////////////////////// 
 // Callback when movement just ended
 //////////////////////////////////////////////////// 
-void GameObject::onMovementEnded(){
+void GameObject::onMovementEnded( )
+{
 	// Destory helper objects	
 	if (m_moveJoint) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_moveJoint);
@@ -89,7 +99,8 @@ void GameObject::onMovementEnded(){
 //////////////////////////////////////////////////// 
 // Callback when rotation just started
 //////////////////////////////////////////////////// 
-void GameObject::onRotationStarted(){
+void GameObject::onRotationStarted( )
+{
 	m_objectBody->SetFixedRotation(false);	
 	m_objectBody->SetType(b2_dynamicBody);
 }
@@ -97,7 +108,8 @@ void GameObject::onRotationStarted(){
 //////////////////////////////////////////////////// 
 // Callback when rotation just ended
 //////////////////////////////////////////////////// 
-void GameObject::onRotationEnded(){
+void GameObject::onRotationEnded( )
+{
 	// Destory helper objects
 	if (m_objectBodyPin) {
 		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_objectBodyPin);
@@ -120,7 +132,8 @@ void GameObject::onRotationEnded(){
 // than it is a simple translation, if moving than
 // creates a move joint to move object around
 //////////////////////////////////////////////////// 
-void GameObject::move(CCPoint newPostion){
+void GameObject::move( CCPoint newPostion )
+{
 	if (getParent() && m_objectBody) {
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(newPostion.x/PTM_RATIO,
@@ -155,7 +168,8 @@ void GameObject::move(CCPoint newPostion){
 // creates a rotate joint to rotate object along 
 // it's axis
 //////////////////////////////////////////////////// 
-void GameObject::rotate(float newRotation){
+void GameObject::rotate( float newRotation )
+{
     if (getParent() && m_objectBody) {
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
@@ -172,7 +186,8 @@ void GameObject::rotate(float newRotation){
 // Rotates object to give angle creates a rotate 
 //	joint to rotate object along it's axis
 //////////////////////////////////////////////////// 
-void GameObject::rotate(CCPoint location){
+void GameObject::rotate( CCPoint location )
+{
 	if (getParent() && m_objectBody) {
 		b2Vec2 b2Position = b2Vec2(location.x/PTM_RATIO,
 		                           location.y/PTM_RATIO);
@@ -205,7 +220,8 @@ void GameObject::rotate(CCPoint location){
 //////////////////////////////////////////////////// 
 // Basic object update loop, moves sprite to body location
 //////////////////////////////////////////////////// 
-void GameObject::update(ccTime dt){
+void GameObject::update( ccTime dt )
+{
     if (getParent() && m_objectBody) {
         // Update posisiotn of node moving it to body postion
         setPosition( CCPointMake( m_objectBody->GetPosition().x * PTM_RATIO, m_objectBody->GetPosition().y * PTM_RATIO) );
@@ -216,7 +232,8 @@ void GameObject::update(ccTime dt){
 //////////////////////////////////////////////////// 
 // Destroy object and it's physical body
 //////////////////////////////////////////////////// 
-void GameObject::destroy(){
+void GameObject::destroy( )
+{
 	b2JointEdge * jnt = m_objectBody->GetJointList();
 	while (jnt) {
 		ObjectPin * pin = dynamic_cast<ObjectPin*>((GameObject*)jnt->joint->GetUserData());
@@ -240,7 +257,8 @@ void GameObject::destroy(){
 //////////////////////////////////////////////////// 
 // Save object's properties pre-simulation
 //////////////////////////////////////////////////// 
-void GameObject::saveOriginalProperties(){
+void GameObject::saveOriginalProperties( )
+{
 	m_originalPosition = getPosition();
 	m_originalRotation = getRotation();
 }
@@ -249,7 +267,8 @@ void GameObject::saveOriginalProperties(){
 // Restore object's properties that where set
 // before simulation
 //////////////////////////////////////////////////// 
-void GameObject::restoreToOriginalProperties(){
+void GameObject::restoreToOriginalProperties( )
+{
 	move(m_originalPosition);
 	rotate(m_originalRotation);
 	m_objectBody->SetLinearVelocity(b2Vec2(0, 0));
@@ -259,7 +278,8 @@ void GameObject::restoreToOriginalProperties(){
 //////////////////////////////////////////////////// 
 // Grapical rapresentation of selected state
 //////////////////////////////////////////////////// 
-void GameObject::setSelected(bool selected){
+void GameObject::setSelected( bool selected )
+{
 	if (!m_objectSprite) {
 		return;
 	}

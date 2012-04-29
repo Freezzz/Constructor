@@ -331,7 +331,8 @@
          "isStatic" : true,
          "item sprite path" : "blocks.png",
          "object sprite path" : "blocks.png",
-         "type" : 1
+         "type" : 1,
+         "available" : false
       },
       
       {

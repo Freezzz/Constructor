@@ -52,31 +52,44 @@ class GameObject;
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
 	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
+		if( r ) { \
+			++ item->m_quantity; \
+			r->m_inventoryItem = item; \
+		} \
 		if( r && r->init(spritePath, fixtureDef) ) { \
 			r->m_inventoryItem = item; \
 			r->createBodyAtPosition( p ); \
 			r->autorelease(); \
 			return r; \
 		} \
-		\
-		delete r; \
+		if( r ) { \
+			delete r; \
+		} \
 		return NULL; \
 	}; \
 	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath, b2FixtureDef *fixtureDef ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
+		if( r ) { \
+			++ item->m_quantity; \
+			r->m_inventoryItem = item; \
+		} \
 		if( r && r->init(spritePath, fixtureDef) ) { \
 			r->m_inventoryItem = item; \
 			r->setBody( b ); \
 			r->autorelease(); \
 			return r; \
 		} \
-		\
-		delete r; \
+		if( r ) { \
+			delete r; \
+		} \
 		return NULL; \
 	};
 
 #define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
 	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { \
+		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
+			return NULL; \
+		} \
 		GAMEOBJECT *go = GAMEOBJECT::node(this, b, m_objectSpritePath, m_fixtureDef); \
 		go->isStatic = isStatic; \
 		go->isMovable = isMovable; \
@@ -85,6 +98,9 @@ class GameObject;
 		return go; \
 	} \
 	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { \
+		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
+			return NULL; \
+		} \
 		GAMEOBJECT *go = GAMEOBJECT::node(this, p, m_objectSpritePath, m_fixtureDef); \
 		go->isStatic = isStatic; \
 		go->isMovable = isMovable; \
@@ -103,6 +119,8 @@ public:
 	std::string m_objectSpritePath;
 	CCSprite * m_objectSprite;
 	ObjectType m_type;
+	int m_quantity; // how many objects of this type exist?
+	int m_maxQuantity; // how many items of this class may be created. 0 means infinity
 	b2FixtureDef *m_fixtureDef;
 
 	// Is a static object in simulation
@@ -111,7 +129,7 @@ public:
 	bool isRotatable;
 	bool isDeletable;
 
-	InventoryItem( ObjectType type ) : m_type(type), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
+	InventoryItem( ObjectType type ) : m_type(type), m_quantity(0), m_maxQuantity(0), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
     
 public:
 	virtual GameObject* gameObjectNode( b2Body *b ) = 0;
@@ -151,6 +169,7 @@ protected:
 	// GameObject init
 	////////////////////////////////////////////////////
 	GameObject( );
+	~GameObject( );
 	
 	//////////////////////////////////////////////////// 
 	// Basic object update loop, moves sprite to body 

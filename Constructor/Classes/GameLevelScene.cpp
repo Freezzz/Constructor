@@ -276,14 +276,15 @@ void GameLevelScene::loadFile( const char *file )
 {
 	m_levelFile = strdup( file );
 
+	wipeWorld(); // removing former objects
+	removeChild( gameWorld, 1 );
+	
 	// removing inventory items
 	{
 		while( ! m_inventoryLayer->m_buttons.empty() ) {
 			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
 		}
 	}
-	wipeWorld(); // removing former objects
-	removeChild( gameWorld, 1 );
 
 	LevelDef *ld = LevelDef::loadFromFile( file );
 	loadLevel( ld );
