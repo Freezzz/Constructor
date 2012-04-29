@@ -22,8 +22,6 @@ class UserLevelSaveLayer;
 class CreationLayer : public CCLayer {
 private:
 	virtual bool init();
-	CCLabelTTF * m_labelPause;
-	CCLabelTTF * m_labelPlay;
 	CCMenu *m_menu;
 
 	CCMenuItemLabel *m_menuItemPause, *m_menuItemPlay, *m_menuItemSave,

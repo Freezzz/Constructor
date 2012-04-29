@@ -23,11 +23,10 @@ bool CreationLayer::init( )
 	setAnchorPoint( CCPoint(0.5,0.5) );
 
 	// Buttons
-	m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
+	CCLabelTTF * m_labelPause = CCLabelTTF::labelWithString("Edit", "Arial", 30);
 	m_menuItemPause = CCMenuItemLabel::itemWithLabel(m_labelPause, this, menu_selector(CreationLayer::onPauseButton));
-	m_labelPause->setColor(ccc3(0, 254, 30));
 
-	m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
+	CCLabelTTF * m_labelPlay = CCLabelTTF::labelWithString("Simulate", "Arial", 30);
 	m_menuItemPlay = CCMenuItemLabel::itemWithLabel(m_labelPlay, this, menu_selector(CreationLayer::onPlayButton));
 
 	CCLabelTTF * labelSave = CCLabelTTF::labelWithString("Save", "Arial", 30);
@@ -101,39 +100,37 @@ void CreationLayer::setOnScreen( bool isOnscreen ){
 //////////////////////////////////////////////////// 
 // Disables/Enables menu interaction
 //////////////////////////////////////////////////// 
-void CreationLayer::setMenuEnable(bool isEnabled){
+void CreationLayer::setMenuEnable( bool isEnabled )
+{
 	m_menu->setIsTouchEnabled(isEnabled);
 }
 
-void CreationLayer::onPlayButton(CCObject *sender){
+void CreationLayer::onPlayButton( CCObject *sender )
+{
 	GameLevelScene::sharedGameScene()->runWorld();
-	m_labelPlay->setColor(ccc3(0, 254, 30));
-	m_labelPause->setColor(ccc3(255, 255, 255));
 }
 
-void CreationLayer::onPauseButton(CCObject *sender){
+void CreationLayer::onPauseButton( CCObject *sender )
+{
 	GameLevelScene::sharedGameScene()->pauseWorld();
-	m_labelPause->setColor(ccc3(0, 254, 30));
-	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
 
-void CreationLayer::onSaveButton(CCObject * sender)
+void CreationLayer::onSaveButton( CCObject * sender )
 {
 	setMenuEnable(false);
 	m_userLevelSaveLayer->setIsVisible(true);
 }
 
-void CreationLayer::onLoadButton(CCObject * sender)
+void CreationLayer::onLoadButton( CCObject * sender )
 {
 	setMenuEnable(false);
 	m_userLevelsLayer->refreshList();
 	m_userLevelsLayer->setIsVisible(true);
 }
 
-void CreationLayer::onDeleteButton(CCObject *sender){
+void CreationLayer::onDeleteButton( CCObject *sender )
+{
 	GameLevelScene::sharedGameScene()->reloadLevel();
-	m_labelPause->setColor(ccc3(0, 254, 30));
-	m_labelPlay->setColor(ccc3(255, 255, 255));
 }
 
 void CreationLayer::enterEditing( )
@@ -162,6 +159,7 @@ void CreationLayer::enable( CCMenuItemLabel *item )
 	item->setIsEnabled( 1 );
 }
 
-void CreationLayer::mainMenuTap(cocos2d::CCObject *sender){
+void CreationLayer::mainMenuTap( cocos2d::CCObject *sender )
+{
 	CCDirector::sharedDirector()->replaceScene(MainMenuScene::scene());
 }
