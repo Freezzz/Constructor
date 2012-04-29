@@ -3,7 +3,7 @@
    "difficulty" : 1.0,
    "game objects" : 
    [
-      
+      // target
       {
          "body" : 0,
          "inventory item" : 0,
@@ -11,6 +11,15 @@
          "isMovable" : true,
          "isRotatable" : true,
          "isStatic" : false
+      },
+      // win area
+      {
+         "body" : 3,
+         "inventory item" : 3,
+         "isDeletable" : true,
+         "isMovable" : true,
+         "isRotatable" : true,
+         "isStatic" : true
       }
    ],
    "game world" : 
@@ -170,6 +179,37 @@
                   "y" : 12.0
                },
                "type" : 0 //static
+            },
+            
+            {
+               "angle" : 0,
+               "angularVelocity" : 0,
+               "awake" : true,
+               "fixture" : 
+               [
+                  
+                  {
+                     "density" : 0,
+                     "friction" : 0.3000000119209290,
+                     "polygon" : 
+                     {
+                        "vertices" : 
+                        {
+                           "x" : [ -1, 1, 1, -1 ],
+                           "y" : [ -10, -10, 10, 10 ]
+                        }
+                     },
+                     "restitution" : 0.3000000119209290,
+                     "sensor" : true
+                  }
+               ],
+               "linearVelocity" : 0,
+               "position" : 
+               {
+                  "x" : 20,
+                  "y" : 15
+               },
+               "type" : 0 //static
             }
          ],
          "continuousPhysics" : true,
@@ -267,6 +307,52 @@
       },
       
       {
+         "fixtureDef" : 
+         {
+            "density" : 1,
+            "friction" : 0.1,
+            "isSensor" : true,
+            "restitution" : 0.50,
+            "shape" : 
+            {
+               "polygon" : 
+               {
+                  "vertices" : 
+                  {
+                     "x" : [ -1, 1, 1, -1 ],
+                     "y" : [ -1, -1, 1, 1 ]
+                  }
+               }
+            }
+         },
+         "isDeletable" : true,
+         "isMovable" : true,
+         "isRotatable" : true,
+         "isStatic" : true,
+         "item sprite path" : "blocks.png",
+         "object sprite path" : "blocks.png",
+         "type" : 1
+      },
+      
+      {
+         "fixtureDef" : 
+         {
+            "density" : 1,
+            "friction" : 0.3,
+            "isSensor" : false,
+            "restitution" : 0.3,
+            "shape" : 
+            {
+               "polygon" : 
+               {
+                  "vertices" : 
+                  {
+                     "x" : [ -0.8125, 0.8125, 0.8125, -0.8125 ],
+                     "y" : [ -0.15625, -0.15625, 0.15625, 0.15625 ]
+                  }
+               }
+            }
+         },
          "isDeletable" : true,
          "isMovable" : true,
          "isRotatable" : true,
@@ -277,6 +363,21 @@
       },
       
       {
+         "fixtureDef" : 
+         {
+            "density" : 1,
+            "friction" : 0.1,
+            "isSensor" : true,
+            "restitution" : 0.50,
+            "shape" : 
+            {
+               "circle" : 
+               {
+                  "center" : 0,
+                  "radius" : 0.015625
+               }
+            }
+         },
          "isDeletable" : true,
          "isMovable" : true,
          "isRotatable" : true,
@@ -287,6 +388,24 @@
       },
       
       {
+         "fixtureDef" : 
+         {
+            "density" : 1,
+            "friction" : 0.1,
+            "isSensor" : true,
+            "restitution" : 0.5,
+            "shape" : 
+            {
+               "polygon" : 
+               {
+                  "vertices" : 
+                  {
+                     "x" : [ -0.5, 0.5, 0.5, -0.5 ],
+                     "y" : [ -0.46875, -0.46875, 0.46875, 0.46875 ]
+                  }
+               }
+            }
+         },
          "isDeletable" : true,
          "isMovable" : true,
          "isRotatable" : true,
@@ -299,6 +418,7 @@
    "lose conditions" : 0,
    "name" : "test level",
    "target" : 0,
+   "win area" : 1,
    "theme" : "test theme",
    "win conditions" : 0
 }

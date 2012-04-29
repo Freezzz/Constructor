@@ -15,7 +15,7 @@
       // win area
       {
          "body" : 3,
-         "inventory item" : 1,
+         "inventory item" : 3,
          "isDeletable" : false,
          "isMovable" : false,
          "isRotatable" : false,
@@ -199,7 +199,8 @@
                            "y" : [ -15, -15, 15, 15 ]
                         }
                      },
-                     "restitution" : 0.3000000119209290
+                     "restitution" : 0.3000000119209290,
+                     "sensor" : true
                   }
                ],
                "linearVelocity" : 0,
@@ -328,8 +329,8 @@
          "isMovable" : true,
          "isRotatable" : true,
          "isStatic" : true,
-         "item sprite path" : "fixed.png",
-         "object sprite path" : "circle.png",
+         "item sprite path" : "blocks.png",
+         "object sprite path" : "blocks.png",
          "type" : 1
       },
       
