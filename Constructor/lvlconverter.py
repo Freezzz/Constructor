@@ -20,7 +20,7 @@ print "Using destiontin: " + destination
 
 
 #Object Types
-objectTypes = {0:"Box", 1:"Area", 3:"Spring"}
+objectTypes = {0:"Shape", 1:"Area", 3:"Spring", 4:"Pin", 5:"Glue"}
 
 def dumpGameObjects(data):
 	print "\n\nLEVEL OBEJECTS:"
@@ -71,6 +71,32 @@ def resetTarget(data):
 	else:
 		data["target"] = newIndex
 	return
+def setQuantities(data):
+	for inventoryItem in data["inventory items"]:
+		objectType = objectTypes.get(inventoryItem["type"])
+		objectGraphics = inventoryItem["object sprite path"]
+		try:
+			currentQuanity = inventoryItem["max quantity"]
+		except KeyError:
+			currentQuanity = 0
+
+		try:
+			tisAvailable = inventoryItem["available"]
+		except KeyError:
+			tisAvailable = False
+
+		print "Item:" + objectType + " \tSprite:" + objectGraphics + "\tQuantity:" + str(currentQuanity) + "\tisAvailable:"+str(tisAvailable)
+		print "Insert quantity for this object: (-1 remove from inventory, 0 infinite quantity, N nuber of items)"
+		reply = int(sys.stdin.readline().strip())
+		if reply == -1:
+			inventoryItem["available"] = False
+		elif reply == 0:
+			inventoryItem["available"] = True
+			inventoryItem["max quantity"] = 0
+		else:
+			inventoryItem["available"] = True
+			inventoryItem["max quantity"] = reply
+
 def writeOut(data):
 	print "File name:"
 	reply = sys.stdin.readline().strip();
@@ -87,7 +113,8 @@ def printMenu(data):
 		print "1: Dump GameObjects info"
 		print "2: Convert all objects to uneditable"
 		print "3: Change/Set target"
-		print "\n5: WriteOut"
+		print "4: Set inventory limits"		
+		print "\n9: WriteOut"
 		print "0: Exit"		
 		reply = sys.stdin.readline().strip()
 		if reply == "1":
@@ -96,7 +123,9 @@ def printMenu(data):
 			makeUneditable(data)
 		elif reply == "3":
 			resetTarget(data)
-		elif reply == "5":
+		elif reply == "4":
+			setQuantities(data)			
+		elif reply == "9":
 			writeOut(data)
 		else:
 			return
