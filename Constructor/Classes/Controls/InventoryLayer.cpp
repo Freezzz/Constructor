@@ -9,7 +9,7 @@
 #include "InventoryLayer.h"
 #include "../GameObjects/GameObject.h"
 #include <iostream>
-
+#include <sstream>
 #define BUTTON_SIZE 90
 
 //////////////////////////////////////////////////// 
@@ -23,7 +23,7 @@ bool InventoryLayer::init(){
 	CCSprite * bg = CCSprite::spriteWithFile("inventory_bg.png");
 	setContentSize(bg->getContentSize());
 	addChild(bg);
-	bg->setAnchorPoint(CCPoint(0,0.5));
+	bg->setAnchorPoint(CCPoint(-0.1,0.5));
 	
 	return true;
 }
@@ -35,7 +35,7 @@ void InventoryLayer::setOnScreen(bool isOnscreen){
 	CCPoint location = this->getPosition();
 	location.x = 0; // assuming it will be always on the left side of the screen
 	if (!isOnscreen) {
-		location.x -= this->getContentSize().width;
+		location.x -= (this->getContentSize().width +50);
 	}
 	this->runAction(CCMoveTo::actionWithDuration(0.5, location));
 }
@@ -64,6 +64,9 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 		if( CCRect::CCRectContainsPoint( button->m_objectSprite->boundingBox(), point ) ) {
 			button->runAction( CCBlink::actionWithDuration(0.2, true) );
 			GameObject *r = button->gameObjectNode( location );
+			if (r) {
+				updateInventryItemQuantity(button);
+			}
 			return r;
 		}
 	}
@@ -76,11 +79,56 @@ void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 	item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
 	m_buttons.push_back( item );
 	addChild( item );
+
+	
+	// Quantity counters
+	string str;
+	if (item->m_maxQuantity > 0) {
+		stringstream q;
+		q << item->m_maxQuantity << "/" << item->m_maxQuantity;
+		str = q.str();
+	}else {
+		str = "∞";
+	}
+	
+	CCLabelTTF * quantityLabel = CCLabelTTF::labelWithString(str.c_str(), "Arial", 16);
+	quantityLabel->setPosition(CCPoint(60, BUTTON_SIZE * (3-(int)m_buttons.size()) ) );
+	quantityLabel->setAnchorPoint(CCPoint(0, 0.5));
+	m_quantityLabels.push_back(quantityLabel);
+	addChild(quantityLabel);
 }
 void InventoryLayer::removeInventoryItem( InventoryItem *item )
 {
-	m_buttons.erase( std::remove(m_buttons.begin(), m_buttons.end(), item), m_buttons.end() );
+	int itemIndex = -1;
+	for (int i = 0; i< m_buttons.size(); i++) {
+		if (item == m_buttons.at(i)) {
+			itemIndex = i;
+			break;
+		}
+	}
+	m_buttons.erase( m_buttons.begin()+itemIndex );
 	removeChild( item, 1 );
+	
+	removeChild(m_quantityLabels.at(itemIndex), true);
+	m_quantityLabels.erase(m_quantityLabels.begin()+itemIndex);
+}
+
+
+void InventoryLayer::updateInventryItemQuantity(InventoryItem *item){
+	if (item->m_maxQuantity <= 0) {
+		return;
+	}
+	int itemIndex = -1;
+	for (int i = 0; i< m_buttons.size(); i++) {
+		if (item == m_buttons.at(i)) {
+			itemIndex = i;
+			break;
+		}
+	}
+	stringstream q;
+	q << item->m_maxQuantity - item->m_quantity << "/" << item->m_maxQuantity;
+	m_quantityLabels.at(itemIndex)->setString(q.str().c_str());
+
 }
 
 

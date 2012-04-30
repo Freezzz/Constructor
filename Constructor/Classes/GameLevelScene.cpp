@@ -431,8 +431,10 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
     
     // If touch is not in game zone
     if( ! CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving && m_selectedObject->isDeletable ) {
+		InventoryItem * item = m_selectedObject->m_inventoryItem;		
 		m_gameObjects->removeObject(m_selectedObject);
         m_selectedObject->destroy();
+		m_inventoryLayer->updateInventryItemQuantity(item);
         m_selectedObject=NULL;        
         return;
     }
@@ -457,9 +459,11 @@ bool GameLevelScene::tapUtilityButtons( cocos2d::CCPoint location )
 	}
 
 	if (m_selectedObject && m_deleteButton->getIsVisible() && CCRect::CCRectContainsPoint(m_deleteButton->boundingBox(), location)) {
+		InventoryItem * item = m_selectedObject->m_inventoryItem;
 		m_selectedObject->setSelected(false);
 		m_gameObjects->removeObject(m_selectedObject);
 		m_selectedObject->destroy();
+		m_inventoryLayer->updateInventryItemQuantity(item);
 		setUtilityButtonsVisibleFoSelectedObject(false);
 		m_selectedObject = NULL;
 		return true;	

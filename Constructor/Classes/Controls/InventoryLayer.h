@@ -25,6 +25,7 @@ private:
 
 public:
 	vector<InventoryItem*> m_buttons;
+	vector<CCLabelTTF*> m_quantityLabels;
 	
 public:
 	////////////////////////////////////////////////////
@@ -41,6 +42,8 @@ public:
 	// quantity=-1 : infinite
 	void addInventoryItem( InventoryItem *item, int quantity = -1 );
 	void removeInventoryItem( InventoryItem *item );
+	
+	void updateInventryItemQuantity(InventoryItem *item);
 
 	LAYER_NODE_FUNC(InventoryLayer);
 };
