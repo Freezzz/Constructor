@@ -67,8 +67,8 @@ void ObjectPin::onMovementStarted(){
 }
 
 void ObjectPin::onMovementEnded(){
+	rePin( );	
 	GameObject::onMovementEnded();
-	rePin( );
 }
 
 //////////////////////////////////////////////////// 
@@ -85,33 +85,36 @@ void ObjectPin::unPin( bool destroyJoint )
 void ObjectPin::rePin( )
 {
 	// Check if our sensor object collides with other GameObjects
+	b2Body * otherBody = NULL;
 	b2ContactEdge * cont = m_objectBody->GetContactList();
-	if (cont != NULL) {
+	while (cont != NULL) {
 
 		// If contanc between two gameObjects. TODO: Improve check
-		if (cont->contact->GetFixtureA()->GetBody()->GetUserData() != NULL && cont->contact->GetFixtureB()->GetBody()->GetUserData() != NULL) {
-
-			b2Body * otherBody;
+		if (cont->contact->GetFixtureA()->GetBody()->GetUserData() != NULL
+			&& cont->contact->GetFixtureB()->GetBody()->GetUserData() != NULL
+			&& cont->contact->IsTouching()) {
 			if (cont->contact->GetFixtureA()->GetBody() == m_objectBody) {
 				otherBody = cont->contact->GetFixtureB()->GetBody(); // Pin is A, other is B
 			}
 			else if (cont->contact->GetFixtureB()->GetBody() == m_objectBody) {
 				otherBody = cont->contact->GetFixtureA()->GetBody(); // Pin is B, other is A
 			}
-
-			// Pin object to it's position in the world alowing rotation
-			b2RevoluteJointDef md;
-			md.Initialize(m_objectBody, otherBody, m_objectBody->GetPosition());
-			md.referenceAngle = m_objectBody->GetAngle();
-			m_pinJoint = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
-			m_pinJoint->SetUserData(this);
-			m_isPinned = true;
 		}
-		if (cont->next){
-			CCLog("There are more objects coliding with pin but we ignore them");
-		}
+		cont = cont->next;
+	}
+	if (otherBody) {
+		// Pin object to it's position in the world alowing rotation		
+		b2RevoluteJointDef md;
+		md.Initialize(m_objectBody, otherBody, m_objectBody->GetPosition());
+		md.referenceAngle = m_objectBody->GetAngle();
+		m_pinJoint = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
+		m_pinJoint->SetUserData(this);
+		m_isPinned = true;
 	}
 }
+
+
+
 
 //////////////////////////////////////////////////// 
 // Creates a dummy sensor object to check collisions
