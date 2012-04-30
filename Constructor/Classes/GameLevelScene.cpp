@@ -191,7 +191,9 @@ bool GameLevelScene::checkVictory()
 
 	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
 	while( cont ) {
-		if( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target ) {
+		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
+			  || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+			&& cont->contact->IsTouching() ) {
 			return 1;
 		}
 		cont = cont->next;
