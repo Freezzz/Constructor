@@ -9,6 +9,7 @@
 #include "MainMenuScene.h"
 #include "GameLevelScene.h"
 #include "StoryLevelsScene.h"
+#include "Serialization/LevelManager.h"
 
 //////////////////////////////////////////////////// 
 // MainMenuScene init
@@ -41,7 +42,7 @@ void MainMenuScene::newGameTap(cocos2d::CCObject *sender){
 }
 
 void MainMenuScene::sanboxtap(cocos2d::CCObject *sender){
-	CCDirector::sharedDirector()->replaceScene(GameLevelScene::scene( (string(CONSTRUCTOR_SANDBOX_LEVEL_PATH)+"sandbox_test.clz").c_str() ));
+	CCDirector::sharedDirector()->replaceScene(GameLevelScene::scene( new SandboxLevelDescription("sandbox_test.clz") ));
 }
 
 //////////////////////////////////////////////////// 

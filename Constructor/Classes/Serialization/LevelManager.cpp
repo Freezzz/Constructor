@@ -8,6 +8,7 @@
 
 #include "LevelManager.h"
 #include "GameLevelScene.h"
+#include "LevelDef.h"
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -42,7 +43,7 @@ LevelManager::~LevelManager(){
 }
 
 //////////////////////////////////////////////////// 
-// Loads story mode level describtions list from storage
+// Loads story mode level descriptions list from storage
 ////////////////////////////////////////////////////
 void LevelManager::loadStoryLevelList( string chapter )
 {
@@ -58,7 +59,7 @@ void LevelManager::loadStoryLevelList( string chapter )
 	while( f ) {
 		if( f->d_type == DT_REG ) {
 			std::cout << "  Level: " << f->d_name << std::endl;
-			StoryLevelDescribtion *lvl = new StoryLevelDescribtion;
+			StoryLevelDescription *lvl = new StoryLevelDescription;
 			lvl->isComplete = i < m_currentUserLevel;
 			lvl->chapter = chapter;
 			lvl->name = f->d_name;
@@ -89,11 +90,12 @@ void LevelManager::loadStoryLevelList( )
 }
 
 
-void LevelManager::completeUserLevel(const char *levelName){
-	CCLOG("LEVELE %s complete", levelName);
+void LevelManager::completeUserLevel( LevelDescription *level )
+{
+	CCLOG( "Level %s of chapter %s complete", level->name.c_str(), level->chapter.c_str() );
 	m_lastComleteIndex = -1;
 	for (unsigned int i = 0; i < m_storyLevels.size(); i++) {
-		if (m_storyLevels.at(i)->getPath() == levelName) {
+		if( m_storyLevels.at(i)->getPath() == level->getPath() ) {
 			m_lastComleteIndex = i;
 			break;
 		}
@@ -113,7 +115,7 @@ void LevelManager::completeUserLevel(const char *levelName){
 void LevelManager::loadNextStoryLevel( )
 {
 	if (m_lastComleteIndex != -1 && m_lastComleteIndex+1 < (int) m_storyLevels.size()) {
-		CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel(m_storyLevels.at(m_lastComleteIndex+1)->getPath().c_str()));			
+		CCDirector::sharedDirector()->replaceScene( (CCScene*) GameLevelScene::nodeWithLevel(m_storyLevels.at(m_lastComleteIndex+1)) );
 	}
 }
 
@@ -132,8 +134,7 @@ void LevelManager::loadUserLevelList( )
 	while( f ) {
 		if( f->d_type != DT_DIR && strcmp(f->d_name,".") && strcmp(f->d_name,"..") ) {
 			std::cout << " USER Level: " << f->d_name << std::endl;
-			UserLevelDescribtion *lvl = new UserLevelDescribtion;
-			lvl->name = f->d_name;
+			UserLevelDescription *lvl = new UserLevelDescription( f->d_name );
 			m_userLevels.push_back( lvl );
 		}
 		
@@ -144,23 +145,24 @@ void LevelManager::loadUserLevelList( )
 //////////////////////////////////////////////////// 
 // Load level defenition by level name
 //////////////////////////////////////////////////// 
-LevelDef * LevelManager::loadUserLevel( const char *fileName ){
-	return LevelDef::loadFromFile(fileName);
+LevelDef * LevelManager::loadUserLevel( const char *fileName )
+{
+	return LevelDef::loadFromFile( new UserLevelDescription(fileName) );
 }
 
 //////////////////////////////////////////////////// 
 // Saves user level and updates list of user created levels
 //////////////////////////////////////////////////// 
-bool LevelManager::saveUserLevel(const char *fileName){
+bool LevelManager::saveUserLevel( const char *fileName )
+{
 	// TODO: overwrite
 	
 	LevelDef * level = GameLevelScene::sharedGameScene()->getCurrentLevelDef();
 	level->name = string(fileName);
 	
-	UserLevelDescribtion * dscr = new UserLevelDescribtion;
-	dscr->name = fileName;
+	UserLevelDescription * dscr = new UserLevelDescription( fileName );
 	
-	if (level->saveToFile(dscr->getPath().c_str())) {
+	if( level->saveToFile(dscr) ) {
 		m_userLevels.push_back(dscr);
 		return true;
 	}

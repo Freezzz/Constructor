@@ -9,43 +9,60 @@
 #ifndef Constructor_LevelManager_h
 #define Constructor_LevelManager_h
 #include "cocos2d.h"
-#include "LevelDef.h"
 
 using namespace cocos2d;
+
+class LevelDef;
 
 #define CONSTRUCTOR_LEVEL_PATH            "levels/"
 #define CONSTRUCTOR_STORY_LEVEL_PATH      CONSTRUCTOR_LEVEL_PATH "story_levels/"
 #define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CONSTRUCTOR_LEVEL_PATH "sandboxes/"
 
-#define CONSTRUCTOR_USER_LEVEL_PATH       ( ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels" ).c_str() )
+#define CONSTRUCTOR_USER_LEVEL_PATH       ( ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels/" ).c_str() )
 
-struct StoryLevelDescribtion
+struct LevelDescription
+{
+	virtual ~LevelDescription( ) { }
+	virtual string getPath( ) const = 0;
+};
+struct StoryLevelDescription : public LevelDescription
 {
 	bool isComplete;
 	string chapter;
 	string name;
+
 	string getPath( ) const
 	{
 		return string( string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name );
 	}
 };
-struct UserLevelDescribtion
+struct SandboxLevelDescription : public LevelDescription
 {
 	string name;
+
+	SandboxLevelDescription( const string &name ) : name(name) { }
+
 	string getPath( ) const
 	{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-		return string( string(CCFileUtils::getWriteablePath() + "levels/" + name ));
-#else
-        return string( string(CCFileUtils::getWriteablePath() + "/" + name ));
-#endif
+		return string( string(CONSTRUCTOR_SANDBOX_LEVEL_PATH) + name );
+	}
+};
+struct UserLevelDescription : public LevelDescription
+{
+	string name;
+
+	UserLevelDescription( const string &name ) : name(name) { }
+
+	string getPath( ) const
+	{
+		return CONSTRUCTOR_USER_LEVEL_PATH + name;
 	}
 };
 
 class LevelManager {
 private:
-	vector<UserLevelDescribtion*>  m_userLevels;
-	vector<StoryLevelDescribtion*> m_storyLevels;
+	vector<UserLevelDescription*>  m_userLevels;
+	vector<StoryLevelDescription*> m_storyLevels;
 	int m_currentUserLevel;
 	int m_lastComleteIndex;
 	
@@ -60,11 +77,11 @@ public:
 	LevelDef *loadUserLevel( const char *fileName );
 	bool saveUserLevel(const char *fileName);
 	
-	vector<UserLevelDescribtion*> * getUserLevelList()
+	vector<UserLevelDescription*> * getUserLevelList()
 	{
 		return & m_userLevels;
 	}
-	vector<StoryLevelDescribtion*> * getStoryLevelList( )
+	vector<StoryLevelDescription*> * getStoryLevelList( )
 	{
 		return & m_storyLevels;
 	}
@@ -73,7 +90,7 @@ public:
 		return m_currentUserLevel;
 	}
 	
-	void completeUserLevel(const char * levelName);
+	void completeUserLevel( LevelDescription *level );
 	void loadNextStoryLevel();
 	
 	//////////////////////////////////////////////////// 

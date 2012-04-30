@@ -48,8 +48,9 @@ bool StoryLevelsScene::init(){
 }
 
 
-void StoryLevelsScene::levelSelectedTap(cocos2d::CCObject *sender){
-	CCDirector::sharedDirector()->replaceScene((CCScene*)GameLevelScene::nodeWithLevel(m_levels->at(((CCNode*)sender)->getTag())->getPath().c_str()));	
+void StoryLevelsScene::levelSelectedTap( cocos2d::CCObject *sender )
+{
+	CCDirector::sharedDirector()->replaceScene( (CCScene*) GameLevelScene::nodeWithLevel( m_levels->at(((CCNode*)sender)->getTag()) ) );
 }
 
 void StoryLevelsScene::mainMenuTap(cocos2d::CCObject *sender){

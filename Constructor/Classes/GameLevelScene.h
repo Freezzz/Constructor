@@ -16,6 +16,7 @@ class CreationLayer;
 class VictoryLayer;
 class b2Contact;
 class LevelDef;
+class LevelDescription;
 
 ////////////////////////////////////////////////////
 // GameLevelScene - tat manages user interaction 
@@ -23,25 +24,22 @@ class LevelDef;
 ///////////////////////////////////////////////////
 class GameLevelScene : public CCLayer {
 private:
-    GameObject * m_selectedObject;
-	
+	GameObject * m_selectedObject;
+
 	CCMutableArray<GameObject*> * m_gameObjects;
-	
-    CCRect m_gameZoneRect;
+
+	CCRect m_gameZoneRect;
 
 	InventoryLayer * m_inventoryLayer;
 	CreationLayer * m_creationLayer;
 	VictoryLayer * m_victoryLayer;
-    bool m_isInEditMode;
-    
-    void registerWithTouchDispatcher( );
-	bool init( const char *file );
+	bool m_isInEditMode;
 
 	CCSprite * m_deleteButton;
 	CCSprite * m_rotareButton;
 
-	const char *m_levelFile;
-	
+	LevelDescription *m_levelFile;
+
 	int m_touchCount;
 	int m_firstTouchID;
 	int m_secondTouchID;
@@ -55,6 +53,11 @@ public:
 		Defeat
 	} m_gameState;
 
+	GameWorld * gameWorld;
+	GameObject * m_target;
+	GameObject * m_winArea;
+
+public:
 	void enterEditing();
 	void enterSimulating();
 	void enterVictory();
@@ -70,10 +73,8 @@ public:
 		: m_selectedObject(0), m_levelFile(0)
 	{
 	}
-
-	GameWorld * gameWorld;
-	GameObject * m_target;
-	GameObject * m_winArea;
+	bool init( LevelDescription *level );
+	void registerWithTouchDispatcher( );
 
 	////////////////////////////////////////////////////
 	// Starts world simulation
@@ -105,9 +106,9 @@ public:
 	void update(ccTime dt);
 
 	void reloadLevel();
-	void saveFile( const char *file );
+	void saveFile( LevelDescription *level );
 	void loadLevel( LevelDef *ld );
-	void loadFile( const char *file );
+	void loadFile( LevelDescription *level );
 	LevelDef* getCurrentLevelDef();
 
 	////////////////////////////////////////////////////
@@ -133,8 +134,8 @@ public:
 	////////////////////////////////////////////////////
 	// Static factory creation methods
 	////////////////////////////////////////////////////
-	static cocos2d::CCScene* scene( const char *file );
-	static GameLevelScene* nodeWithLevel( const char *file );
+	static cocos2d::CCScene* scene( LevelDescription * level );
+	static GameLevelScene* nodeWithLevel( LevelDescription *level );
 
 	////////////////////////////////////////////////////
 	// Singleton pattern

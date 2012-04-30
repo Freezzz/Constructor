@@ -1658,6 +1658,8 @@ Value::CommentInfo::~CommentInfo()
 void 
 Value::CommentInfo::setComment( const char *text )
 {
+   return; // comments aren't standard, our Python JSON parser don't support them
+
    if ( comment_ )
       releaseStringValue( comment_ );
    JSON_ASSERT( text != 0 );

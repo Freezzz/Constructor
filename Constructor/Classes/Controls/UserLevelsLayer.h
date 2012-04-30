@@ -21,7 +21,7 @@ class UserLevelsLayer : public CCLayer {
 private:
 	CCPoint m_beginPos;
 	CCMenu* m_menu;
-	vector<UserLevelDescribtion*> * m_levels;
+	vector<UserLevelDescription*> * m_levels;
 	
 	virtual bool init();
 	
