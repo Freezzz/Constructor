@@ -23,7 +23,7 @@ bool InventoryLayer::init(){
 	CCSprite * bg = CCSprite::spriteWithFile("inventory_bg.png");
 	setContentSize(bg->getContentSize());
 	addChild(bg);
-	bg->setAnchorPoint(CCPoint(-0.1,0.5));
+	bg->setAnchorPoint(CCPoint(0,0.5));
 	
 	return true;
 }
@@ -32,10 +32,10 @@ bool InventoryLayer::init(){
 // Shows and hides inventory 
 //////////////////////////////////////////////////// 
 void InventoryLayer::setOnScreen(bool isOnscreen){
-	CCPoint location = this->getPosition();
+	CCPoint location = getPosition();
 	location.x = 0; // assuming it will be always on the left side of the screen
 	if (!isOnscreen) {
-		location.x -= (this->getContentSize().width +50);
+		location.x -= getContentSize().width;
 	}
 	this->runAction(CCMoveTo::actionWithDuration(0.5, location));
 }
@@ -83,17 +83,20 @@ void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 	
 	// Quantity counters
 	string str;
+	int fontSize = 22;
 	if (item->m_maxQuantity > 0) {
 		stringstream q;
-		q << item->m_maxQuantity << "/" << item->m_maxQuantity;
+		q << item->m_maxQuantity;
 		str = q.str();
 	}else {
 		str = "∞";
+		fontSize = 26;		
 	}
 	
-	CCLabelTTF * quantityLabel = CCLabelTTF::labelWithString(str.c_str(), "Arial", 16);
-	quantityLabel->setPosition(CCPoint(60, BUTTON_SIZE * (3-(int)m_buttons.size()) ) );
-	quantityLabel->setAnchorPoint(CCPoint(0, 0.5));
+	CCLabelTTF * quantityLabel = CCLabelTTF::labelWithString(str.c_str(), "Arial", fontSize);
+	quantityLabel->setPosition(CCPoint(45, BUTTON_SIZE * (3-(int)m_buttons.size())-25) );
+    quantityLabel->setColor(ccc3(0, 255, 0));
+	quantityLabel->setAnchorPoint(CCPoint(0, 0));
 	m_quantityLabels.push_back(quantityLabel);
 	addChild(quantityLabel);
 }
@@ -126,8 +129,13 @@ void InventoryLayer::updateInventryItemQuantity(InventoryItem *item){
 		}
 	}
 	stringstream q;
-	q << item->m_maxQuantity - item->m_quantity << "/" << item->m_maxQuantity;
+	q << item->m_maxQuantity - item->m_quantity;
 	m_quantityLabels.at(itemIndex)->setString(q.str().c_str());
+    if (item->m_maxQuantity - item->m_quantity == 0) {
+        m_quantityLabels.at(itemIndex)->setColor(ccc3(255, 0, 0));
+    }else {
+        m_quantityLabels.at(itemIndex)->setColor(ccc3(0, 255, 0));
+    }
 
 }
 
