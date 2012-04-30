@@ -297,14 +297,14 @@ void GameLevelScene::loadFile( const char *file )
 bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 {
 	if ( ! isEditing() ) {
-        return false;
-    }
-	
+		return false;
+	}
+
 	if(!(
-	   (m_touchCount == 0 ) || // FIRST TOUCH
-	   (m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == GameObject::Moving ||
-	    m_selectedObject->m_state == GameObject::Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
-	   )){
+	(m_touchCount == 0 ) || // FIRST TOUCH
+	(m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == GameObject::Moving ||
+		m_selectedObject->m_state == GameObject::Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
+	)){
 		CCLog("ALREADY TOUCHING skiping touch! %d", m_touchCount);
 		return false;
 	}
@@ -312,7 +312,7 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 	CCLog("NEW TOUCH! %d", m_touchCount);
 
 	CCPoint location = pTouch->locationInView();
-    location = CCDirector::sharedDirector()->convertToGL(location);
+	location = CCDirector::sharedDirector()->convertToGL(location);
 
 	if (m_touchCount == 1) {
 		m_firstTouchID = pTouch->m_uID;
@@ -322,38 +322,39 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 		m_selectedObject->rotate(location);
 		return true;
 	}
-	
+
 
 	// If user taped on utility buttons
 	if (tapUtilityButtons(location)) {
 		return true;
 	}
-	
+
 	if (m_selectedObject != NULL) {
 		setUtilityButtonsVisibleFoSelectedObject(false);
 		m_selectedObject->setSelected(false);
 		m_selectedObject = NULL;
 	}
-	
+
 	// Check if need to create new object
 	GameObject * newObject = m_inventoryLayer->getGameObjectForTapLocation(location);
-    if (newObject != NULL) {
-		m_gameObjects->addObject(newObject);		
-		addChild(newObject, newObject->defaultZOrder);		
-        newObject->setObjectState( GameObject::Moving );
-        newObject->setSelected(true);     
-		newObject->move(location);		
+	if (newObject != NULL) {
+		m_gameObjects->addObject(newObject);
+		addChild(newObject, newObject->defaultZOrder);
+		newObject->setObjectState( GameObject::Moving );
+		newObject->setSelected(true);
+		newObject->move(location);
 		m_selectedObject = newObject;
-        return true;
-    }
+		return true;
+	}
 
-	
-    // If touch is in game zone look for touched object
-    if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
-        
+
+	// If touch is in game zone look for touched object
+	// nope, check it in anyway....
+	// if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
+	if( true ) {
 		// Search for selected object taking in account z-order
-        for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
-            GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
+		for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
+			GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
 			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {
 				if (m_selectedObject == NULL) {
 					m_selectedObject = tmp;
@@ -362,8 +363,8 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 				if (m_selectedObject->defaultZOrder < tmp->defaultZOrder) {
 					m_selectedObject = tmp;
 				}
-            }
-        }
+			}
+		}
 		if (!m_selectedObject) {
 			return true;
 		}
@@ -374,8 +375,8 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 		}
 		setUtilityButtonsVisibleFoSelectedObject(true);
 		return true;
-    }
-    return true;
+	}
+	return true;
 }
 
 //////////////////////////////////////////////////// 
@@ -429,7 +430,7 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
     location = CCDirector::sharedDirector()->convertToGL(location);
     
     // If touch is not in game zone
-    if (!CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving) {
+    if( ! CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving && m_selectedObject->isDeletable ) {
 		m_gameObjects->removeObject(m_selectedObject);
         m_selectedObject->destroy();
         m_selectedObject=NULL;        
