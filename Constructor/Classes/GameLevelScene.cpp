@@ -309,7 +309,6 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 		return false;
 	}
 	m_touchCount++;
-	CCLog("NEW TOUCH! %d", m_touchCount);
 
 	CCPoint location = pTouch->locationInView();
 	location = CCDirector::sharedDirector()->convertToGL(location);
@@ -318,8 +317,10 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 		m_firstTouchID = pTouch->m_uID;
 	}else if( m_selectedObject->isRotatable){
 		m_secondTouchID = pTouch->m_uID;
+		m_selectedObject->setObjectState( GameObject::Idile );		
 		m_selectedObject->setObjectState( GameObject::Rotating );
-		m_selectedObject->rotate(location);
+		m_initialTouchAngle=atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y);
+		m_initialObjectAngle = m_selectedObject->m_objectBody->GetAngle();
 		return true;
 	}
 
@@ -396,7 +397,7 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
 						); //this grabs the radians for us
 		
-		m_selectedObject->rotate(CC_RADIANS_TO_DEGREES(radians));
+		m_selectedObject->rotate(-1*CC_RADIANS_TO_DEGREES(m_initialObjectAngle+(m_initialTouchAngle-radians)));
 		return;
 	}
 	
@@ -414,7 +415,6 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
 {
 	m_touchCount--;	
 	
-	CCLog("TOUCH ENDED! %d id: %d", m_touchCount, pTouch->m_uID);
 	// Initial finger is still taped
 	if (m_touchCount == 1 && (int) pTouch->m_uID == m_secondTouchID) {
 		m_selectedObject->setObjectState( GameObject::Idile);

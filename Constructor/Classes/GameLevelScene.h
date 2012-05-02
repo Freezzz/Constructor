@@ -45,6 +45,10 @@ private:
 	int m_touchCount;
 	int m_firstTouchID;
 	int m_secondTouchID;
+	
+	// Multitouch rotation vars
+	float m_initialTouchAngle;
+	float m_initialObjectAngle;
 
 public:
 	enum GameState
