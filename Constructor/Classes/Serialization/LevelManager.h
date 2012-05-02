@@ -33,7 +33,11 @@ struct StoryLevelDescription : public LevelDescription
 
 	string getPath( ) const
 	{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		return string( CCFileUtils::fullPathFromRelativePath((string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name).c_str()) );
+#else
 		return string( string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name );
+#endif
 	}
 };
 struct SandboxLevelDescription : public LevelDescription
@@ -44,7 +48,11 @@ struct SandboxLevelDescription : public LevelDescription
 
 	string getPath( ) const
 	{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		return string( CCFileUtils::fullPathFromRelativePath((string(CONSTRUCTOR_SANDBOX_LEVEL_PATH) + name).c_str()) );		
+#else
 		return string( string(CONSTRUCTOR_SANDBOX_LEVEL_PATH) + name );
+#endif
 	}
 };
 struct UserLevelDescription : public LevelDescription
