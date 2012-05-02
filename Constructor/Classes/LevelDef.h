@@ -10,6 +10,8 @@ class InventoryItem;
 class GameWorld;
 class GameObject;
 
+struct LevelDescription;
+
 struct LevelDef
 {
 	enum WinConditions
@@ -50,8 +52,8 @@ public:
 	~LevelDef( );
 
 public:
-	static LevelDef *loadFromFile( const char *fileName );
-	bool saveToFile( const char *fileName );
+	static LevelDef *loadFromFile( LevelDescription *p );
+	bool saveToFile( LevelDescription *p );
 
 };
 

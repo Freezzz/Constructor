@@ -7,6 +7,7 @@
 #include "Serialization/ConstructorJSon.h"
 #include "Constants.h"
 #include <Box2D/Box2D.h>
+#include "Serialization/LevelManager.h"
 
 std::ostream& operator<<( std::ostream &out, LevelDef &l )
 {
@@ -29,9 +30,9 @@ LevelDef::~LevelDef( )
 {
 }
 
-LevelDef* LevelDef::loadFromFile( const char *fileName )
+LevelDef* LevelDef::loadFromFile( LevelDescription *ld )
 {
-	std::string filePath = CCFileUtils::fullPathFromRelativePath(fileName);
+	std::string filePath = ld->getPath();
 	
 	LevelDef *l = new LevelDef;
 	std::cout << "Loading level " << filePath << "..." << std::endl;
@@ -66,16 +67,10 @@ LevelDef* LevelDef::loadFromFile( const char *fileName )
     
 	return l;
 }
-bool LevelDef::saveToFile( const char *fileName )
+bool LevelDef::saveToFile( LevelDescription *ld )
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	std::string filePath = fileName;
-#else
-    std::string filePath = CCFileUtils::getWriteablePath() + fileName;
-#endif  
-    
-    
-	
+	std::string filePath = ld->getPath();
+
 	std::cout << "Saving level " << filePath << "..." << std::endl;
 	std::cout << (*this) << std::endl;
     

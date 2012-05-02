@@ -82,13 +82,15 @@ void UserLevelsLayer::refreshList(){
 	populateMenu();
 }
 
-void UserLevelsLayer::levelTapCallback(cocos2d::CCObject *sender){
-	GameLevelScene::sharedGameScene()->loadFile( m_levels->at(((CCMenuItemLabel*)sender)->getTag())->getPath().c_str());	
+void UserLevelsLayer::levelTapCallback( cocos2d::CCObject *sender )
+{
+	GameLevelScene::sharedGameScene()->loadFile( m_levels->at(((CCMenuItemLabel*)sender)->getTag()) );
 	setIsVisible(false);	
 	((CreationLayer*)getParent())->setMenuEnable(true);
 }
 
-void UserLevelsLayer::closeButtonCallback(cocos2d::CCObject *sender){
+void UserLevelsLayer::closeButtonCallback( cocos2d::CCObject *sender )
+{
 	setIsVisible(false);
 	((CreationLayer*)getParent())->setMenuEnable(true);	
 }

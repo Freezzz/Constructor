@@ -103,7 +103,7 @@ void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 void InventoryLayer::removeInventoryItem( InventoryItem *item )
 {
 	int itemIndex = -1;
-	for (int i = 0; i< m_buttons.size(); i++) {
+	for( unsigned int i = 0; i < m_buttons.size(); ++i ) {
 		if (item == m_buttons.at(i)) {
 			itemIndex = i;
 			break;
@@ -122,7 +122,7 @@ void InventoryLayer::updateInventryItemQuantity(InventoryItem *item){
 		return;
 	}
 	int itemIndex = -1;
-	for (int i = 0; i< m_buttons.size(); i++) {
+	for( unsigned int i = 0; i< m_buttons.size(); ++i ) {
 		if (item == m_buttons.at(i)) {
 			itemIndex = i;
 			break;

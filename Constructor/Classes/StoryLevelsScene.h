@@ -20,7 +20,7 @@ using namespace cocos2d;
 ///////////////////////////////////////////////////
 class StoryLevelsScene : public CCLayer {
 private:
-	vector<StoryLevelDescribtion*> * m_levels;
+	vector<StoryLevelDescription*> * m_levels;
 protected:
 	virtual bool init();
 	

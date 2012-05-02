@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////// 
 // GameLevelScene init
 //////////////////////////////////////////////////// 
-bool GameLevelScene::init( const char *file )
+bool GameLevelScene::init( LevelDescription *level )
 {
 	if ( !CCLayer::init() )
 	{
@@ -81,8 +81,8 @@ bool GameLevelScene::init( const char *file )
 	// loading the level
 	// not using loadFile because it also resets the current state
 	// but that would give problems, since it's not initialized yet.
-	LevelDef *ld = LevelDef::loadFromFile( file );
-	m_levelFile = strdup( file );
+	LevelDef *ld = LevelDef::loadFromFile( level );
+	m_levelFile = level;
 	loadLevel( ld );
 
 	scheduleUpdate();
@@ -191,7 +191,9 @@ bool GameLevelScene::checkVictory()
 
 	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
 	while( cont ) {
-		if( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target ) {
+		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
+			  || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+			&& cont->contact->IsTouching() ) {
 			return 1;
 		}
 		cont = cont->next;
@@ -236,9 +238,9 @@ LevelDef* GameLevelScene::getCurrentLevelDef( )
 	ld->loseConditions = LevelDef::EnterAreaLose;
 	return ld;
 }
-void GameLevelScene::saveFile( const char *file )
+void GameLevelScene::saveFile( LevelDescription *level )
 {
-	getCurrentLevelDef()->saveToFile( file );
+	getCurrentLevelDef()->saveToFile( level );
 }
 void GameLevelScene::loadLevel( LevelDef *ld )
 {
@@ -272,9 +274,9 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 
 	enterEditing();
 }
-void GameLevelScene::loadFile( const char *file )
+void GameLevelScene::loadFile( LevelDescription *level )
 {
-	m_levelFile = strdup( file );
+	m_levelFile = level;
 
 	wipeWorld(); // removing former objects
 	removeChild( gameWorld, 1 );
@@ -286,7 +288,7 @@ void GameLevelScene::loadFile( const char *file )
 		}
 	}
 
-	LevelDef *ld = LevelDef::loadFromFile( file );
+	LevelDef *ld = LevelDef::loadFromFile( level );
 	loadLevel( ld );
 }
 
@@ -508,13 +510,13 @@ void GameLevelScene::registerWithTouchDispatcher()
 //////////////////////////////////////////////////// 
 // Static factory creation methods
 //////////////////////////////////////////////////// 
-CCScene* GameLevelScene::scene( const char *file )
+CCScene* GameLevelScene::scene( LevelDescription *level )
 {
 	// 'scene' is an autorelease object
 	CCScene *scene = CCScene::node( );
 
 	// 'layer' is an autorelease object
-	GameLevelScene *layer = GameLevelScene::nodeWithLevel( file );
+	GameLevelScene *layer = GameLevelScene::nodeWithLevel( level );
 
 	// add layer as a child to scene
 	scene->addChild( layer );
@@ -522,10 +524,10 @@ CCScene* GameLevelScene::scene( const char *file )
 	// return the scene
 	return scene;
 }
-GameLevelScene* GameLevelScene::nodeWithLevel( const char *file )
+GameLevelScene* GameLevelScene::nodeWithLevel( LevelDescription *level )
 {
 	GameLevelScene *r = new GameLevelScene;
-	if( r && r->init( file ) ) {
+	if( r && r->init( level ) ) {
 		r->autorelease();
 		return r;
 	}
