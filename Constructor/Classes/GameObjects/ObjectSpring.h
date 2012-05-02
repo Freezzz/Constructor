@@ -24,6 +24,9 @@ class ObjectSpring : public GameObject
 private:
 	b2Body * m_secondBody;
 
+	CCSprite * m_fistBodySprite;
+	CCSprite * m_secondBodySprite;	
+	
 	b2Vec2 m_firstBodyOriginalLocation;
 	float m_firstBodyOriginalRotation;
 

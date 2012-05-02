@@ -21,16 +21,27 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( SpringInventoryItem, ObjectSpring )
 bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+	m_objectSprite->setAnchorPoint(CCPoint(0,0.5));		
 	m_objectSprite->setScaleY(0.3);
-
-	m_fixtureDef = fixtureDef;
-
+	
 	// Adapt container to the graphical rapresentation
-	setContentSize(m_objectSprite->getContentSize());
-	m_objectSprite->setAnchorPoint(CCPoint(0,0.5));	
-	setAnchorPoint(CCPoint(0.5,0)); // CCNode AP default is 0,0
 
+	
+	setAnchorPoint(CCPoint(0.5,0)); // CCNode AP default is 0,0
+	
 	addChild(m_objectSprite);
+
+	m_fistBodySprite = CCSprite::spriteWithFile("spring_solid.png");
+	addChild(m_fistBodySprite);
+	m_fistBodySprite->setAnchorPoint(CCPoint(0.5,0.5));	
+	
+	m_secondBodySprite = CCSprite::spriteWithFile("spring_solid.png");
+	addChild(m_secondBodySprite);
+	m_secondBodySprite->setAnchorPoint(CCPoint(0.5,0.5));	
+	
+	setContentSize(CCSize(m_secondBodySprite->getContentSize().width, m_secondBodySprite->getContentSize().height * 2));
+	
+	m_fixtureDef = fixtureDef;
 	
 	isStatic = false;
 	isMovable = true;
@@ -114,6 +125,10 @@ void ObjectSpring::update(ccTime dt){
         setPosition( midPoint );
         setRotation( -CC_RADIANS_TO_DEGREES(atan2(p2.y-p1.y, p2.x-p1.x))+ 90);
         m_objectSprite->setScaleY(distance/(MAX_LENGHT));
+		
+
+		m_fistBodySprite->setPosition(convertToNodeSpace(p1));
+		m_secondBodySprite->setPosition(convertToNodeSpace(p2));
     }
 }
 
