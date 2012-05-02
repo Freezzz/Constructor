@@ -15,10 +15,10 @@ using namespace cocos2d;
 class LevelDef;
 
 #define CONSTRUCTOR_LEVEL_PATH            "levels/"
-#define CONSTRUCTOR_STORY_LEVEL_PATH      CONSTRUCTOR_LEVEL_PATH "story_levels/"
-#define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CONSTRUCTOR_LEVEL_PATH "sandboxes/"
+#define CONSTRUCTOR_STORY_LEVEL_PATH      CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "story_levels/" )
+#define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "sandboxes/" )
 
-#define CONSTRUCTOR_USER_LEVEL_PATH       ( ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels/" ).c_str() )
+#define CONSTRUCTOR_USER_LEVEL_PATH       ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels/" )
 
 struct LevelDescription
 {
@@ -33,11 +33,7 @@ struct StoryLevelDescription : public LevelDescription
 
 	string getPath( ) const
 	{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-		return string( CCFileUtils::fullPathFromRelativePath((string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name).c_str()) );
-#else
-		return string( string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name );
-#endif
+		return string(CONSTRUCTOR_STORY_LEVEL_PATH) + chapter + "/" + name;
 	}
 };
 struct SandboxLevelDescription : public LevelDescription
@@ -48,11 +44,7 @@ struct SandboxLevelDescription : public LevelDescription
 
 	string getPath( ) const
 	{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-		return string( CCFileUtils::fullPathFromRelativePath((string(CONSTRUCTOR_SANDBOX_LEVEL_PATH) + name).c_str()) );		
-#else
-		return string( string(CONSTRUCTOR_SANDBOX_LEVEL_PATH) + name );
-#endif
+		return CONSTRUCTOR_SANDBOX_LEVEL_PATH + name;
 	}
 };
 struct UserLevelDescription : public LevelDescription

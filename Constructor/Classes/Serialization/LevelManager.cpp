@@ -25,7 +25,7 @@
 LevelManager::LevelManager( )
 {
 	// creating user level directory
-	mkdir( CONSTRUCTOR_USER_LEVEL_PATH, 0755 );
+	mkdir( CONSTRUCTOR_USER_LEVEL_PATH.c_str(), 0755 );
 	
 	m_currentUserLevel = CCUserDefault::sharedUserDefault()->getIntegerForKey("CURRENT_USER_LEVEL", 0);
 	m_lastComleteIndex = -1;
@@ -124,7 +124,7 @@ void LevelManager::loadNextStoryLevel( )
 //////////////////////////////////////////////////// 
 void LevelManager::loadUserLevelList( )
 {
-	DIR *dir = opendir( CONSTRUCTOR_USER_LEVEL_PATH );
+	DIR *dir = opendir( CONSTRUCTOR_USER_LEVEL_PATH.c_str() );
 	if( ! dir ) {
 		std::cout << "Couldn't find user directory: " << CONSTRUCTOR_USER_LEVEL_PATH << std::endl;
 		return ;
