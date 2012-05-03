@@ -97,7 +97,7 @@ void ObjectGlue::onMovementEnded(){
 	while (cont != NULL) {
 		
 		// If contanc between two gameObjects. TODO: Improve check
-		if (cont->GetFixtureA()->GetBody() == m_objectBody || cont->GetFixtureB()->GetBody() == m_objectBody) {
+		if (cont->IsTouching() && (cont->GetFixtureA()->GetBody() == m_objectBody || cont->GetFixtureB()->GetBody() == m_objectBody)) {
 			weldObjectsAtContact(cont);
 		}
 		cont = cont->GetNext();
