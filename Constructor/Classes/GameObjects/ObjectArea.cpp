@@ -72,6 +72,6 @@ void ObjectArea::setBody( b2Body *b )
 {
 	GameObject::setBody( b );
 //	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), ccc4f(255, 255, 255, 255), ccc4f(255, 0, 0, 255));
-	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 0, 0, 255));
+	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
 }
 

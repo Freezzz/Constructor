@@ -91,11 +91,12 @@ void FixtureFiller::drawTextured(){
 	glTexCoordPointer(2, GL_FLOAT, 0, m_textureCoordinates);	
 	glDrawArrays(GL_TRIANGLES, 0, m_areaPointsCount);
 	
-	
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glVertexPointer(2, GL_FLOAT, 0, m_glVertixes);	
 	glColor4f(m_borderColor.r, m_borderColor.g, m_borderColor.b, m_borderColor.a);
+	glLineWidth(2);
 	glDrawArrays(GL_LINE_LOOP, 0, m_glVertexCount);
-	
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);	
 	glEnableClientState(GL_COLOR_ARRAY);
 }
 
