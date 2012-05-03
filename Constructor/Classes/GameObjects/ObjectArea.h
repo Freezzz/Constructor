@@ -4,6 +4,7 @@
 
 #include "cocos2d.h"
 #include "GameObject.h"
+#include "FixtureFiller.h"
 using namespace cocos2d;
 
 INVENTORYITEM_CLASS_DEF( AreaInventoryItem , ObjectArea, Area )
@@ -13,12 +14,17 @@ INVENTORYITEM_CLASS_DEF( AreaInventoryItem , ObjectArea, Area )
 ///////////////////////////////////////////////////
 class ObjectArea : public GameObject
 {
-
+private:
+	CCSprite * m_fillSprite;
+	
+	FixtureFiller * m_fixtureFiller;
 protected:
 	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 
 	void createBodyAtPosition(CCPoint position);
 
+	void setBody( b2Body *b );
+	virtual void draw();
 public:
 	GAMEOBJECT_NODE_DEF( AreaInventoryItem , ObjectArea )
 };

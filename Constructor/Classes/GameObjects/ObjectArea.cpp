@@ -11,8 +11,13 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( AreaInventoryItem, ObjectArea )
 bool ObjectArea::init( std::string spritePath, b2FixtureDef *fixtureDef )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
-
 	m_fixtureDef = fixtureDef;
+	
+	//Define texture to fill the fixture ( must be added to node render properly )
+	m_fillSprite = CCSprite::spriteWithFile("stripes.png");
+	addChild(m_fillSprite);
+	m_fillSprite->setIsVisible(false);
+
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -34,6 +39,8 @@ bool ObjectArea::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	defaultZOrder = 20;
 
 	scheduleUpdate();
+	
+	m_fixtureFiller = NULL;
 	return true;
 }
 
@@ -54,3 +61,17 @@ void ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
 
 	setPosition(position);
 }
+void ObjectArea::draw(){
+	CCNode::draw();
+	if(m_fixtureFiller!=NULL){
+		m_fixtureFiller->draw();
+	}
+}
+
+void ObjectArea::setBody( b2Body *b )
+{
+	GameObject::setBody( b );
+//	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), ccc4f(255, 255, 255, 255), ccc4f(255, 0, 0, 255));
+	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 0, 0, 255));
+}
+
