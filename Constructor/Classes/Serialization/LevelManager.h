@@ -15,8 +15,8 @@ using namespace cocos2d;
 class LevelDef;
 
 #define CONSTRUCTOR_LEVEL_PATH            "levels/"
-#define CONSTRUCTOR_STORY_LEVEL_PATH      CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "story_levels/" )
-#define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "sandboxes/" )
+#define CONSTRUCTOR_STORY_LEVEL_PATH      CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "story_levels" ) + string("/")
+#define CONSTRUCTOR_SANDBOX_LEVEL_PATH    CCFileUtils::fullPathFromRelativePath( CONSTRUCTOR_LEVEL_PATH "sandboxes/" ) + string("/")
 
 #define CONSTRUCTOR_USER_LEVEL_PATH       ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels/" )
 

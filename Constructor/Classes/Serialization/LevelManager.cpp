@@ -72,7 +72,7 @@ void LevelManager::loadStoryLevelList( string chapter )
 }
 void LevelManager::loadStoryLevelList( )
 {
-	DIR *dir = opendir( CCFileUtils::fullPathFromRelativePath(CONSTRUCTOR_STORY_LEVEL_PATH) );
+	DIR *dir = opendir((CONSTRUCTOR_STORY_LEVEL_PATH).c_str() );
 	if( ! dir ) {
 		std::cout << "Couldn't find story level directory: " << CONSTRUCTOR_STORY_LEVEL_PATH << std::endl;
 		return ;
@@ -92,7 +92,6 @@ void LevelManager::loadStoryLevelList( )
 
 void LevelManager::completeUserLevel( LevelDescription *level )
 {
-	CCLOG( "Level %s of chapter %s complete", level->name.c_str(), level->chapter.c_str() );
 	m_lastComleteIndex = -1;
 	for (unsigned int i = 0; i < m_storyLevels.size(); i++) {
 		if( m_storyLevels.at(i)->getPath() == level->getPath() ) {
