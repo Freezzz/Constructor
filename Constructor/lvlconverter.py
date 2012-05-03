@@ -100,7 +100,7 @@ def setQuantities(data):
 def writeOut(data):
 	print "File name:"
 	reply = sys.stdin.readline().strip();
-	s = json.dumps(data,sort_keys=True, indent=2)	
+	s = json.dumps(data,sort_keys=False, indent=2)	
 	f = open(destination+"/"+reply, 'w+')
 	f.write(s)
 	f.close()

@@ -1,0 +1,796 @@
+{
+  "lose conditions": 0, 
+  "win conditions": 0, 
+  "name": "rotate.clz", 
+  "game objects": [
+    {
+      "body": 11, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 0, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 8, 
+      "isStatic": true, 
+      "isRotatable": false, 
+      "inventory item": 6, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 7, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 2, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 6, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 2, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 5, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 4, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 4, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 4, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 3, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 4, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 2, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "inventory item": 4, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 1, 
+      "isStatic": true, 
+      "isRotatable": false, 
+      "inventory item": 1, 
+      "isMovable": false, 
+      "isDeletable": false
+    }, 
+    {
+      "body": 0, 
+      "isStatic": true, 
+      "isRotatable": false, 
+      "inventory item": 1, 
+      "isMovable": false, 
+      "isDeletable": false
+    }
+  ], 
+  "win area": 1, 
+  "difficulty": 1.0, 
+  "theme": "test theme", 
+  "game world": {
+    "physics world": {
+      "body": [
+        {
+          "angle": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.515625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 2.747785568237305, 
+            "x": 27.171875
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.515625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 1.640335917472839, 
+            "x": 27.140625
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "linearVelocity": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.015625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "sensor": true, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "position": {
+            "y": 16.02829551696777, 
+            "x": 18.671875
+          }, 
+          "angle": 0, 
+          "type": 0
+        }, 
+        {
+          "linearVelocity": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.015625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "sensor": true, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "position": {
+            "y": 16.3743782043457, 
+            "x": 17.90153312683105
+          }, 
+          "angle": 0, 
+          "type": 0
+        }, 
+        {
+          "linearVelocity": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.015625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "sensor": true, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "position": {
+            "y": 13.15401935577393, 
+            "x": 22.69009017944336
+          }, 
+          "angle": 0, 
+          "type": 0
+        }, 
+        {
+          "linearVelocity": 0, 
+          "fixture": [
+            {
+              "circle": {
+                "radius": 0.015625, 
+                "center": 0
+              }, 
+              "restitution": 0.5, 
+              "sensor": true, 
+              "friction": 0.1000000014901161, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "position": {
+            "y": 19.4056282043457, 
+            "x": 13.81444835662842
+          }, 
+          "angle": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": -0.6012982130050659, 
+          "fixture": [
+            {
+              "restitution": 0.300000011920929, 
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -0.203125, 
+                    -0.203125, 
+                    0.203125, 
+                    0.203125
+                  ], 
+                  "x": [
+                    -2.859375, 
+                    2.859375, 
+                    2.859375, 
+                    -2.859375
+                  ]
+                }
+              }, 
+              "friction": 0.300000011920929, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 14.68057346343994, 
+            "x": 20.65789604187012
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": -0.5965776443481445, 
+          "fixture": [
+            {
+              "restitution": 0.300000011920929, 
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -0.203125, 
+                    -0.203125, 
+                    0.203125, 
+                    0.203125
+                  ], 
+                  "x": [
+                    -2.859375, 
+                    2.859375, 
+                    2.859375, 
+                    -2.859375
+                  ]
+                }
+              }, 
+              "friction": 0.300000011920929, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 17.89834213256836, 
+            "x": 15.91105842590332
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": -1.577095746994019, 
+          "fixture": [
+            {
+              "sensor": true, 
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -10.0, 
+                    -10.0, 
+                    10.0, 
+                    10.0
+                  ], 
+                  "x": [
+                    -1.0, 
+                    1.0, 
+                    1.0, 
+                    -1.0
+                  ]
+                }
+              }, 
+              "friction": 0.300000011920929, 
+              "restitution": 0.300000011920929
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 1.631367206573486, 
+            "x": 16.72111701965332
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": 0, 
+          "fixture": [
+            {
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -11.06350040435791, 
+                    -11.06350040435791, 
+                    -11.06149959564209, 
+                    -11.06149959564209
+                  ], 
+                  "x": [
+                    -16.0, 
+                    16.0, 
+                    16.0, 
+                    -16.0
+                  ]
+                }
+              }, 
+              "friction": 0.2000000029802322
+            }, 
+            {
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    11.06149959564209, 
+                    11.06149959564209, 
+                    11.06350040435791, 
+                    11.06350040435791
+                  ], 
+                  "x": [
+                    -16.0, 
+                    16.0, 
+                    16.0, 
+                    -16.0
+                  ]
+                }
+              }, 
+              "friction": 0.2000000029802322
+            }, 
+            {
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -11.0625, 
+                    -11.0625, 
+                    11.0625, 
+                    11.0625
+                  ], 
+                  "x": [
+                    -16.00099945068359, 
+                    -15.99899959564209, 
+                    -15.99899959564209, 
+                    -16.00099945068359
+                  ]
+                }
+              }, 
+              "friction": 0.2000000029802322
+            }, 
+            {
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -11.0625, 
+                    -11.0625, 
+                    11.0625, 
+                    11.0625
+                  ], 
+                  "x": [
+                    15.99899959564209, 
+                    16.00099945068359, 
+                    16.00099945068359, 
+                    15.99899959564209
+                  ]
+                }
+              }, 
+              "friction": 0.2000000029802322
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 12.0, 
+            "x": 16.0
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": 0, 
+          "name": "null body", 
+          "fixture": [
+            {
+              "restitution": 0.300000011920929, 
+              "sensor": true, 
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -0.0625, 
+                    -0.0625, 
+                    0.0625, 
+                    0.0625
+                  ], 
+                  "x": [
+                    -0.0625, 
+                    0.0625, 
+                    0.0625, 
+                    -0.0625
+                  ]
+                }
+              }, 
+              "friction": 0.300000011920929, 
+              "density": 1
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 12.0, 
+            "x": 16.0
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }, 
+        {
+          "angle": 0, 
+          "fixture": [
+            {
+              "restitution": 0.300000011920929, 
+              "polygon": {
+                "vertices": {
+                  "y": [
+                    -0.78125, 
+                    -0.78125, 
+                    0.78125, 
+                    0.78125
+                  ], 
+                  "x": [
+                    -0.78125, 
+                    0.78125, 
+                    0.78125, 
+                    -0.78125
+                  ]
+                }
+              }, 
+              "friction": 0.5, 
+              "density": 0.300000011920929
+            }
+          ], 
+          "angularVelocity": 0, 
+          "awake": true, 
+          "position": {
+            "y": 19.20383071899414, 
+            "x": 17.11652374267578
+          }, 
+          "linearVelocity": 0, 
+          "type": 0
+        }
+      ], 
+      "gravity": {
+        "y": -9.800000190734863, 
+        "x": 0
+      }, 
+      "allowSleep": true, 
+      "joint": [
+        {
+          "lowerLimit": 0, 
+          "bodyA": 2, 
+          "jointSpeed": 0, 
+          "bodyB": 6, 
+          "refAngle": 0, 
+          "maxMotorTorque": 0, 
+          "anchorB": {
+            "y": -0.01218461990356445, 
+            "x": -2.400101184844971
+          }, 
+          "enableLimit": false, 
+          "motorSpeed": 0, 
+          "anchorA": 0, 
+          "upperLimit": 0, 
+          "type": "revolute", 
+          "enableMotor": false
+        }, 
+        {
+          "lowerLimit": 0, 
+          "bodyA": 3, 
+          "jointSpeed": 0, 
+          "bodyB": 7, 
+          "refAngle": 0, 
+          "maxMotorTorque": 0, 
+          "anchorB": {
+            "y": -0.1424415111541748, 
+            "x": 2.50283145904541
+          }, 
+          "enableLimit": false, 
+          "motorSpeed": 0, 
+          "anchorA": 0, 
+          "upperLimit": 0, 
+          "type": "revolute", 
+          "enableMotor": false
+        }, 
+        {
+          "lowerLimit": 0, 
+          "bodyA": 4, 
+          "jointSpeed": 0, 
+          "bodyB": 6, 
+          "refAngle": 0, 
+          "maxMotorTorque": 0, 
+          "anchorB": {
+            "y": -0.1091598272323608, 
+            "x": 2.539343357086182
+          }, 
+          "enableLimit": false, 
+          "motorSpeed": 0, 
+          "anchorA": 0, 
+          "upperLimit": 0, 
+          "type": "revolute", 
+          "enableMotor": false
+        }, 
+        {
+          "lowerLimit": 0, 
+          "bodyA": 5, 
+          "jointSpeed": 0, 
+          "bodyB": 7, 
+          "refAngle": 0, 
+          "maxMotorTorque": 0, 
+          "anchorB": {
+            "y": 0.06901609897613525, 
+            "x": -2.581263542175293
+          }, 
+          "enableLimit": false, 
+          "motorSpeed": 0, 
+          "anchorA": 0, 
+          "upperLimit": 0, 
+          "type": "revolute", 
+          "enableMotor": false
+        }
+      ], 
+      "subStepping": false, 
+      "autoClearForces": true, 
+      "continuousPhysics": true, 
+      "warmStarting": true
+    }
+  }, 
+  "target": 0, 
+  "inventory items": [
+    {
+      "available": false, 
+      "isStatic": false, 
+      "isRotatable": true, 
+      "max quantity": 0, 
+      "fixtureDef": {
+        "isSensor": false, 
+        "restitution": 0.300000011920929, 
+        "shape": {
+          "polygon": {
+            "vertices": {
+              "y": [
+                -0.78125, 
+                -0.78125, 
+                0.78125, 
+                0.78125
+              ], 
+              "x": [
+                -0.78125, 
+                0.78125, 
+                0.78125, 
+                -0.78125
+              ]
+            }
+          }
+        }, 
+        "friction": 0.300000011920929, 
+        "density": 1
+      }, 
+      "object sprite path": "Icon-Small-50.png", 
+      "item sprite path": "box.png", 
+      "isMovable": true, 
+      "type": 0, 
+      "isDeletable": true
+    }, 
+    {
+      "available": false, 
+      "isStatic": true, 
+      "isRotatable": false, 
+      "max quantity": 0, 
+      "fixtureDef": {
+        "isSensor": false, 
+        "restitution": 0.5, 
+        "shape": {
+          "circle": {
+            "radius": 0.515625, 
+            "center": 0
+          }
+        }, 
+        "friction": 0.1000000014901161, 
+        "density": 1
+      }, 
+      "object sprite path": "circle.png", 
+      "item sprite path": "fixed.png", 
+      "isMovable": true, 
+      "type": 0, 
+      "isDeletable": true
+    }, 
+    {
+      "available": true, 
+      "isStatic": false, 
+      "isRotatable": true, 
+      "max quantity": 3, 
+      "fixtureDef": {
+        "isSensor": false, 
+        "restitution": 0.300000011920929, 
+        "shape": {
+          "polygon": {
+            "vertices": {
+              "y": [
+                -0.203125, 
+                -0.203125, 
+                0.203125, 
+                0.203125
+              ], 
+              "x": [
+                -2.859375, 
+                2.859375, 
+                2.859375, 
+                -2.859375
+              ]
+            }
+          }
+        }, 
+        "friction": 0.300000011920929, 
+        "density": 1
+      }, 
+      "object sprite path": "panel.png", 
+      "item sprite path": "panel_btn.png", 
+      "isMovable": true, 
+      "type": 0, 
+      "isDeletable": true
+    }, 
+    {
+      "available": false, 
+      "isStatic": false, 
+      "isRotatable": false, 
+      "max quantity": 0, 
+      "fixtureDef": {
+        "isSensor": false, 
+        "restitution": 0.300000011920929, 
+        "shape": {
+          "polygon": {
+            "vertices": {
+              "y": [
+                -0.5, 
+                -0.5, 
+                0.5, 
+                0.5
+              ], 
+              "x": [
+                -0.78125, 
+                0.78125, 
+                0.78125, 
+                -0.78125
+              ]
+            }
+          }
+        }, 
+        "friction": 0.300000011920929, 
+        "density": 1
+      }, 
+      "object sprite path": "spring.png", 
+      "item sprite path": "spring_btn.png", 
+      "isMovable": true, 
+      "type": 3, 
+      "isDeletable": true
+    }, 
+    {
+      "available": true, 
+      "isStatic": false, 
+      "isRotatable": true, 
+      "max quantity": 6, 
+      "fixtureDef": {
+        "isSensor": true, 
+        "restitution": 0.5, 
+        "shape": {
+          "circle": {
+            "radius": 0.015625, 
+            "center": 0
+          }
+        }, 
+        "friction": 0.1000000014901161, 
+        "density": 1
+      }, 
+      "object sprite path": "pin.png", 
+      "item sprite path": "pin_btn.png", 
+      "isMovable": true, 
+      "type": 4, 
+      "isDeletable": true
+    }, 
+    {
+      "available": false, 
+      "isStatic": false, 
+      "isRotatable": true, 
+      "max quantity": 0, 
+      "fixtureDef": {
+        "isSensor": true, 
+        "restitution": 0.5, 
+        "shape": {
+          "polygon": {
+            "vertices": {
+              "y": [
+                -0.46875, 
+                -0.46875, 
+                0.46875, 
+                0.46875
+              ], 
+              "x": [
+                -0.5, 
+                0.5, 
+                0.5, 
+                -0.5
+              ]
+            }
+          }
+        }, 
+        "friction": 0.1000000014901161, 
+        "density": 1
+      }, 
+      "object sprite path": "glue.png", 
+      "item sprite path": "glue_btn.png", 
+      "isMovable": true, 
+      "type": 5, 
+      "isDeletable": true
+    },
+    {
+      "available": false, 
+      "isStatic": true, 
+      "isRotatable": true, 
+      "fixtureDef": {
+        "isSensor": true, 
+        "restitution": 0.5, 
+        "shape": {
+          "polygon": {
+            "vertices": {
+              "y": [
+                -1, 
+                -1, 
+                1, 
+                1
+              ], 
+              "x": [
+                -1, 
+                1, 
+                1, 
+                -1
+              ]
+            }
+          }
+        }, 
+        "friction": 0.1, 
+        "density": 1
+      }, 
+      "object sprite path": "blocks.png", 
+      "item sprite path": "blocks.png", 
+      "isMovable": true, 
+      "type": 1, 
+      "isDeletable": true
+    }
+ 
+  ]
+}
