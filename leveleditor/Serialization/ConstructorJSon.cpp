@@ -1,16 +1,8 @@
 
 #include "ConstructorJSon.h"
-
-#include "../GameObjects/GameObject.h"
-#include "../GameObjects/ObjectSimpleBox.h"
-#include "../GameObjects/ObjectArea.h"
-#include "../GameObjects/ObjectGlue.h"
-#include "../GameObjects/ObjectPin.h"
-#include "../GameObjects/ObjectSpring.h"
-
 #include "LevelDef.h"
 
-#include "GameWorld.h"
+#include <cassert>
 
 ConstructorJSon::ConstructorJSon( )
 	: b2dJson(1)
@@ -34,8 +26,8 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	// level physical world
 	Json::Value worldJson;
 	{
-		setBodyName( levelDef->gameWorld->umbelicoDelMondo, "null body" );
-		worldJson["physics world"] = b2j( levelDef->gameWorld->physicsWorld );
+		// setBodyName( levelDef->gameWorld->umbelicoDelMondo, "null body" );
+		// worldJson["physics world"] = b2j( levelDef->gameWorld->physicsWorld );
 	}
 	value["game world"] = worldJson;
 
@@ -47,11 +39,13 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	}
 
 	// game objects
-	for( unsigned int i = 0; i < levelDef->gameObjects.count(); i++ ) {
+	/*
+	for( unsigned int i = 0; i < levelDef->gameObjects.size(); ++ i ) {
 		GameObject *object = levelDef->gameObjects.getObjectAtIndex(i);
 		m_gameObjectIndexMap[object] = i;
-		value["game objects"][i] = cj( object );
+		// value["game objects"][i] = cj( object );
 	}
+	*/
 	{
 		value["target"] = this->lookupGameObjectIndex( levelDef->target );
 		value["win area"] = this->lookupGameObjectIndex( levelDef->winArea );
@@ -156,24 +150,25 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 {
 	Json::Value itemValue;
 
-	itemValue["type"] = item->getObjectType();
-	itemValue["name"] = item->getName();
+	itemValue["type"] = item->type;
+	itemValue["name"] = item->name;
 
 	itemValue["isStatic"] = item->isStatic;
 	itemValue["isMovable"] = item->isMovable;
 	itemValue["isRotatable"] = item->isRotatable;
 	itemValue["isDeletable"] = item->isDeletable;
 
-	itemValue["max quantity"] = item->m_maxQuantity;
+	itemValue["max quantity"] = item->maxQuantity;
 	itemValue["available"] = true;
 
-	itemValue["item sprite path"] = item->m_itemSpritePath;
-	itemValue["object sprite path"] = item->m_objectSpritePath;
+	itemValue["item sprite path"] = item->itemSpritePath;
+	itemValue["object sprite path"] = item->objectSpritePath;
 
-	itemValue["fixtureDef"] = b2j( item->m_fixtureDef );
+	itemValue["fixtureDef"] = b2j( item->fixtureDef );
 
 	return itemValue;
 }
+/*
 Json::Value ConstructorJSon::cj( GameObject* gameObject )
 {
 	Json::Value objectValue;
@@ -188,7 +183,7 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 
 	return objectValue;
 }
-
+*/
 
 
 LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
@@ -207,9 +202,9 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		Json::Value worldJson;
 		worldJson = value["game world"];
 
-		b2World *physicsWorld = j2b2World( worldJson["physics world"] );
-		b2Body *nullBody = getBodyByName( "null body" );
-		l->gameWorld = GameWorld::node( physicsWorld, nullBody );
+		//b2World *physicsWorld = j2b2World( worldJson["physics world"] );
+		//b2Body *nullBody = getBodyByName( "null body" );
+		// l->gameWorld = GameWorld::node( physicsWorld, nullBody );
 	}
 
 	// inventory items
@@ -226,6 +221,7 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 	}
 
 	// game objects
+	/*
 	{
 		int items = value["game objects"].size();
 		for( int i = 0; i < items; ++i ) {
@@ -234,15 +230,18 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 			m_gameObjects.push_back( object );
 		}
 	}
+	*/
+	/*
 	{
 		int targetIndex = value["target"].asInt();
-		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
+		assert( targetIndex < (int) m_gameObjects.size() );
 		l->target = m_gameObjects[targetIndex];
 		
 		targetIndex = value["win area"].asInt();
-		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
+		assert( targetIndex < (int) m_gameObjects.size() );
 		l->winArea = m_gameObjects[targetIndex];
 	}
+	*/
 
 	// win and lose conditions
 	l->winConditions = static_cast<LevelDef::WinConditions>( value["win conditions"].asInt() );
@@ -334,51 +333,26 @@ b2FixtureDef* ConstructorJSon::j2b2FixtureDef( Json::Value fixtureDefValue )
 }
 InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue, bool *available )
 {
-	ObjectType type = static_cast<ObjectType>( itemValue["type"].asInt() );
-	std::string name = itemValue["name"].asString();
-	std::string itemSprite = itemValue["item sprite path"].asString();
-	std::string objectSprite = itemValue["object sprite path"].asString();
-	
-	b2FixtureDef *fixtureDef = j2b2FixtureDef( itemValue["fixtureDef"] );
+	InventoryItem *item = new InventoryItem;
 
-	InventoryItem *item;
-	switch( type ) {
-		case SimpleBox:
-			item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, fixtureDef, name );
-			break;
-		case Area:
-			item = AreaInventoryItem::node( itemSprite, objectSprite, fixtureDef, name );
-			break;
-		case Spring:
-			item = SpringInventoryItem::node( itemSprite, objectSprite, fixtureDef, name );
-			break;
-		case Pin:
-			item = PinInventoryItem::node( itemSprite, objectSprite, fixtureDef, name );
-			break;
-		case Glue:
-			item = GlueInventoryItem::node( itemSprite, objectSprite, fixtureDef, name );
-			break;
-		default:
-			CCAssert( false, "Invalid inventory item" );
-	}
+	item->type = static_cast<ObjectType>( itemValue["type"].asInt() );
+	item->name = itemValue["name"].asString();
+	item->itemSpritePath = itemValue["item sprite path"].asString();
+	item->objectSpritePath = itemValue["object sprite path"].asString();
+	
+	item->fixtureDef = j2b2FixtureDef( itemValue["fixtureDef"] );
 
 	item->isStatic = itemValue["isStatic"].asBool();
 	item->isMovable = itemValue["isMovable"].asBool();
 	item->isRotatable = itemValue["isRotatable"].asBool();
 	item->isDeletable = itemValue["isDeletable"].asBool();
 
-	item->m_maxQuantity = itemValue["max quantity"].asInt();
-	if( available) {
-		if( itemValue["available"].isIntegral() ) {
-			*available = itemValue["available"].asBool();
-		}
-		else {
-			*available = true;
-		}
-	}
+	item->maxQuantity = itemValue["max quantity"].asInt();
+	item->available = itemValue["available"].asBool();
 
 	return item;
 }
+/*
 GameObject* ConstructorJSon::j2cGameObject( Json::Value objectValue )
 {
 	int itemIndex = objectValue["inventory item"].asInt();
@@ -403,7 +377,7 @@ GameObject* ConstructorJSon::j2cGameObject( Json::Value objectValue )
 	
 	return object;
 }
-
+*/
 
 void ConstructorJSon::setInventoryItemName( InventoryItem* item, const char* name )
 {

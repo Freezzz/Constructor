@@ -27,19 +27,21 @@ class GameObject;
 		GameObject* gameObjectNode( CCPoint p ); \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
 		/* init */ \
-		bool init( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef ) { \
+		bool init( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef, const std::string &name ) { \
 			m_itemSpritePath = itemSpritePath; \
 			m_objectSpritePath = objectSpritePath; \
 			m_fixtureDef = fixtureDef; \
+			m_name = name; \
+			system( "pwd" ); \
 			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
 			CCLOG("INIT"); \
 			return true;\
 		} \
 		/* node */ \
-		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef ) { \
+		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef, const std::string &name ) { \
 			INVENTORYITEM *r = new INVENTORYITEM(); \
-			if( r && r->init( itemSpritePath, objectSpritePath, fixtureDef ) ) { \
+			if( r && r->init( itemSpritePath, objectSpritePath, fixtureDef, name ) ) { \
 				r->autorelease(); \
 				return r; \
 			} \
@@ -115,6 +117,7 @@ class GameObject;
 class InventoryItem : public CCNode
 {
 public:
+	std::string m_name;
 	std::string m_itemSpritePath;
 	std::string m_objectSpritePath;
 	CCSprite * m_objectSprite;
@@ -135,6 +138,7 @@ public:
 	virtual GameObject* gameObjectNode( b2Body *b ) = 0;
 	virtual GameObject* gameObjectNode( CCPoint p ) = 0;
 	ObjectType getObjectType() { return m_type; }
+	std::string getName() const { return m_name; }
 	
 };
 

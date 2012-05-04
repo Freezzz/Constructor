@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/imgs">
+        <file>resources/imgs/noicon.png</file>
+    </qresource>
+</RCC>

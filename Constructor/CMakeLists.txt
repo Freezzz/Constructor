@@ -1,21 +1,14 @@
-
 cmake_minimum_required( VERSION 2.6 )
 project( constructor )
-
-set( PROJECT_DIR "${CMAKE_SOURCE_DIR}" )
-set( SOURCE_DIR ${PROJECT_DIR}/Classes )
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_DIR}/cmake )
-
-if( NOT CMAKE_BUILD_TYPE )
-	set( CMAKE_BUILD_TYPE Debug CACHE STRING "Chose build type: None Debug Release RelWithDebInfo MinSizeRel" FORCE )
-endif( NOT CMAKE_BUILD_TYPE )
 
 find_package( Cocos2dx REQUIRED )
 find_package( OpenGL REQUIRED )
 
+set( SOURCE_DIR ${PROJECT_SOURCE_DIR}/Classes )
+
 IF( "${CMAKE_SYSTEM}" MATCHES "Linux" )
-	file( GLOB_RECURSE SRCS ${SOURCE_DIR}/*.cpp ${PROJECT_DIR}/linux/*.cpp )
-	file( GLOB_RECURSE HDRS ${SOURCE_DIR}/*.h ${PROJECT_DIR}/linux/*.h )
+    file( GLOB_RECURSE SRCS ${SOURCE_DIR}/*.cpp ${PROJECT_SOURCE_DIR}/linux/*.cpp )
+    file( GLOB_RECURSE HDRS ${SOURCE_DIR}/*.h ${PROJECT_SOURCE_DIR}/linux/*.h )
 ELSE()
 	file( GLOB_RECURSE SRCS "${SOURCE_DIR}/*.cpp" )
 	file( GLOB_RECURSE HDRS "${SOURCE_DIR}/*.h" )
