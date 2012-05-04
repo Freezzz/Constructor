@@ -15,9 +15,9 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="FixtureEditor" name="fixtureEditor" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -38,14 +38,7 @@
      <widget class="QWidget" name="dockWidgetContents">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="name">
-         <property name="text">
-          <string>Item</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        <widget class="QLineEdit" name="nameEdit"/>
        </item>
        <item>
         <widget class="QPushButton" name="resetShapeButton">
@@ -114,33 +107,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QComboBox" name="typeBox">
-           <item>
-            <property name="text">
-             <string>Simple</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Area</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Spring</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pin</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Glue</string>
-            </property>
-           </item>
-          </widget>
+          <widget class="QComboBox" name="typeBox"/>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_3">
@@ -193,6 +160,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FixtureEditor</class>
+   <extends>QWidget</extends>
+   <header>fixtureeditor.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="leveleditor.qrc"/>
  </resources>

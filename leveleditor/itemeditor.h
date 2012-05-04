@@ -2,6 +2,7 @@
 #define ITEMEDITOR_H
 
 #include "LevelDef.h"
+#include "fixtureeditor.h"
 
 #include <QWidget>
 
