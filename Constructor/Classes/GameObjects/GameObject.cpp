@@ -67,6 +67,7 @@ void GameObject::onSimulationEnded( )
 {
 	m_objectBody->SetType(b2_staticBody);	
 	restoreToOriginalProperties();
+	m_objectBody->SetAwake(false);	
 }
 
 //////////////////////////////////////////////////// 
