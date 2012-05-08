@@ -7,6 +7,7 @@
 //
 
 #include "GameWorld.h"
+#include <iostream>
 
 //////////////////////////////////////////////////// 
 // GameWorld init
@@ -57,7 +58,9 @@ void GameWorld::update(ccTime dt){
 
 	// Instruct the world to perform a single step of simulation. It is
 	// generally best to keep the time step and iterations fixed.
-	physicsWorld->Step(dt, velocityIterations, positionIterations);
+	// physicsWorld->Step(dt, velocityIterations, positionIterations);
+	physicsWorld->Step(1.0/60, velocityIterations, positionIterations);
+	// TODO: add accumulator to step the world according to dt
 }
 
 ////////////////////////////////////////////////////
