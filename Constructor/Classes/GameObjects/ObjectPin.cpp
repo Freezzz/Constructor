@@ -40,7 +40,6 @@ bool ObjectPin::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	// Permits to pin to be always over other objects
 	defaultZOrder = 20;
 
-	m_type = Pin;
 	m_isPinned = false;
 
 	scheduleUpdate();

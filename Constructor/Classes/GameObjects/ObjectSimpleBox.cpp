@@ -33,7 +33,6 @@ bool ObjectSimpleBox::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	rotateButtonOffset = CCPoint( getContentSize().width/2 + 10, 0 );
 	deleteButtonOffset = CCPoint( -getContentSize().width/2 - 10, 0 );
 
-	m_type = SimpleBox;
 	m_state = Idile;
 	m_moveJoint = NULL;
 	m_rotationJoin = NULL;

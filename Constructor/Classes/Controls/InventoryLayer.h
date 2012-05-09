@@ -24,7 +24,8 @@ private:
 	virtual bool init();
 
 public:
-	vector<InventoryItem*> m_buttons;
+	vector<InventoryItem*> m_inventoryItems;
+	vector<InventoryItem*> m_buttons; // not containing the empty ones
 	vector<CCLabelTTF*> m_quantityLabels;
 	
 public:
@@ -40,9 +41,9 @@ public:
 	GameObject* getGameObjectForTapLocation(CCPoint location);
 
 	// quantity=-1 : infinite
-	void addInventoryItem( InventoryItem *item, int quantity = -1 );
+	void addInventoryItem( InventoryItem *item );
 	void removeInventoryItem( InventoryItem *item );
-	
+
 	void updateInventryItemQuantity(InventoryItem *item);
 
 	LAYER_NODE_FUNC(InventoryLayer);

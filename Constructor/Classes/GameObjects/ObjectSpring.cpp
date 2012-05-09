@@ -52,7 +52,6 @@ bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	deleteButtonOffset = CCPoint(-30,0);
 
 	defaultZOrder = 1;
-	m_type = Spring;
 	m_joints = vector<b2DistanceJoint*>();
 	
 	scheduleUpdate();	

@@ -165,7 +165,7 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 	itemValue["isDeletable"] = item->isDeletable;
 
 	itemValue["max quantity"] = item->m_maxQuantity;
-	itemValue["available"] = true;
+	itemValue["available"] = item->m_available;
 
 	itemValue["item sprite path"] = item->m_itemSpritePath;
 	itemValue["object sprite path"] = item->m_objectSpritePath;
@@ -216,11 +216,8 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 	{
 		int items = value["inventory items"].size();
 		for( int i = 0; i < items; ++i ) {
-			bool available = 1;
-			InventoryItem *item = j2cInventoryItem( value["inventory items"][i], &available );
-			if( available ) {
-				l->inventoryItems.push_back( item );
-			}
+			InventoryItem *item = j2cInventoryItem( value["inventory items"][i] );
+			l->inventoryItems.push_back( item );
 			m_inventoryItems.push_back( item );
 		}
 	}
@@ -332,7 +329,7 @@ b2FixtureDef* ConstructorJSon::j2b2FixtureDef( Json::Value fixtureDefValue )
 
 	return fixtureDef;
 }
-InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue, bool *available )
+InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 {
 	ObjectType type = static_cast<ObjectType>( itemValue["type"].asInt() );
 	std::string name = itemValue["name"].asString();
@@ -368,13 +365,10 @@ InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue, bool *a
 	item->isDeletable = itemValue["isDeletable"].asBool();
 
 	item->m_maxQuantity = itemValue["max quantity"].asInt();
-	if( available) {
-		if( itemValue["available"].isIntegral() ) {
-			*available = itemValue["available"].asBool();
-		}
-		else {
-			*available = true;
-		}
+	if( itemValue["available"].isIntegral() ) {
+		item->m_available = itemValue["available"].asBool();
+	} else {
+		item->m_available = true;
 	}
 
 	return item;

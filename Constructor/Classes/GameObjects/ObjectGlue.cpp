@@ -39,7 +39,6 @@ bool ObjectGlue::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	// Permits to pin to be always over other objects
 	defaultZOrder = 20;
 	
-	m_type = Glue;
 	m_isGlued = false;
 	
 	scheduleUpdate();	

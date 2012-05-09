@@ -74,13 +74,18 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 	return NULL;
 }
 
-void InventoryLayer::addInventoryItem( InventoryItem *item, int )
+void InventoryLayer::addInventoryItem( InventoryItem *item )
 {
+	m_inventoryItems.push_back( item );
+	if( ! item->m_available ) {
+		item->retain();
+		return ;
+	}
+
 	item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
 	m_buttons.push_back( item );
 	addChild( item );
 
-	
 	// Quantity counters
 	string str;
 	int fontSize = 22;
@@ -90,18 +95,26 @@ void InventoryLayer::addInventoryItem( InventoryItem *item, int )
 		str = q.str();
 	}else {
 		str = "∞";
-		fontSize = 26;		
+		fontSize = 26;
 	}
-	
+
 	CCLabelTTF * quantityLabel = CCLabelTTF::labelWithString(str.c_str(), "Arial", fontSize);
 	quantityLabel->setPosition(CCPoint(45, BUTTON_SIZE * (3-(int)m_buttons.size())-25) );
-    quantityLabel->setColor(ccc3(0, 255, 0));
+	quantityLabel->setColor(ccc3(0, 255, 0));
 	quantityLabel->setAnchorPoint(CCPoint(0, 0));
 	m_quantityLabels.push_back(quantityLabel);
 	addChild(quantityLabel);
 }
 void InventoryLayer::removeInventoryItem( InventoryItem *item )
 {
+	// removing from m_inventoryItems
+	m_inventoryItems.erase( std::remove( m_inventoryItems.begin(), m_inventoryItems.end(), item ), m_inventoryItems.end() );
+	if( ! item->m_available ) {
+		item->release();
+		return ;
+	}
+
+	// removing from m_buttons
 	int itemIndex = -1;
 	for( unsigned int i = 0; i < m_buttons.size(); ++i ) {
 		if (item == m_buttons.at(i)) {
@@ -111,13 +124,18 @@ void InventoryLayer::removeInventoryItem( InventoryItem *item )
 	}
 	m_buttons.erase( m_buttons.begin()+itemIndex );
 	removeChild( item, 1 );
-	
+
 	removeChild(m_quantityLabels.at(itemIndex), true);
 	m_quantityLabels.erase(m_quantityLabels.begin()+itemIndex);
 }
 
 
-void InventoryLayer::updateInventryItemQuantity(InventoryItem *item){
+void InventoryLayer::updateInventryItemQuantity( InventoryItem *item )
+{
+	if( ! item->m_available ) {
+		return ;
+	}
+
 	if (item->m_maxQuantity <= 0) {
 		return;
 	}
@@ -131,12 +149,11 @@ void InventoryLayer::updateInventryItemQuantity(InventoryItem *item){
 	stringstream q;
 	q << item->m_maxQuantity - item->m_quantity;
 	m_quantityLabels.at(itemIndex)->setString(q.str().c_str());
-    if (item->m_maxQuantity - item->m_quantity == 0) {
-        m_quantityLabels.at(itemIndex)->setColor(ccc3(255, 0, 0));
-    }else {
-        m_quantityLabels.at(itemIndex)->setColor(ccc3(0, 255, 0));
-    }
-
+	if (item->m_maxQuantity - item->m_quantity == 0) {
+		m_quantityLabels.at(itemIndex)->setColor(ccc3(255, 0, 0));
+	}else {
+		m_quantityLabels.at(itemIndex)->setColor(ccc3(0, 255, 0));
+	}
 }
 
 

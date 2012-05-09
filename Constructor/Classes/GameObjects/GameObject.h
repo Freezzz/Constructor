@@ -32,7 +32,6 @@ class GameObject;
 			m_objectSpritePath = objectSpritePath; \
 			m_fixtureDef = fixtureDef; \
 			m_name = name; \
-			system( "pwd" ); \
 			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
 			CCLOG("INIT"); \
@@ -124,6 +123,7 @@ public:
 	ObjectType m_type;
 	int m_quantity; // how many objects of this type exist?
 	int m_maxQuantity; // how many items of this class may be created. 0 means infinity
+	bool m_available; // whether this inventory item is avaliable to the user
 	b2FixtureDef *m_fixtureDef;
 
 	// Is a static object in simulation
@@ -132,7 +132,8 @@ public:
 	bool isRotatable;
 	bool isDeletable;
 
-	InventoryItem( ObjectType type ) : m_type(type), m_quantity(0), m_maxQuantity(0), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
+	InventoryItem( ObjectType type ) : m_type(type), m_quantity(0), m_maxQuantity(0), m_available(1), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
+	virtual ~InventoryItem( ) { }
     
 public:
 	virtual GameObject* gameObjectNode( b2Body *b ) = 0;
@@ -219,8 +220,9 @@ public:
 
 
 	// Object type
-	ObjectType m_type;
-	ObjectType getObjectType(){return m_type;}
+	//ObjectType m_type;
+	//ObjectType getObjectType(){return m_type;}
+	ObjectType getObjectType(){return m_inventoryItem->getObjectType();}
 
 	InventoryItem *m_inventoryItem;
 	InventoryItem *getInventoryItem(){return m_inventoryItem;}

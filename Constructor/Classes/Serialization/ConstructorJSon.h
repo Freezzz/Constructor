@@ -33,7 +33,7 @@ public:
 	LevelDef* j2cLevelDef( Json::Value levelDefValue );
 	b2Shape* j2b2Shape( Json::Value shapeValue );
 	b2FixtureDef* j2b2FixtureDef( Json::Value fixtureDefValue );
-	InventoryItem* j2cInventoryItem( Json::Value inventoryItemValue, bool *available );
+	InventoryItem* j2cInventoryItem( Json::Value inventoryItemValue );
 	GameObject* j2cGameObject( Json::Value gameObjectValue );
 
 	void setInventoryItemName( InventoryItem* item, const char* name );

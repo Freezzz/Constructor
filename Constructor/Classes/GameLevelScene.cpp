@@ -230,7 +230,7 @@ LevelDef* GameLevelScene::getCurrentLevelDef( )
 	ld->difficulty = 1;
 	ld->theme = "test theme";
 	ld->gameWorld = gameWorld;
-	ld->inventoryItems = m_inventoryLayer->m_buttons;
+	ld->inventoryItems = m_inventoryLayer->m_inventoryItems;
 	ld->gameObjects.addObjectsFromArray( m_gameObjects );
 	ld->target = m_target;
 	ld->winArea = m_winArea;
@@ -283,8 +283,8 @@ void GameLevelScene::loadFile( LevelDescription *level )
 	
 	// removing inventory items
 	{
-		while( ! m_inventoryLayer->m_buttons.empty() ) {
-			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_buttons.at(0) );
+		while( ! m_inventoryLayer->m_inventoryItems.empty() ) {
+			m_inventoryLayer->removeInventoryItem( m_inventoryLayer->m_inventoryItems.at(0) );
 		}
 	}
 
