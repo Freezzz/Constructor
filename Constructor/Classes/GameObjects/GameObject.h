@@ -275,6 +275,11 @@ public:
 		m_objectBody = b;
 		m_objectBody->SetUserData( this );
 	}
+	
+	//////////////////////////////////////////////////// 
+	// Checks if the point is contained inside this node
+	//////////////////////////////////////////////////// 
+	bool containsPoint(CCPoint location);
 };
 
 #endif

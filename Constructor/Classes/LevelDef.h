@@ -42,7 +42,8 @@ struct LevelDef
 	CCMutableArray<GameObject*> gameObjects;
 	GameObject *target;
 	GameObject *winArea;
-
+	GameObject *looseArea;
+	
 	// win and lose conditions
 	WinConditions winConditions;
 	LoseConditions loseConditions;

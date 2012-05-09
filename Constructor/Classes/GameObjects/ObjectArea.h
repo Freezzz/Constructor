@@ -9,6 +9,11 @@ using namespace cocos2d;
 
 INVENTORYITEM_CLASS_DEF( AreaInventoryItem , ObjectArea, Area )
 
+typedef enum AreaType{
+	WinArea = 0,
+	LooseArea = 1
+}AreaType;
+
 ////////////////////////////////////////////////////
 // ObjectArea
 ///////////////////////////////////////////////////
@@ -18,6 +23,7 @@ private:
 	CCSprite * m_fillSprite;
 	
 	FixtureFiller * m_fixtureFiller;
+    AreaType m_areaType;
 protected:
 	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
 
@@ -27,6 +33,10 @@ protected:
 	virtual void draw();
 public:
 	GAMEOBJECT_NODE_DEF( AreaInventoryItem , ObjectArea )
+    AreaType getAreaType(){ return m_areaType; }
+	void setAreaType( AreaType type );
+	
+	static CCRect minimumBoundingBoxForPolygon(b2PolygonShape * shape);
 };
 
 

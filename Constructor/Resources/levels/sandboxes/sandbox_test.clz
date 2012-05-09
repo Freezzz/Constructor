@@ -18,6 +18,14 @@
          "isMovable" : true,
          "isRotatable" : true,
          "isStatic" : true
+      },
+      {
+        "body" : 4,
+        "inventory item" : 3,
+        "isDeletable" : true,
+        "isMovable" : true,
+        "isRotatable" : true,
+        "isStatic" : true
       }
    ],
    "game world" : 
@@ -205,10 +213,40 @@
                "position" : 
                {
                   "x" : 20,
-                  "y" : 15
+                  "y" : 10
                },
                "type" : 0
-            }
+            },
+          {
+          "angle" : 0,
+          "angularVelocity" : 0,
+          "awake" : true,
+          "fixture" : 
+          [
+           
+           {
+           "density" : 0,
+           "friction" : 0.3000000119209290,
+           "polygon" : 
+           {
+           "vertices" : 
+           {
+           "x" : [ -1, 1, 1, -1 ],
+           "y" : [ -5, -5, 5, 5 ]
+           }
+           },
+           "restitution" : 0.3000000119209290,
+           "sensor" : true
+           }
+           ],
+          "linearVelocity" : 0,
+          "position" : 
+          {
+          "x" : 10,
+          "y" : 10
+          },
+          "type" : 0
+          }
          ],
          "continuousPhysics" : true,
          "gravity" : 
@@ -304,8 +342,7 @@
          "isStatic" : false,
          "item sprite path" : "panel_btn.png",
          "object sprite path" : "panel.png",
-         "type" : 0,
-         "max quantity" : 3
+         "type" : 0
       },
       
       {
@@ -426,6 +463,7 @@
    "name" : "test level",
    "target" : 0,
    "win area" : 1,
+   "loose area" : 2,    
    "theme" : "test theme",
    "win conditions" : 0
 }

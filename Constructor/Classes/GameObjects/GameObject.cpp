@@ -276,6 +276,15 @@ void GameObject::restoreToOriginalProperties( )
 }
 
 //////////////////////////////////////////////////// 
+// Checks if the point is contained inside this node
+//////////////////////////////////////////////////// 
+bool GameObject::containsPoint(cocos2d::CCPoint location){
+	location = convertToNodeSpace(location);
+	CCRect rect = CCRect(0,0, getContentSize().width, getContentSize().height);
+	return CCRect::CCRectContainsPoint(rect, location);
+}
+
+//////////////////////////////////////////////////// 
 // Grapical rapresentation of selected state
 //////////////////////////////////////////////////// 
 void GameObject::setSelected( bool selected )

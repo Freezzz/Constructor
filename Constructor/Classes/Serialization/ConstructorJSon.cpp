@@ -55,6 +55,7 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	{
 		value["target"] = this->lookupGameObjectIndex( levelDef->target );
 		value["win area"] = this->lookupGameObjectIndex( levelDef->winArea );
+		value["loose area"] = this->lookupGameObjectIndex( levelDef->looseArea );	
 	}
 
 	// win and lose conditions
@@ -238,7 +239,21 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		
 		targetIndex = value["win area"].asInt();
 		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
-		l->winArea = m_gameObjects[targetIndex];
+		if(targetIndex == 0){
+			l->winArea = NULL;
+		}else {
+			l->winArea = m_gameObjects[targetIndex];
+		}
+		
+		targetIndex = value["loose area"].asInt();
+		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
+		if(targetIndex == 0){
+			l->looseArea = NULL;
+		}else {
+			l->looseArea = m_gameObjects[targetIndex];
+		}
+
+
 	}
 
 	// win and lose conditions
