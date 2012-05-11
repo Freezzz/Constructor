@@ -60,7 +60,7 @@ public:
 	GameWorld * gameWorld;
 	GameObject * m_target;
 	GameObject * m_winArea;
-
+	GameObject * m_looseArea;
 public:
 	void enterEditing();
 	void enterSimulating();

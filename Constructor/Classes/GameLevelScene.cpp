@@ -11,6 +11,7 @@
 
 #include "GameObjects/ObjectSimpleBox.h"
 #include "GameObjects/ObjectSpring.h"
+#include "GameObjects/ObjectArea.h"
 
 #include "Controls/InventoryLayer.h"
 #include "Controls/VictoryLayer.h"
@@ -70,6 +71,9 @@ bool GameLevelScene::init( LevelDescription *level )
 	m_gameZoneRect = CCRect(100, 30, winSize.width-100, winSize.height-70);
 	m_isInEditMode = true;
 
+	m_winArea = NULL;
+	m_looseArea = NULL;
+    
 	gameSceneInstance = this;
 
 	// initializing the victory layer
@@ -118,8 +122,12 @@ void GameLevelScene::enterVictory( )
 	setUtilityButtonsVisibleFoSelectedObject( false );
 }
 void GameLevelScene::enterDefeat( )
-{
-	CCAssert( false, "not implemented..." );
+{	
+	m_gameState = Defeat;
+	m_inventoryLayer->setOnScreen( false );
+	m_creationLayer->setOnScreen( false );
+	m_victoryLayer->setOnScreen( true );
+	setUtilityButtonsVisibleFoSelectedObject( false );
 }
 
 //////////////////////////////////////////////////// 
@@ -189,11 +197,16 @@ bool GameLevelScene::checkVictory()
 		return 0;
 	}
 
+	// TODO: add win condition check
+	if ( ! m_winArea ) {
+		return 0;
+	}
+	
 	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
 	while( cont ) {
 		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
-			  || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
-			&& cont->contact->IsTouching() ) {
+			 || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+		   && cont->contact->IsTouching() ) {
 			return 1;
 		}
 		cont = cont->next;
@@ -204,6 +217,21 @@ bool GameLevelScene::checkDefeat()
 {
 	if( ! isSimulating() ) {
 		return 0;
+	}
+	
+	// TODO: add loose condition check
+	if ( ! m_looseArea ) {
+		return 0;
+	}
+	
+	b2ContactEdge * cont = m_looseArea->m_objectBody->GetContactList();
+	while( cont ) {
+		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
+			 || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+		   && cont->contact->IsTouching() ) {
+			return 1;
+		}
+		cont = cont->next;
 	}
 
 	return 0;
@@ -234,6 +262,7 @@ LevelDef* GameLevelScene::getCurrentLevelDef( )
 	ld->gameObjects.addObjectsFromArray( m_gameObjects );
 	ld->target = m_target;
 	ld->winArea = m_winArea;
+	ld->looseArea = m_looseArea;
 	ld->winConditions = LevelDef::EnterAreaWin;
 	ld->loseConditions = LevelDef::EnterAreaLose;
 	return ld;
@@ -270,8 +299,18 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 		}
 	}
 	m_target = ld->target;
+	
 	m_winArea = ld->winArea;
+	if (m_winArea) {
+		((ObjectArea*)m_winArea)->setAreaType(WinArea);
+	}
+	
+	m_looseArea = ld->looseArea;
+	if (m_looseArea) {
+		((ObjectArea*)m_looseArea)->setAreaType(LooseArea);
+	}
 
+	
 	enterEditing();
 }
 void GameLevelScene::loadFile( LevelDescription *level )
@@ -303,10 +342,10 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 	}
 
 	if(!(
-	(m_touchCount == 0 ) || // FIRST TOUCH
-	(m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == GameObject::Moving ||
-		m_selectedObject->m_state == GameObject::Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
-	)){
+		 (m_touchCount == 0 ) || // FIRST TOUCH
+		 (m_touchCount == 1 && m_selectedObject && (m_selectedObject->m_state == GameObject::Moving ||
+													m_selectedObject->m_state == GameObject::Rotating) && m_selectedObject->isRotatable)// Object selected and rotatable
+		 )){
 		CCLog("ALREADY TOUCHING skiping touch! %d", m_touchCount);
 		return false;
 	}
@@ -349,36 +388,30 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 		m_selectedObject = newObject;
 		return true;
 	}
-
-
-	// If touch is in game zone look for touched object
-	// nope, check it in anyway....
-	// if (CCRect::CCRectContainsPoint(m_gameZoneRect, location)) {
-	if( true ) {
-		// Search for selected object taking in account z-order
-		for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
-			GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
-			if (CCRect::CCRectContainsPoint(tmp->boundingBox(), location)) {
-				if (m_selectedObject == NULL) {
-					m_selectedObject = tmp;
-					continue;
-				}
-				if (m_selectedObject->defaultZOrder < tmp->defaultZOrder) {
-					m_selectedObject = tmp;
-				}
+	
+	
+	// Search for selected object taking in account z-order
+	for (unsigned int i = 0; i < m_gameObjects->count(); i++) {
+		GameObject * tmp = (GameObject*)m_gameObjects->getObjectAtIndex(i);
+		if (tmp->containsPoint(location)) {
+			if (m_selectedObject == NULL) {
+				m_selectedObject = tmp;
+				continue;
+			}
+			if (m_selectedObject->defaultZOrder < tmp->defaultZOrder) {
+				m_selectedObject = tmp;
 			}
 		}
-		if (!m_selectedObject) {
-			return true;
-		}
-		m_selectedObject->setSelected(true);
-		if( m_selectedObject->isMovable ) {
-			m_selectedObject->setObjectState( GameObject::Moving );
-			m_selectedObject->move(location);
-		}
-		setUtilityButtonsVisibleFoSelectedObject(true);
+	}
+	if (!m_selectedObject) {
 		return true;
 	}
+	m_selectedObject->setSelected(true);
+	if( m_selectedObject->isMovable ) {
+		m_selectedObject->setObjectState( GameObject::Moving );
+		m_selectedObject->move(location);
+	}
+	setUtilityButtonsVisibleFoSelectedObject(true);
 	return true;
 }
 
@@ -397,7 +430,7 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 	
 	if (m_selectedObject->m_state == GameObject::Rotating && m_touchCount == 2 && (int) pTouch->m_uID == m_secondTouchID) {
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
-						); //this grabs the radians for us
+							   ); //this grabs the radians for us
 		
 		m_selectedObject->rotate(-1*CC_RADIANS_TO_DEGREES(m_initialObjectAngle+(m_initialTouchAngle-radians)));
 		return;

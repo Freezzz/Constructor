@@ -10,7 +10,8 @@ class VictoryLayer : public CCLayerColor
 {
 private:
 	CCMenu *m_menu;
-
+	CCSprite * m_bg;
+	CCMenuItemImage * m_nextItem;
 private:
 	bool init();
 
