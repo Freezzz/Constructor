@@ -36,7 +36,7 @@ private:
 	b2PrismaticJoint * m_prismaticJoint;
 	vector<b2DistanceJoint*> m_joints;
 protected:
-	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
+	bool init( std::string spritePath );
 	virtual void destroy();
 	virtual void update(ccTime dt);
 
@@ -49,8 +49,8 @@ protected:
 	////////////////////////////////////////////////////
 	// Creates object at location
 	////////////////////////////////////////////////////
-	void createBodyAtPosition(CCPoint position);
-	void setBody( b2Body *b );
+	bool createBodyAtPosition(CCPoint position);
+	bool setBody( b2Body *b );
 public:
 	////////////////////////////////////////////////////
 	// Save object's properties pre-simulation

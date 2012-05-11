@@ -21,9 +21,9 @@ INVENTORYITEM_CLASS_DEF( SimpleBoxInventoryItem , ObjectSimpleBox, SimpleBox )
 ///////////////////////////////////////////////////
 class ObjectSimpleBox : public GameObject {
 protected:
-	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
+	bool init( std::string spritePath );
 
-    void createBodyAtPosition( CCPoint position );
+    bool createBodyAtPosition( CCPoint position );
 	
 public:
 	GAMEOBJECT_NODE_DEF( SimpleBoxInventoryItem , ObjectSimpleBox )

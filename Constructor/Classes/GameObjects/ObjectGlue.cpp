@@ -14,11 +14,9 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( GlueInventoryItem , ObjectGlue )
 //////////////////////////////////////////////////// 
 // ObjectGlue init
 //////////////////////////////////////////////////// 
-bool ObjectGlue::init( std::string spritePath, b2FixtureDef *fixtureDef )
+bool ObjectGlue::init( std::string spritePath )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
-
-	m_fixtureDef = fixtureDef;
     
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -49,18 +47,18 @@ bool ObjectGlue::init( std::string spritePath, b2FixtureDef *fixtureDef )
 // Creates a dummy sensor object to check collisions
 // with other objects
 //////////////////////////////////////////////////// 
-void ObjectGlue::createBodyAtPosition( cocos2d::CCPoint position )
+bool ObjectGlue::createBodyAtPosition( cocos2d::CCPoint position )
 {
-	// Player physical body
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_staticBody;
-	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
-	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-
-	m_objectBody->CreateFixture(m_fixtureDef);
+	b2dJson json;
+	m_objectBody = json.j2b2Body( physicsWorld(), prototype() );
+	if( ! m_objectBody || ! m_objectBody->GetFixtureList() ) {
+		std::cout << "Glue inventory item prototype messed up" << std::endl;
+		return false;
+	}
 	m_objectBody->SetUserData(this);
-
+	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
 	setPosition(position);
+	return true;
 }
 
 void ObjectGlue::onSimulationStarted(){
@@ -161,7 +159,7 @@ void ObjectGlue::weldObjectsAtContact(b2Contact *contact){
 	CCLog("Objects welded!");
 }
 
-void ObjectGlue::setBody( b2Body *b )
+bool ObjectGlue::setBody( b2Body *b )
 {
 	GameObject::setBody( b );
 	
@@ -177,5 +175,7 @@ void ObjectGlue::setBody( b2Body *b )
 		}
 		joint = joint->next;
 	}
+
+	return true;
 }
 

@@ -8,10 +8,9 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( AreaInventoryItem, ObjectArea )
 ////////////////////////////////////////////////////
 // ObjectArae init
 ////////////////////////////////////////////////////
-bool ObjectArea::init( std::string spritePath, b2FixtureDef *fixtureDef )
+bool ObjectArea::init( std::string spritePath )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
-	m_fixtureDef = fixtureDef;
 	
 	//Define texture to fill the fixture ( must be added to node render properly )
 	m_fillSprite = CCSprite::spriteWithFile("stripes.png");
@@ -48,18 +47,18 @@ bool ObjectArea::init( std::string spritePath, b2FixtureDef *fixtureDef )
 // Creates a dummy sensor object to check collisions
 // with other objects
 ////////////////////////////////////////////////////
-void ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
+bool ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
 {
-	// Player physical body
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_staticBody;
-	bodyDef.position.Set( position.x/PTM_RATIO, position.y/PTM_RATIO );
-	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-
-	m_objectBody->CreateFixture(m_fixtureDef);
+	b2dJson json;
+	m_objectBody = json.j2b2Body( physicsWorld(), prototype() );
+	if( ! m_objectBody || ! m_objectBody->GetFixtureList() ) {
+		std::cout << "Area inventory item prototype messed up" << std::endl;
+		return false;
+	}
 	m_objectBody->SetUserData(this);
-
+	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
 	setPosition(position);
+	return true;
 }
 void ObjectArea::draw(){
 	CCNode::draw();
@@ -68,10 +67,11 @@ void ObjectArea::draw(){
 	}
 }
 
-void ObjectArea::setBody( b2Body *b )
+bool ObjectArea::setBody( b2Body *b )
 {
 	GameObject::setBody( b );
 //	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), ccc4f(255, 255, 255, 255), ccc4f(255, 0, 0, 255));
 	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
+	return true;
 }
 

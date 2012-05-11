@@ -15,11 +15,9 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( PinInventoryItem , ObjectPin )
 //////////////////////////////////////////////////// 
 // ObjectPin init
 //////////////////////////////////////////////////// 
-bool ObjectPin::init( std::string spritePath, b2FixtureDef *fixtureDef )
+bool ObjectPin::init( std::string spritePath )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
-
-	m_fixtureDef = fixtureDef;
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_objectSprite->getContentSize());
@@ -119,20 +117,20 @@ void ObjectPin::rePin( )
 // Creates a dummy sensor object to check collisions
 // with other objects
 //////////////////////////////////////////////////// 
-void ObjectPin::createBodyAtPosition( cocos2d::CCPoint position )
+bool ObjectPin::createBodyAtPosition( cocos2d::CCPoint position )
 {
-	// Player physical body
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_staticBody;
-	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
-	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-
-	m_objectBody->CreateFixture(m_fixtureDef);
+	b2dJson json;
+	m_objectBody = json.j2b2Body( physicsWorld(), prototype() );
+	if( ! m_objectBody || ! m_objectBody->GetFixtureList() ) {
+		std::cout << "Pin inventory item prototype messed up" << std::endl;
+		return false;
+	}
 	m_objectBody->SetUserData(this);
-
+	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
 	setPosition(position);
+	return true;
 }
-void ObjectPin::setBody( b2Body *b )
+bool ObjectPin::setBody( b2Body *b )
 {
 	GameObject::setBody( b );
 
@@ -145,4 +143,5 @@ void ObjectPin::setBody( b2Body *b )
 		m_pinJoint = static_cast<b2RevoluteJoint*>( joint->joint );
 		m_isPinned = true;
 	}
+	return true;
 }

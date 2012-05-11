@@ -19,11 +19,10 @@ private:
 	
 	FixtureFiller * m_fixtureFiller;
 protected:
-	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
+	bool init( std::string spritePath );
 
-	void createBodyAtPosition(CCPoint position);
-
-	void setBody( b2Body *b );
+	bool createBodyAtPosition(CCPoint position);
+	bool setBody( b2Body *b );
 	virtual void draw();
 public:
 	GAMEOBJECT_NODE_DEF( AreaInventoryItem , ObjectArea )

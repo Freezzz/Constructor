@@ -25,23 +25,23 @@ class ObjectGlue : public GameObject {
 private:
 	bool m_isGlued;
 	vector<b2WeldJoint*> m_joints;
-	
+
 	void weldObjectsAtContact(b2Contact *contact);
 protected:
-	bool init( std::string spritePath, b2FixtureDef *fixtureDef );
+	bool init( std::string spritePath );
 	// State change handlers
 	virtual void onSimulationStarted();
 	virtual void onSimulationEnded();	
 	virtual void onMovementStarted();
 	virtual void onMovementEnded();
-	
-	void createBodyAtPosition(CCPoint position);
-	void setBody( b2Body *b );
-	
+
+	bool createBodyAtPosition(CCPoint position);
+	bool setBody( b2Body *b );
+
 public:
 	void unPin(bool destroyJoint);
 	void unGlueJoint(b2WeldJoint * jnt);
-	
+
 	GAMEOBJECT_NODE_DEF( GlueInventoryItem , ObjectGlue )
 };
 

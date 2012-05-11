@@ -18,7 +18,7 @@ INVENTORYITEM_GAMEOBJECT_NODE_DECL( SpringInventoryItem, ObjectSpring )
 //////////////////////////////////////////////////// 
 // ObjectSpring init
 //////////////////////////////////////////////////// 
-bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
+bool ObjectSpring::init( std::string spritePath )
 {
 	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
 	m_objectSprite->setAnchorPoint(CCPoint(0,0.5));		
@@ -41,8 +41,6 @@ bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
 	
 	setContentSize(CCSize(m_secondBodySprite->getContentSize().width, m_secondBodySprite->getContentSize().height * 2));
 	
-	m_fixtureDef = fixtureDef;
-	
 	isStatic = false;
 	isMovable = true;
 	isRotatable = false;
@@ -61,25 +59,25 @@ bool ObjectSpring::init( std::string spritePath, b2FixtureDef *fixtureDef )
 //////////////////////////////////////////////////// 
 // Create two bodyes and a joint to represent a spring
 //////////////////////////////////////////////////// 
-void ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
+bool ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
 {
-	// Player physical body
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set(position.x/PTM_RATIO, position.y/PTM_RATIO);
+	b2dJson json;
 
-	m_objectBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-	m_objectBody->CreateFixture(m_fixtureDef);
+#define ASSERT_PROTOTYPE(e) \
+	if( ! (e) ) { \
+		std::cout << "Spring inventory item prototype messed up" << std::endl; \
+		return false; \
+	}
+
+	ASSERT_PROTOTYPE( m_objectBody = json.j2b2Body( physicsWorld(), prototype()["spring top"] ) );
+	ASSERT_PROTOTYPE( m_objectBody->GetFixtureList() );
 	m_objectBody->SetUserData(this);
-	m_objectBody->SetFixedRotation(true);
-	m_objectBody->SetBullet(true);
+	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
 
-
-	m_secondBody = GameWorld::sharedGameWorld()->physicsWorld->CreateBody(&bodyDef);
-	m_secondBody->CreateFixture(m_fixtureDef);
+	ASSERT_PROTOTYPE( m_secondBody = json.j2b2Body( physicsWorld(), prototype()["spring bottom"] ) );
+	ASSERT_PROTOTYPE( m_secondBody->GetFixtureList() );
 	m_secondBody->SetUserData(this);
-	m_secondBody->SetFixedRotation(true);
-	m_secondBody->SetBullet(true);
+	m_secondBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_secondBody->GetAngle() );
 
 	b2DistanceJointDef jointDef1;
 	jointDef1.bodyA = m_objectBody;
@@ -105,10 +103,13 @@ void ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
 	jointDef3.dampingRatio = 1;
 	jointDef3.collideConnected = true;
 
+#undef ASSERT_PROTOTYPE
+
 	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef1));
 	m_prismaticJoint = (b2PrismaticJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef2);
 	m_joints.push_back((b2DistanceJoint*)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&jointDef3));
 	setPosition(position);
+	return true;
 }
 
 
@@ -196,7 +197,7 @@ void ObjectSpring::destroy(){
     GameObject::destroy();
 }
 
-void ObjectSpring::setBody( b2Body *b )
+bool ObjectSpring::setBody( b2Body *b )
 {
 	GameObject::setBody( b );
 	m_secondBody = NULL;
@@ -220,5 +221,7 @@ void ObjectSpring::setBody( b2Body *b )
 		}
 		joint = joint->next;
 	}
+
+	return true;
 }
 

@@ -12,7 +12,9 @@
 #include <iostream>
 #include "cocos2d.h"
 #include <Box2D/Box2D.h>
+#include "Serialization/ConstructorJSon.h"
 #include "Constants.h"
+#include "GameWorld.h"
 using namespace cocos2d;
 
 
@@ -27,10 +29,10 @@ class GameObject;
 		GameObject* gameObjectNode( CCPoint p ); \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
 		/* init */ \
-		bool init( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef, const std::string &name ) { \
+		bool init( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &name ) { \
 			m_itemSpritePath = itemSpritePath; \
 			m_objectSpritePath = objectSpritePath; \
-			m_fixtureDef = fixtureDef; \
+			m_prototype = prototype; \
 			m_name = name; \
 			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
@@ -38,51 +40,44 @@ class GameObject;
 			return true;\
 		} \
 		/* node */ \
-		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, b2FixtureDef *fixtureDef, const std::string &name ) { \
+		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &name ) { \
 			INVENTORYITEM *r = new INVENTORYITEM(); \
-			if( r && r->init( itemSpritePath, objectSpritePath, fixtureDef, name ) ) { \
+			if( r && r->init( itemSpritePath, objectSpritePath, prototype, name ) ) { \
 				r->autorelease(); \
 				return r; \
 			} \
-			\
 			delete r; \
 			return NULL; \
 		}; \
 	};
 
 #define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath, b2FixtureDef *fixtureDef ) { \
+	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( r ) { \
-			++ item->m_quantity; \
-			r->m_inventoryItem = item; \
+		if( ! r ) { \
+			return NULL; \
 		} \
-		if( r && r->init(spritePath, fixtureDef) ) { \
-			r->m_inventoryItem = item; \
-			r->createBodyAtPosition( p ); \
+		++ item->m_quantity; \
+		r->m_inventoryItem = item; \
+		if( r->init(spritePath) && r->createBodyAtPosition(p) ) { \
 			r->autorelease(); \
 			return r; \
 		} \
-		if( r ) { \
-			delete r; \
-		} \
+		delete r; \
 		return NULL; \
 	}; \
-	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath, b2FixtureDef *fixtureDef ) { \
+	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath ) { \
 		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( r ) { \
-			++ item->m_quantity; \
-			r->m_inventoryItem = item; \
+		if( ! r ) { \
+			return NULL; \
 		} \
-		if( r && r->init(spritePath, fixtureDef) ) { \
-			r->m_inventoryItem = item; \
-			r->setBody( b ); \
+		++ item->m_quantity; \
+		r->m_inventoryItem = item; \
+		if( r->init(spritePath) && r->setBody(b) ) { \
 			r->autorelease(); \
 			return r; \
 		} \
-		if( r ) { \
-			delete r; \
-		} \
+		delete r; \
 		return NULL; \
 	};
 
@@ -91,7 +86,7 @@ class GameObject;
 		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
 			return NULL; \
 		} \
-		GAMEOBJECT *go = GAMEOBJECT::node(this, b, m_objectSpritePath, m_fixtureDef); \
+		GAMEOBJECT *go = GAMEOBJECT::node(this, b, m_objectSpritePath); \
 		go->isStatic = isStatic; \
 		go->isMovable = isMovable; \
 		go->isRotatable = isRotatable; \
@@ -102,7 +97,7 @@ class GameObject;
 		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
 			return NULL; \
 		} \
-		GAMEOBJECT *go = GAMEOBJECT::node(this, p, m_objectSpritePath, m_fixtureDef); \
+		GAMEOBJECT *go = GAMEOBJECT::node(this, p, m_objectSpritePath); \
 		go->isStatic = isStatic; \
 		go->isMovable = isMovable; \
 		go->isRotatable = isRotatable; \
@@ -124,7 +119,7 @@ public:
 	int m_quantity; // how many objects of this type exist?
 	int m_maxQuantity; // how many items of this class may be created. 0 means infinity
 	bool m_available; // whether this inventory item is avaliable to the user
-	b2FixtureDef *m_fixtureDef;
+	Json::Value m_prototype;
 
 	// Is a static object in simulation
 	bool isStatic;
@@ -158,35 +153,32 @@ public:
 	};
 
 protected:
-	b2FixtureDef *m_fixtureDef;
-	
 	b2MouseJoint * m_moveJoint;
-
 	b2RevoluteJoint * m_objectBodyPin;
 	b2MouseJoint * m_rotationJoin;
-	
+
 	// Original pre-simulation settings of object
 	CCPoint m_originalPosition;
-    float m_originalRotation;
+	float m_originalRotation;
 
-	
-	//////////////////////////////////////////////////// 
+
+	////////////////////////////////////////////////////
 	// GameObject init
 	////////////////////////////////////////////////////
 	GameObject( );
 	~GameObject( );
-	
-	//////////////////////////////////////////////////// 
-	// Basic object update loop, moves sprite to body 
+
+	////////////////////////////////////////////////////
+	// Basic object update loop, moves sprite to body
 	// location
-	//////////////////////////////////////////////////// 
-    virtual void update(ccTime dt);
-	
+	////////////////////////////////////////////////////
+	virtual void update(ccTime dt);
+
 	// State change handlers
 	virtual void onSimulationStarted();
-	virtual void onSimulationEnded();	
+	virtual void onSimulationEnded();
 	virtual void onMovementStarted();
-	virtual void onMovementEnded();	
+	virtual void onMovementEnded();
 	virtual void onRotationStarted();
 	virtual void onRotationEnded();
 
@@ -197,6 +189,9 @@ public:
 
 	CCSprite * m_objectSprite;
 	CCSprite* getObjectSprite(){return m_objectSprite;}
+
+	b2World * physicsWorld() { return GameWorld::sharedGameWorld()->physicsWorld; }
+	Json::Value prototype() { return m_inventoryItem->m_prototype; }
 
 	// Is a static object in simulation
 	bool isStatic;
@@ -270,10 +265,11 @@ public:
 	////////////////////////////////////////////////////
 	// Creates object at location
 	////////////////////////////////////////////////////
-	virtual void createBodyAtPosition(CCPoint position)=0;
-	virtual void setBody( b2Body *b ) {
+	virtual bool createBodyAtPosition( CCPoint position ) = 0;
+	virtual bool setBody( b2Body *b ) {
 		m_objectBody = b;
 		m_objectBody->SetUserData( this );
+		return true;
 	}
 };
 
