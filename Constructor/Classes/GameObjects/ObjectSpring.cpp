@@ -8,6 +8,7 @@
 
 #include "ObjectSpring.h"
 #include "ObjectSimpleBox.h"
+#include "GameLevelScene.h"
 #include "../GameWorld.h"
 
 #define MAX_LENGHT 132
@@ -102,6 +103,8 @@ bool ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
 	jointDef3.frequencyHz = 20;
 	jointDef3.dampingRatio = 1;
 	jointDef3.collideConnected = true;
+	
+	m_offsetBetweenBodies = b2Vec2(0, (m_fistBodySprite->getContentSize().height / PTM_RATIO) + MIN_LENGHT / PTM_RATIO );
 
 #undef ASSERT_PROTOTYPE
 
@@ -175,8 +178,8 @@ void ObjectSpring::onSimulationEnded(){
 }
 
 void ObjectSpring::onMovementStarted(){
-	m_objectBody->SetType(b2_dynamicBody);
-	m_secondBody->SetType(b2_dynamicBody);
+	m_objectBody->SetType(b2_staticBody);
+	m_secondBody->SetType(b2_staticBody);
 	m_objectBody->SetFixedRotation(true);
 	m_secondBody->SetFixedRotation(true);
 }
@@ -195,6 +198,70 @@ void ObjectSpring::destroy(){
 	GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_prismaticJoint);			
     GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_secondBody);
     GameObject::destroy();
+}
+
+//////////////////////////////////////////////////// 
+// Moves object to new location, if state is idile
+// than it is a simple translation, if moving than
+// creates a move joint to move object around
+//////////////////////////////////////////////////// 
+void ObjectSpring::move( CCPoint newPostion )
+{
+	if (getParent() && m_objectBody) {
+		// Update posisiotn of phisical body moving it to nodes position
+		b2Vec2 b2PositionB1 = b2Vec2(newPostion.x/PTM_RATIO,
+		                           newPostion.y/PTM_RATIO);
+        
+		m_objectBody->SetTransform(b2PositionB1, m_objectBody->GetAngle());
+		
+		b2Vec2 b2PositionB2 = b2PositionB1 + m_offsetBetweenBodies;
+		m_secondBody->SetTransform(b2PositionB2, m_secondBody->GetAngle());		
+	}
+}
+
+//////////////////////////////////////////////////// 
+// Rotates object to give angle, if state is idile
+// than it is a simple translation, if rotating than
+// creates a rotate joint to rotate object along 
+// it's axis
+//////////////////////////////////////////////////// 
+void ObjectSpring::rotate( float newRotation )
+{
+    if (getParent() && m_objectBody) {
+		// Update posisiotn of phisical body moving it to nodes position
+		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
+		                           getPosition().y/PTM_RATIO);
+		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS(newRotation);
+		
+		m_objectBody->SetTransform(b2Position, b2Angle);
+        
+	}
+}
+
+void ObjectSpring::startUnstuckPhase(){
+	m_objectBody->SetType(b2_dynamicBody);
+	m_objectBody->SetFixedRotation(true);	
+	m_objectBody->SetGravityScale(0);
+	
+	m_secondBody->SetType(b2_dynamicBody);
+	m_secondBody->SetFixedRotation(true);
+	m_secondBody->SetGravityScale(0);
+}
+
+
+void ObjectSpring::unstuckPhaseFinished(){
+    if (getParent() && m_objectBody) {
+		m_objectBody->SetGravityScale(1);	
+		m_objectBody->SetType(b2_staticBody);
+		m_objectBody->SetFixedRotation(true);	
+		
+		
+		m_secondBody->SetGravityScale(1);	
+		m_secondBody->SetType(b2_staticBody);
+		m_secondBody->SetFixedRotation(true);	
+		GameLevelScene::sharedGameScene()->setUtilityButtonsVisibleFoSelectedObject(true);
+	}
+
 }
 
 bool ObjectSpring::setBody( b2Body *b )

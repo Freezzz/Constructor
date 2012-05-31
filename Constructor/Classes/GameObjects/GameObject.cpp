@@ -77,7 +77,7 @@ void GameObject::onSimulationEnded( )
 //////////////////////////////////////////////////// 
 void GameObject::onMovementStarted( )
 {
-	if (m_objectBody->GetFixtureList()->IsSensor()) {
+	if (m_inventoryItem->m_type == Pin || m_inventoryItem->m_type == Glue) {
 		// Sensor objects like pin/grue need collision detection to pin them
 		m_objectBody->SetType(b2_dynamicBody);
 		// Setting gravity scale to 0 avoid them to fall down while user drags them
@@ -156,8 +156,7 @@ void GameObject::rotate( float newRotation )
 		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
 		                           getPosition().y/PTM_RATIO);
 		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS(newRotation);
-        
-//        setRotation(newRotation);        
+               
 		m_objectBody->SetTransform(b2Position, b2Angle);
         
 	}

@@ -148,8 +148,6 @@ void ObjectGlue::weldObjectsAtContact(b2Contact *contact){
 	jointDef1.localAnchorA = bodyA->GetLocalPoint(bodyA->GetPosition());
 	jointDef1.localAnchorB = bodyB->GetLocalPoint(bodyA->GetPosition());
 	
-    jointDef1.frequencyHz = 20;
-	jointDef1.dampingRatio = 1;
 	jointDef1.userData = this;
     jointDef1.collideConnected = false;
 	
@@ -157,6 +155,15 @@ void ObjectGlue::weldObjectsAtContact(b2Contact *contact){
 	m_isGlued = true;
 	
 	CCLog("Objects welded!");
+}
+
+void ObjectGlue::startUnstuckPhase(){
+	return;
+}
+
+
+void ObjectGlue::unstuckPhaseFinished(){
+	return;
 }
 
 bool ObjectGlue::setBody( b2Body *b )

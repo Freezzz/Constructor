@@ -119,3 +119,11 @@ CCRect ObjectArea::minimumBoundingBoxForPolygon(b2PolygonShape * shape){
 	CCLog("Bounding box: x:%f, y:%f w:%f, h:%f", minX*PTM_RATIO, minY*PTM_RATIO, (maxX - minX)*PTM_RATIO, (maxY-minY)*PTM_RATIO);
 	return CCRect(minX*PTM_RATIO, minY*PTM_RATIO, (maxX - minX)*PTM_RATIO, (maxY-minY)*PTM_RATIO);
 }
+
+void ObjectArea::startUnstuckPhase(){
+	return;
+}
+
+void ObjectArea::unstuckPhaseFinished(){
+	return;
+}

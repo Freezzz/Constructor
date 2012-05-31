@@ -443,7 +443,7 @@
           "fixture": [
             {
               "circle": {
-                "radius": 0.015625,
+                "radius": 0.1,
                 "center": 0
               },
               "restitution": 0.5,

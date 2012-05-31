@@ -111,7 +111,14 @@ void ObjectPin::rePin( )
 }
 
 
+void ObjectPin::startUnstuckPhase(){
+	return;
+}
 
+
+void ObjectPin::unstuckPhaseFinished(){
+	return;
+}
 
 //////////////////////////////////////////////////// 
 // Creates a dummy sensor object to check collisions

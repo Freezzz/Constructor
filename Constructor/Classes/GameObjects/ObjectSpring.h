@@ -35,6 +35,8 @@ private:
 
 	b2PrismaticJoint * m_prismaticJoint;
 	vector<b2DistanceJoint*> m_joints;
+	
+	b2Vec2 m_offsetBetweenBodies;
 protected:
 	bool init( std::string spritePath );
 	virtual void destroy();
@@ -62,6 +64,28 @@ public:
 	// before simulation
 	////////////////////////////////////////////////////
 	virtual void restoreToOriginalProperties();
+	
+	////////////////////////////////////////////////////
+	// Moves object to new location, if state is idile
+	// than it is a simple translation, if moving than
+	// creates a move joint to move object around
+	////////////////////////////////////////////////////
+	virtual void move(CCPoint newPostion);
+	
+	////////////////////////////////////////////////////
+	// Rotates object to give angle with simple translation
+	////////////////////////////////////////////////////
+	virtual void rotate(float newRotation);
+	
+	//////////////////////////////////////////////////// 
+	// Begins object preparation for unstuck routine
+	//////////////////////////////////////////////////// 
+	void startUnstuckPhase();
+	
+	//////////////////////////////////////////////////// 
+	// Function to be called after unstuck routine is finished
+	//////////////////////////////////////////////////// 
+	void unstuckPhaseFinished();
 
 	GAMEOBJECT_NODE_DEF( SpringInventoryItem, ObjectSpring )
 };

@@ -482,13 +482,10 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
     }
     m_selectedObject->setObjectState( GameObject::Idile );
 	
-	// If objects is not a sensor we should run auto unstuck procedure
-	if (!m_selectedObject->m_objectBody->GetFixtureList()->IsSensor()) {
-		m_selectedObject->startUnstuckPhase();
-		runAction(CCSequence::actions(CCDelayTime::actionWithDuration(0.3),
-									  CCCallFunc::actionWithTarget(m_selectedObject,
-																   callfunc_selector(GameObject::unstuckPhaseFinished)), NULL));
-	}
+	m_selectedObject->startUnstuckPhase();
+	runAction(CCSequence::actions(CCDelayTime::actionWithDuration(0.3),
+								  CCCallFunc::actionWithTarget(m_selectedObject,
+															   callfunc_selector(GameObject::unstuckPhaseFinished)), NULL));
 }
 
 void GameLevelScene::ccTouchCancelled( cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent )

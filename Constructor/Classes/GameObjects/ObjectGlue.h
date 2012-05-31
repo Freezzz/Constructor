@@ -42,6 +42,16 @@ public:
 	void unPin(bool destroyJoint);
 	void unGlueJoint(b2WeldJoint * jnt);
 
+	//////////////////////////////////////////////////// 
+	// Begins object preparation for unstuck routine
+	//////////////////////////////////////////////////// 
+	void startUnstuckPhase();
+	
+	//////////////////////////////////////////////////// 
+	// Function to be called after unstuck routine is finished
+	//////////////////////////////////////////////////// 
+	void unstuckPhaseFinished();
+	
 	GAMEOBJECT_NODE_DEF( GlueInventoryItem , ObjectGlue )
 };
 

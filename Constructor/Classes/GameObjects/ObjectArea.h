@@ -35,6 +35,17 @@ public:
     AreaType getAreaType(){ return m_areaType; }
 	void setAreaType( AreaType type );
 	
+	
+	//////////////////////////////////////////////////// 
+	// Begins object preparation for unstuck routine
+	//////////////////////////////////////////////////// 
+	void startUnstuckPhase();
+	
+	//////////////////////////////////////////////////// 
+	// Function to be called after unstuck routine is finished
+	//////////////////////////////////////////////////// 
+	void unstuckPhaseFinished();
+	
 	static CCRect minimumBoundingBoxForPolygon(b2PolygonShape * shape);
 };
 
