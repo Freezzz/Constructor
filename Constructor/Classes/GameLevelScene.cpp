@@ -411,8 +411,8 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 	
 	m_selectedObject->setSelected(true);
 	if( m_selectedObject->isMovable ) {
+		m_touchToCenterOffset = CCPoint(location.x - m_selectedObject->getPosition().x, location.y - m_selectedObject->getPosition().y);
 		m_selectedObject->setObjectState( GameObject::Moving );
-		m_selectedObject->move(location);
 	}
 	setUtilityButtonsVisibleFoSelectedObject(true);
 	return true;
@@ -441,7 +441,7 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 	}
 	
 	if (m_selectedObject->m_state == GameObject::Moving) {
-		m_selectedObject->move(location);
+		m_selectedObject->move(CCPoint(location.x - m_touchToCenterOffset.x, location.y - m_touchToCenterOffset.y));
 	}else if (m_selectedObject->m_state == GameObject::Rotating && m_touchCount == 1) { // Button rotation
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
 							   ); //this grabs the radians for us

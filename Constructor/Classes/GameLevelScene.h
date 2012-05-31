@@ -40,6 +40,8 @@ private:
 
 	LevelDescription *m_levelFile;
 
+	CCPoint m_touchToCenterOffset; // Used to avoid object jumpin around when tapet on it's edge
+	
 	int m_touchCount;
 	int m_firstTouchID;
 	int m_secondTouchID;
