@@ -30,9 +30,6 @@ bool ObjectSimpleBox::init( std::string spritePath )
 	deleteButtonOffset = CCPoint( -getContentSize().width/2 - 10, 0 );
 
 	m_state = Idile;
-	m_moveJoint = NULL;
-	m_rotationJoin = NULL;
-	m_objectBodyPin = NULL;
 	scheduleUpdate();
 	return true;
 }

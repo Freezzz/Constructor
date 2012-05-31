@@ -10,6 +10,7 @@
 #include <GameWorld.h>
 #include "ObjectPin.h"
 #include "ObjectGlue.h"
+#include "GameLevelScene.h"
 #include <iostream>
 ////////////////////////////////////////////////////
 // GameObject init
@@ -55,6 +56,7 @@ void GameObject::onSimulationStarted( )
 {
 	saveOriginalProperties();
 	m_objectBody->SetAwake(true);
+	m_objectBody->SetFixedRotation(false);
 	if (!isStatic) {
 		m_objectBody->SetType(b2_dynamicBody);
 	}
@@ -66,6 +68,7 @@ void GameObject::onSimulationStarted( )
 void GameObject::onSimulationEnded( )
 {
 	m_objectBody->SetType(b2_staticBody);	
+	m_objectBody->SetFixedRotation(true);	
 	restoreToOriginalProperties();
 }
 
@@ -74,8 +77,15 @@ void GameObject::onSimulationEnded( )
 //////////////////////////////////////////////////// 
 void GameObject::onMovementStarted( )
 {
-	// Movement started set as dynamic so it can interact with other objects
-	m_objectBody->SetType(b2_dynamicBody);
+	if (m_objectBody->GetFixtureList()->IsSensor()) {
+		// Sensor objects like pin/grue need collision detection to pin them
+		m_objectBody->SetType(b2_dynamicBody);
+		// Setting gravity scale to 0 avoid them to fall down while user drags them
+		m_objectBody->SetGravityScale(0);
+	}else {
+		m_objectBody->SetType(b2_staticBody);
+	}
+
 	// Disable rotation
 	m_objectBody->SetFixedRotation(true);  
 }
@@ -85,14 +95,13 @@ void GameObject::onMovementStarted( )
 //////////////////////////////////////////////////// 
 void GameObject::onMovementEnded( )
 {
-	// Destory helper objects	
-	if (m_moveJoint) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_moveJoint);
-		m_moveJoint = NULL;
-	}
 	// Enable rotation
 	m_objectBody->SetFixedRotation(false);
-	// Set static to avoid further movements        
+
+	// Resume taking in account the gravity
+	m_objectBody->SetGravityScale(1);
+	
+	// Set static to avoid further movements      
 	m_objectBody->SetType(b2_staticBody);	
 }
 
@@ -102,25 +111,14 @@ void GameObject::onMovementEnded( )
 void GameObject::onRotationStarted( )
 {
 	m_objectBody->SetFixedRotation(false);	
-	m_objectBody->SetType(b2_dynamicBody);
+	m_objectBody->SetType(b2_staticBody);
 }
 
 //////////////////////////////////////////////////// 
 // Callback when rotation just ended
 //////////////////////////////////////////////////// 
 void GameObject::onRotationEnded( )
-{
-	// Destory helper objects
-	if (m_objectBodyPin) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_objectBodyPin);
-		m_objectBodyPin = NULL;		
-	}
-	
-	if (m_rotationJoin) {
-		GameWorld::sharedGameWorld()->physicsWorld->DestroyJoint(m_rotationJoin);
-		m_rotationJoin = NULL;					
-	}
-	
+{	
 	// Enable rotation
 	m_objectBody->SetFixedRotation(true);
 	// Set static to avoid further movements        
@@ -139,26 +137,9 @@ void GameObject::move( CCPoint newPostion )
 		b2Vec2 b2Position = b2Vec2(newPostion.x/PTM_RATIO,
 		                           newPostion.y/PTM_RATIO);
         
-        // Case when it instant translation
-        if(m_state != Moving){
-            float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS(getRotation());
-            setPosition(newPostion);        
-            m_objectBody->SetTransform(b2Position, b2Angle);
-            return;
-        }
-		
-        // Case when dragging around
-        if (!m_moveJoint) {
-            b2MouseJointDef md;
-            md.bodyA = GameWorld::sharedGameWorld()->umbelicoDelMondo; // useless but it is a convention
-            md.bodyB = m_objectBody;
-            md.target = b2Position;
-            md.maxForce = 2000;
-            md.frequencyHz = 20;
-            md.dampingRatio = 1;
-            m_moveJoint = (b2MouseJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
-        }
-        m_moveJoint->SetTarget(b2Position);
+		float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS(getRotation());
+		setPosition(newPostion);        
+		m_objectBody->SetTransform(b2Position, b2Angle);
 	}
 }
 
@@ -176,45 +157,10 @@ void GameObject::rotate( float newRotation )
 		                           getPosition().y/PTM_RATIO);
 		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS(newRotation);
         
-        setRotation(newRotation);        
+//        setRotation(newRotation);        
 		m_objectBody->SetTransform(b2Position, b2Angle);
         
 	}
-}
-
-//////////////////////////////////////////////////// 
-// Rotates object to give angle creates a rotate 
-//	joint to rotate object along it's axis
-//////////////////////////////////////////////////// 
-void GameObject::rotate( CCPoint location )
-{
-	if (getParent() && m_objectBody) {
-		b2Vec2 b2Position = b2Vec2(location.x/PTM_RATIO,
-		                           location.y/PTM_RATIO);
-		
-        // Create joint to tap location
-        if (!m_rotationJoin) {
-            b2MouseJointDef md;
-            md.bodyA = GameWorld::sharedGameWorld()->umbelicoDelMondo; // useless but it is a convention
-            md.bodyB = m_objectBody;
-			md.maxForce = 2000;
-            md.frequencyHz = 20;
-            md.dampingRatio = 1;
-			md.collideConnected = false;
-            m_rotationJoin = (b2MouseJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);						
-        }
-		
-		// Pin object to it's position in the world alowing rotation
-		if(!m_objectBodyPin){
-			b2RevoluteJointDef md;
-			md.Initialize(m_objectBody, GameWorld::sharedGameWorld()->umbelicoDelMondo, m_objectBody->GetPosition());
-			md.referenceAngle = m_objectBody->GetAngle();
-			md.collideConnected = false;
-            m_objectBodyPin = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
-		}
-		
-        m_rotationJoin->SetTarget(b2Position);
-	}	
 }
 
 //////////////////////////////////////////////////// 
@@ -282,6 +228,28 @@ bool GameObject::containsPoint(cocos2d::CCPoint location){
 	location = convertToNodeSpace(location);
 	CCRect rect = CCRect(0,0, getContentSize().width, getContentSize().height);
 	return CCRect::CCRectContainsPoint(rect, location);
+}
+
+//////////////////////////////////////////////////// 
+// Begins object preparation for unstuck routine
+//////////////////////////////////////////////////// 
+void GameObject::startUnstuckPhase(){
+	m_objectBody->SetType(b2_dynamicBody);
+	m_objectBody->SetFixedRotation(false);	
+	m_objectBody->SetGravityScale(0);
+}
+
+//////////////////////////////////////////////////// 
+// Function to be called after unstuck routine is finished
+//////////////////////////////////////////////////// 
+void GameObject::unstuckPhaseFinished(){
+    if (getParent() && m_objectBody) {
+		m_objectBody->SetGravityScale(1);	
+		m_objectBody->SetType(b2_staticBody);
+		m_objectBody->SetFixedRotation(true);	
+		GameLevelScene::sharedGameScene()->setUtilityButtonsVisibleFoSelectedObject(true);
+	}
+	CCLog("Unstuck finished");
 }
 
 //////////////////////////////////////////////////// 

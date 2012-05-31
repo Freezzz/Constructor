@@ -153,10 +153,6 @@ public:
 	};
 
 protected:
-	b2MouseJoint * m_moveJoint;
-	b2RevoluteJoint * m_objectBodyPin;
-	b2MouseJoint * m_rotationJoin;
-
 	// Original pre-simulation settings of object
 	CCPoint m_originalPosition;
 	float m_originalRotation;
@@ -235,12 +231,6 @@ public:
 	virtual void rotate(float newRotation);
 
 	////////////////////////////////////////////////////
-	// Rotates object to give angle creates a rotate
-	//	joint to rotate object along it's axis
-	////////////////////////////////////////////////////
-	virtual void rotate(CCPoint location);
-
-	////////////////////////////////////////////////////
 	// Destroy object and it's physical body
 	////////////////////////////////////////////////////
 	virtual void destroy();
@@ -271,6 +261,16 @@ public:
 		m_objectBody->SetUserData( this );
 		return true;
 	}
+	
+	//////////////////////////////////////////////////// 
+	// Begins object preparation for unstuck routine
+	//////////////////////////////////////////////////// 
+	virtual void startUnstuckPhase();
+	
+	//////////////////////////////////////////////////// 
+	// Function to be called after unstuck routine is finished
+	//////////////////////////////////////////////////// 
+	virtual void unstuckPhaseFinished();
 	
 	//////////////////////////////////////////////////// 
 	// Checks if the point is contained inside this node

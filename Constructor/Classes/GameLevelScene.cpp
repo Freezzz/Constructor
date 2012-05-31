@@ -403,9 +403,12 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 			}
 		}
 	}
+	
+	// If nothing was taped and there were no selected object ignore tap
 	if (!m_selectedObject) {
 		return true;
 	}
+	
 	m_selectedObject->setSelected(true);
 	if( m_selectedObject->isMovable ) {
 		m_selectedObject->setObjectState( GameObject::Moving );
@@ -428,6 +431,7 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
     
 	setUtilityButtonsVisibleFoSelectedObject(false);
 	
+	// Multitouch rotation
 	if (m_selectedObject->m_state == GameObject::Rotating && m_touchCount == 2 && (int) pTouch->m_uID == m_secondTouchID) {
 		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
 							   ); //this grabs the radians for us
@@ -438,8 +442,11 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 	
 	if (m_selectedObject->m_state == GameObject::Moving) {
 		m_selectedObject->move(location);
-	}else if (m_selectedObject->m_state == GameObject::Rotating) {
-		m_selectedObject->rotate(location);
+	}else if (m_selectedObject->m_state == GameObject::Rotating && m_touchCount == 1) { // Button rotation
+		double radians = atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y
+							   ); //this grabs the radians for us
+		
+		m_selectedObject->rotate(-1*CC_RADIANS_TO_DEGREES(m_initialObjectAngle+(m_initialTouchAngle-radians)));
 	}
 }
 
@@ -474,7 +481,14 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
         return;
     }
     m_selectedObject->setObjectState( GameObject::Idile );
-	setUtilityButtonsVisibleFoSelectedObject(true);
+	
+	// If objects is not a sensor we should run auto unstuck procedure
+	if (!m_selectedObject->m_objectBody->GetFixtureList()->IsSensor()) {
+		m_selectedObject->startUnstuckPhase();
+		runAction(CCSequence::actions(CCDelayTime::actionWithDuration(0.3),
+									  CCCallFunc::actionWithTarget(m_selectedObject,
+																   callfunc_selector(GameObject::unstuckPhaseFinished)), NULL));
+	}
 }
 
 void GameLevelScene::ccTouchCancelled( cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent )
@@ -506,7 +520,6 @@ bool GameLevelScene::tapUtilityButtons( cocos2d::CCPoint location )
 	if (m_selectedObject && m_rotareButton->getIsVisible() && CCRect::CCRectContainsPoint(m_rotareButton->boundingBox(), location)) {
 		m_selectedObject->setSelected(true);
 		m_selectedObject->setObjectState( GameObject::Rotating );
-		m_selectedObject->rotate(location);
 		return true;	
 	}	
 	return false;
