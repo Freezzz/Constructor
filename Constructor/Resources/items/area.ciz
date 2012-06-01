@@ -1,0 +1,8 @@
+
+{
+ "name" : "target area",
+ "item sprite path" : "blocks.png",
+ "object sprite path" : "blocks.png",
+ "type" : 1
+}
+

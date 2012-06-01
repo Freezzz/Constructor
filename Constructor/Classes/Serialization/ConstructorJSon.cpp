@@ -7,10 +7,13 @@
 #include "../GameObjects/ObjectGlue.h"
 #include "../GameObjects/ObjectPin.h"
 #include "../GameObjects/ObjectSpring.h"
+#include "../Serialization/LevelManager.h"
 
 #include "LevelDef.h"
 
 #include "GameWorld.h"
+
+#include <fstream>
 
 ConstructorJSon::ConstructorJSon( )
 	: b2dJson(1)
@@ -68,6 +71,13 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 {
 	Json::Value itemValue;
 
+	itemValue["max quantity"] = item->m_maxQuantity;
+	itemValue["available"] = item->m_available;
+	itemValue["file"] = item->m_fileName;
+
+	// the other properties are already defined in the inventory item file
+	// it must be edited externally...
+	/*
 	itemValue["type"] = item->getObjectType();
 	itemValue["name"] = item->getName();
 
@@ -75,14 +85,12 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 	itemValue["isMovable"] = item->isMovable;
 	itemValue["isRotatable"] = item->isRotatable;
 	itemValue["isDeletable"] = item->isDeletable;
-
-	itemValue["max quantity"] = item->m_maxQuantity;
-	itemValue["available"] = item->m_available;
-
+	
 	itemValue["item sprite path"] = item->m_itemSpritePath;
 	itemValue["object sprite path"] = item->m_objectSpritePath;
 
 	itemValue["prototype"] = item->m_prototype;
+	*/
 
 	return itemValue;
 }
@@ -175,38 +183,64 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 }
 InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 {
-	ObjectType type = static_cast<ObjectType>( itemValue["type"].asInt() );
-	std::string name = itemValue["name"].asString();
-	std::string itemSprite = itemValue["item sprite path"].asString();
-	std::string objectSprite = itemValue["object sprite path"].asString();
-
-	Json::Value prototype = itemValue["prototype"];
-
 	InventoryItem *item;
-	switch( type ) {
-		case SimpleBox:
-			item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, prototype, name );
-			break;
-		case Area:
-			item = AreaInventoryItem::node( itemSprite, objectSprite, prototype, name );
-			break;
-		case Spring:
-			item = SpringInventoryItem::node( itemSprite, objectSprite, prototype, name );
-			break;
-		case Pin:
-			item = PinInventoryItem::node( itemSprite, objectSprite, prototype, name );
-			break;
-		case Glue:
-			item = GlueInventoryItem::node( itemSprite, objectSprite, prototype, name );
-			break;
-		default:
-			CCAssert( false, "Invalid inventory item" );
-	}
+	std::string fileName = itemValue["file"].asString();
 
-	item->isStatic = itemValue["isStatic"].asBool();
-	item->isMovable = itemValue["isMovable"].asBool();
-	item->isRotatable = itemValue["isRotatable"].asBool();
-	item->isDeletable = itemValue["isDeletable"].asBool();
+	// reading the inventory item file
+	{
+		std::string filePath = inventoryItemPath( fileName );
+		std::ifstream ifs;
+		ifs.open( filePath.c_str(), std::ios::in );
+		if (!ifs) {
+			std::cout << "Could not open inventory item file " << filePath << " for reading" << std::endl;
+			return NULL;
+		}
+
+		Json::Reader reader;
+		ConstructorJSon cjs;
+		Json::Value json;
+
+		if( ! reader.parse(ifs, json) )
+		{
+			std::cout  << "Failed to parse inventory item file " << filePath << std::endl << reader.getFormattedErrorMessages();
+			ifs.close();
+			return NULL;
+		}
+
+		ObjectType type = static_cast<ObjectType>( json["type"].asInt() );
+		std::string name = json["name"].asString();
+		std::string itemSprite = json["item sprite path"].asString();
+		std::string objectSprite = json["object sprite path"].asString();
+		
+		Json::Value prototype = json["prototype"];
+
+		switch( type ) {
+			case SimpleBox:
+				item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
+				break;
+			case Area:
+				item = AreaInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
+				break;
+			case Spring:
+				item = SpringInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
+				break;
+			case Pin:
+				item = PinInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
+				break;
+			case Glue:
+				item = GlueInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
+				break;
+			default:
+				CCAssert( false, "Invalid inventory item" );
+		}
+
+		item->isStatic = json["isStatic"].asBool();
+		item->isMovable = json["isMovable"].asBool();
+		item->isRotatable = json["isRotatable"].asBool();
+		item->isDeletable = json["isDeletable"].asBool();
+
+		ifs.close();
+	}
 
 	item->m_maxQuantity = itemValue["max quantity"].asInt();
 	if( itemValue["available"].isIntegral() ) {

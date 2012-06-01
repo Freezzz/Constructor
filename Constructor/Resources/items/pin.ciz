@@ -1,0 +1,32 @@
+
+{
+ "name" : "pin",
+ "prototype" :
+{
+  "angle": 0,
+  "fixture": [
+    {
+      "circle": {
+        "radius": 0.1,
+        "center": 0
+      },
+      "restitution": 0.5,
+      "sensor": true,
+      "friction": 0.1000000014901161,
+      "density": 1
+    }
+  ],
+  "angularVelocity": 0,
+  "awake": true,
+  "linearVelocity": 0,
+  "type": 0
+},
+ "isDeletable" : true,
+ "isMovable" : true,
+ "isRotatable" : true,
+ "isStatic" : false,
+ "item sprite path" : "pin_btn.png",
+ "object sprite path" : "pin.png",
+ "type" : 4
+}
+

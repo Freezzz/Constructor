@@ -29,10 +29,11 @@ class GameObject;
 		GameObject* gameObjectNode( CCPoint p ); \
 		INVENTORYITEM() : InventoryItem(TYPE) {} \
 		/* init */ \
-		bool init( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &name ) { \
+		bool init( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &fileName, const std::string &name ) { \
 			m_itemSpritePath = itemSpritePath; \
 			m_objectSpritePath = objectSpritePath; \
 			m_prototype = prototype; \
+			m_fileName = fileName; \
 			m_name = name; \
 			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
 			addChild( m_objectSprite ); \
@@ -40,9 +41,9 @@ class GameObject;
 			return true;\
 		} \
 		/* node */ \
-		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &name ) { \
+		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &fileName, const std::string &name ) { \
 			INVENTORYITEM *r = new INVENTORYITEM(); \
-			if( r && r->init( itemSpritePath, objectSpritePath, prototype, name ) ) { \
+			if( r && r->init( itemSpritePath, objectSpritePath, prototype, fileName, name ) ) { \
 				r->autorelease(); \
 				return r; \
 			} \
@@ -111,6 +112,7 @@ class GameObject;
 class InventoryItem : public CCNode
 {
 public:
+	std::string m_fileName; // the file where this item is defined
 	std::string m_name;
 	std::string m_itemSpritePath;
 	std::string m_objectSpritePath;

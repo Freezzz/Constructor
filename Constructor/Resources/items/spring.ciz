@@ -1,0 +1,56 @@
+
+{
+ "name" : "spring",
+ "prototype" :
+{
+"spring top" :
+{
+  "angle": 0,
+  "fixture": [
+    {
+      "restitution": 0.300000011920929,
+      "polygon": {
+        "vertices": {
+             "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
+             "y" : [ -0.5, -0.5, 0.5, 0.5 ]
+        }
+      },
+      "friction": 0.3,
+      "density": 1
+    }
+  ],
+  "angularVelocity": 0,
+  "awake": true,
+  "linearVelocity": 0,
+  "type": 0
+},
+"spring bottom" :
+{
+  "angle": 0,
+  "fixture": [
+    {
+      "restitution": 0.300000011920929,
+      "polygon": {
+        "vertices": {
+             "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
+             "y" : [ -0.5, -0.5, 0.5, 0.5 ]
+        }
+      },
+      "friction": 0.3,
+      "density": 1
+    } ],
+  "angularVelocity": 0,
+  "awake": true,
+  "linearVelocity": 0,
+  "type": 0
+}
+},
+ "isDeletable" : true,
+ "isMovable" : true,
+ "isRotatable" : false,
+ "isStatic" : false,
+ "item sprite path" : "spring_btn.png",
+ "object sprite path" : "spring.png",
+ "type" : 3
+}
+

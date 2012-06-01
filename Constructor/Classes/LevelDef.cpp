@@ -41,7 +41,7 @@ LevelDef* LevelDef::loadFromFile( LevelDescription *ld )
 		std::ifstream ifs;
 		ifs.open( filePath.c_str(), std::ios::in );
 		if (!ifs) {
-			std::cout << "Could not open file " << filePath << " for reading" << std::endl;
+			std::cout << "Could not open level file " << filePath << " for reading" << std::endl;
 			return NULL;
 		}
         
@@ -51,7 +51,7 @@ LevelDef* LevelDef::loadFromFile( LevelDescription *ld )
         
 		if( ! reader.parse(ifs, json) )
 		{
-			std::cout  << "Failed to parse " << filePath << std::endl << reader.getFormattedErrorMessages();
+			std::cout  << "Failed to parse level file " << filePath << std::endl << reader.getFormattedErrorMessages();
 			ifs.close();
 			delete l;
 			return NULL;
