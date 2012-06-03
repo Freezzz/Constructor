@@ -226,194 +226,45 @@
    [
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.3000000119209290,
-            "isSensor" : false,
-            "restitution" : 0.3000000119209290,
-            "shape" : 
-            {
-               "polygon" : 
-               {
-                  "vertices" : 
-                  {
-                     "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
-                     "y" : [ -0.781250, -0.781250, 0.781250, 0.781250 ]
-                  }
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : false,
-         "item sprite path" : "box.png",
-         "object sprite path" : "Icon-Small-50.png",
-         "type" : 0
+         "file" : "box",
+         "available": true,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.1000000014901161,
-            "isSensor" : false,
-            "restitution" : 0.50,
-            "shape" : 
-            {
-               "circle" : 
-               {
-                  "center" : 0,
-                  "radius" : 0.5156250
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : false,
-         "isStatic" : true,
-         "item sprite path" : "fixed.png",
-         "object sprite path" : "circle.png",
-         "type" : 0
+         "file" : "circle",
+         "available": true,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.3000000119209290,
-            "isSensor" : false,
-            "restitution" : 0.3000000119209290,
-            "shape" : 
-            {
-               "polygon" : 
-               {
-                  "vertices" : 
-                  {
-                     "x" : [ -2.8593750, 2.8593750, 2.8593750, -2.8593750 ],
-                     "y" : [ -0.2031250, -0.2031250, 0.2031250, 0.2031250 ]
-                  }
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : false,
-         "item sprite path" : "panel_btn.png",
-         "object sprite path" : "panel.png",
-         "type" : 0
+         "file" : "panel",
+         "available": true,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.1,
-            "isSensor" : true,
-            "restitution" : 0.50,
-            "shape" : 
-            {
-               "polygon" : 
-               {
-                  "vertices" : 
-                  {
-                     "x" : [ -1, 1, 1, -1 ],
-                     "y" : [ -1, -1, 1, 1 ]
-                  }
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : true,
-         "item sprite path" : "blocks.png",
-         "object sprite path" : "blocks.png",
-         "type" : 1,
-         "available" : false
+         "file" : "area",
+         "available" : false,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.3,
-            "isSensor" : false,
-            "restitution" : 0.3,
-            "shape" : 
-            {
-               "polygon" : 
-               {
-                  "vertices" : 
-                  {
-                    "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
-                    "y" : [ -0.5, -0.5, 0.5, 0.5 ]
-                  }
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : false,
-         "item sprite path" : "spring_btn.png",
-         "object sprite path" : "spring.png",
-         "type" : 3
+         "file" : "spring",
+         "available": true,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.1,
-            "isSensor" : true,
-            "restitution" : 0.50,
-            "shape" : 
-            {
-               "circle" : 
-               {
-                  "center" : 0,
-                  "radius" : 0.015625
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : false,
-         "item sprite path" : "pin_btn.png",
-         "object sprite path" : "pin.png",
-         "type" : 4
+         "file" : "pin",
+         "available": true,
+         "max quantity": 0
       },
       
       {
-         "fixtureDef" : 
-         {
-            "density" : 1,
-            "friction" : 0.1,
-            "isSensor" : true,
-            "restitution" : 0.5,
-            "shape" : 
-            {
-               "polygon" : 
-               {
-                  "vertices" : 
-                  {
-                     "x" : [ -0.5, 0.5, 0.5, -0.5 ],
-                     "y" : [ -0.46875, -0.46875, 0.46875, 0.46875 ]
-                  }
-               }
-            }
-         },
-         "isDeletable" : true,
-         "isMovable" : true,
-         "isRotatable" : true,
-         "isStatic" : false,
-         "item sprite path" : "glue_btn.png",
-         "object sprite path" : "glue.png",
-         "type" : 5
+         "file" : "glue",
+         "available": true,
+         "max quantity": 0
       }
    ],
    "lose conditions" : 0,
