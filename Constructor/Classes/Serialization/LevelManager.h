@@ -20,11 +20,11 @@ class LevelDef;
 
 #define CONSTRUCTOR_USER_LEVEL_PATH       ( ( CCFileUtils::getWriteablePath().empty() ? "." : CCFileUtils::getWriteablePath() ) + "/levels/" )
 
-#define CONSTRUCTOR_INVITEMS_PATH         CCFileUtils::fullPathFromRelativePath( "items/" )
+#define CONSTRUCTOR_INVITEMS_PATH         CCFileUtils::fullPathFromRelativePath( "items" )
 
 inline std::string inventoryItemPath( const std::string &ii )
 {
-	return std::string( CONSTRUCTOR_INVITEMS_PATH ) + ii + ".ciz";
+	return std::string( CONSTRUCTOR_INVITEMS_PATH ) + string("/") + ii + ".ciz";
 }
 
 struct LevelDescription
