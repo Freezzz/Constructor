@@ -1,43 +1,5 @@
-
 {
- "name" : "panel",
- "prototype" :
-{
-  "angle": 0,
-  "fixture": [
-    {
-      "restitution": 0.300000011920929,
-      "polygon": {
-        "vertices": {
-          "y": [
-            -0.203125,
-            -0.203125,
-            0.203125,
-            0.203125
-          ],
-          "x": [
-            -2.859375,
-            2.859375,
-            2.859375,
-            -2.859375
-          ]
-        }
-      },
-      "friction": 0.300000011920929,
-      "density": 1
-    }
-  ],
-  "angularVelocity": 0,
-  "awake": true,
-  "linearVelocity": 0,
-  "type": 0
-},
- "isDeletable" : true,
- "isMovable" : true,
- "isRotatable" : true,
- "isStatic" : false,
- "item sprite path" : "panel_btn.png",
- "object sprite path" : "panel.png",
- "type" : 0
+	"name" : "panel",
+	"sprite path" : "panel_btn.png",
+	"game object file" : "panel"
 }
-

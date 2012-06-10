@@ -1,0 +1,26 @@
+
+{
+	"type" : 0,
+	"deletable" : true,
+	"movable" : true,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "circle.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"circle" : {
+					"center" : 0,
+					"radius" : 0.5156250
+				},
+				"density" : 1,
+				"friction" : 0.1000000014901161,
+				"restitution" : 0.50
+			}
+		]
+	}
+}
+

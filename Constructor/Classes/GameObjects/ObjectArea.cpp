@@ -2,24 +2,21 @@
 #include "GameObjects/ObjectArea.h"
 #include "../GameWorld.h"
 
-INVENTORYITEM_GAMEOBJECT_NODE_DECL( AreaInventoryItem, ObjectArea )
-
 
 ////////////////////////////////////////////////////
 // ObjectArae init
 ////////////////////////////////////////////////////
-bool ObjectArea::init( std::string spritePath )
+bool ObjectArea::init( )
 {
-	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 	
 	//Define texture to fill the fixture ( must be added to node render properly )
-	m_fillSprite = CCSprite::spriteWithFile("stripes.png");
+	m_fillSprite = CCSprite::spriteWithFile( m_prototype["fill sprite path"].asCString() );
 	addChild(m_fillSprite);
 	m_fillSprite->setIsVisible(false);
 
-
-	addChild(m_objectSprite);
-	m_objectSprite->setIsVisible(false);
+	addChild(m_sprite);
+	m_sprite->setIsVisible(false);
 
 	isStatic = true;
 
@@ -49,7 +46,7 @@ void ObjectArea::setAreaType( AreaType type ){
 	}else {
 		m_fillSprite = CCSprite::spriteWithFile("stripes_loose.png");
 	}
-	m_fixtureFiller = new FixtureFiller(m_objectBody->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
+	m_fixtureFiller = new FixtureFiller(m_body->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
 }
 
 ////////////////////////////////////////////////////
@@ -59,14 +56,17 @@ void ObjectArea::setAreaType( AreaType type ){
 bool ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
 {
 	b2dJson json;
-	m_objectBody = json.j2b2Body( physicsWorld(), prototype() );
-	if( ! m_objectBody || ! m_objectBody->GetFixtureList() ) {
+	m_body = json.j2b2Body( physicsWorld(), prototype() );
+	if( ! m_body || ! m_body->GetFixtureList() ) {
 		std::cout << "Area inventory item prototype messed up" << std::endl;
 		return false;
 	}
-	m_objectBody->SetUserData(this);
-	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
+	m_body->SetUserData(this);
+	m_body->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_body->GetAngle() );
 	setPosition(position);
+
+	m_bodies.push_back( m_body );
+
 	return true;
 }
 void ObjectArea::draw(){
@@ -76,21 +76,10 @@ void ObjectArea::draw(){
 		glTranslatef(getContentSizeInPixels().width *0.5, getContentSizeInPixels().height *0.5,0);
 
 		m_fixtureFiller->draw();
-		
+
 		// Restore to previous state
 		glTranslatef(-getContentSizeInPixels().width *0.5, -getContentSizeInPixels().height *0.5,0);		
 	}	
-}
-
-bool ObjectArea::setBody( b2Body *b )
-{
-	GameObject::setBody( b );
-//	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), ccc4f(255, 255, 255, 255), ccc4f(255, 0, 0, 255));
-	m_fixtureFiller = new FixtureFiller(b->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
-	// Adapt gameobject's content size to polygon shape
-	setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0	
-	setContentSize(minimumBoundingBoxForPolygon((b2PolygonShape*)b->GetFixtureList()->GetShape()).size);
-	return true;
 }
 
 

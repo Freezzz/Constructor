@@ -13,8 +13,6 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, Pin )
-
 
 ////////////////////////////////////////////////////
 // ObjectPin
@@ -22,11 +20,17 @@ INVENTORYITEM_CLASS_DEF( PinInventoryItem , ObjectPin, Pin )
 class ObjectPin : public GameObject
 {
 private:
+	CCSprite *m_sprite;
+	b2Body *m_body;
+
 	bool m_isPinned;
-	b2RevoluteJoint * m_pinJoint;	
-	
+	b2RevoluteJoint * m_pinJoint;
+
+	ObjectPin( const std::string &fileName, const Json::Value &prototype )
+	: GameObject( fileName, prototype ) { }
+
 protected:
-	bool init( std::string spritePath );
+	bool init( );
 	
 	// State change handlers
 	virtual void onSimulationStarted();
@@ -35,7 +39,6 @@ protected:
 	virtual void onMovementEnded();
 	
 	bool createBodyAtPosition(CCPoint position);
-	bool setBody( b2Body *b );
 	
 public:
 	//////////////////////////////////////////////////// 
@@ -54,7 +57,7 @@ public:
 	//////////////////////////////////////////////////// 
 	void unstuckPhaseFinished();
 	
-	GAMEOBJECT_NODE_DEF( PinInventoryItem , ObjectPin )
+	GAMEOBJECT_NODE_DEF( ObjectPin )
 };
 
 #endif

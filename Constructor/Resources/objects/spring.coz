@@ -1,0 +1,47 @@
+
+{
+	"type" : 3,
+	"deletable" : true,
+	"movable" : true,
+	"rotatable" : true,
+	"static" : false,
+	
+	"prototype" : {
+		"spring sprite path" : "spring.png",
+		"spring top" : {
+			"sprite path" : "spring_solid.png",
+			"fixture": [
+				{
+					"restitution": 0.300000011920929,
+					"polygon": {
+						"vertices": {
+							"x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
+							"y" : [ -0.5, -0.5, 0.5, 0.5 ]
+						}
+					},
+					"friction": 0.3,
+					"density": 1
+				}
+			],
+			"awake": true
+		},
+		"spring bottom" : {
+			"sprite path" : "spring_solid.png",
+			"fixture": [
+				{
+					"restitution": 0.300000011920929,
+					"polygon": {
+						"vertices": {
+							"x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
+							"y" : [ -0.5, -0.5, 0.5, 0.5 ]
+						}
+					},
+					"friction": 0.3,
+					"density": 1
+				}
+			],
+			"awake": true
+		}
+	}
+}
+

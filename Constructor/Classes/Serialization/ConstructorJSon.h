@@ -9,6 +9,15 @@ class InventoryItem;
 class GameObject;
 struct LevelDef;
 
+namespace Json
+{
+	Json::Value jsonFromFile( const char *filename );
+}
+namespace cocos2d {
+	class CCPoint;
+}
+
+
 class ConstructorJSon : public b2dJson
 {
 protected:
@@ -29,8 +38,10 @@ public:
 	using b2dJson::b2j;
 
 	LevelDef* j2cLevelDef( Json::Value levelDefValue );
-	InventoryItem* j2cInventoryItem( Json::Value inventoryItemValue );
-	GameObject* j2cGameObject( Json::Value gameObjectValue );
+	InventoryItem* j2cInventoryItem( Json::Value inventoryItemValue ); // reading the inv.item section of a level (.clz)
+	static InventoryItem* j2cInventoryItem( std::string &fileName ); // reading from a .ciz
+	GameObject* j2cGameObject( Json::Value gameObjectValue ); // reading the game object section of a level (.clz)
+	static GameObject* j2cGameObject( std::string &fileName, const cocos2d::CCPoint &p ); // reading from a .coz
 
 	void setInventoryItemName( InventoryItem* item, const char* name );
 	void setGameObjectName( GameObject* object, const char* name );

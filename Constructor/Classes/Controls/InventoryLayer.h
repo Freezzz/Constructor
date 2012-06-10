@@ -10,10 +10,44 @@
 #define __InventoryLayer_H__
 #include "cocos2d.h"
 #include "Constants.h"
+#include "Serialization/json/json.h" // for the prototype
 
-class InventoryItem;
 class GameObject;
 using namespace cocos2d;
+
+
+// a button in the inventory
+class InventoryItem : public CCNode
+{
+public:
+	std::string m_fileName; // the file where this button is defined
+	std::string m_name;
+
+	std::string m_spritePath, m_prototypeName;
+
+	CCSprite *m_sprite;
+
+	int m_quantity, m_maxQuantity;
+
+protected:
+	InventoryItem( const std::string &fileName, const std::string &name, const std::string &prototypeName, const std::string &spritePath )
+	: m_fileName(fileName), m_name(name), m_spritePath(spritePath), m_prototypeName(prototypeName), m_quantity(0) { }
+
+public:
+	GameObject *spawnObject( CCPoint p );
+	std::string getName() const { return m_name; }
+	bool init( );
+
+	static InventoryItem *node( const std::string &fileName, const std::string &name, const std::string &prototypeName, const std::string &spritePath ) {
+		InventoryItem *r = new InventoryItem( fileName, name, prototypeName, spritePath );
+		if( r && r->init() ) {
+			r->autorelease();
+			return r;
+		}
+		delete r;
+		return NULL;
+	}
+};
 
 ////////////////////////////////////////////////////
 // InventoryLayer - layer that represents 

@@ -10,20 +10,18 @@
 #include "../GameWorld.h"
 #include <iostream>
 
-INVENTORYITEM_GAMEOBJECT_NODE_DECL( SimpleBoxInventoryItem , ObjectSimpleBox )
-
 //////////////////////////////////////////////////// 
 // ObjectSimpleBox init
 //////////////////////////////////////////////////// 
-bool ObjectSimpleBox::init( std::string spritePath )
+bool ObjectSimpleBox::init( )
 {
-	m_objectSprite = CCSprite::spriteWithFile( spritePath.c_str() );
+	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 
 	// Adapt container to the graphical rapresentation
-	setContentSize(m_objectSprite->getContentSize());
-	m_objectSprite->setAnchorPoint(CCPoint(0,0));
+	setContentSize(m_sprite->getContentSize());
+	m_sprite->setAnchorPoint(CCPoint(0,0));
 	setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
-	addChild(m_objectSprite);
+	addChild(m_sprite);
 	defaultZOrder = 1;
 
 	rotateButtonOffset = CCPoint( getContentSize().width/2 + 10, 0 );
@@ -43,13 +41,16 @@ bool ObjectSimpleBox::createBodyAtPosition( cocos2d::CCPoint position )
 	// Player physical body
 	b2dJson json;
 
-	m_objectBody = json.j2b2Body( physicsWorld(), prototype() );
-	if( ! m_objectBody || ! m_objectBody->GetFixtureList() ) {
+	m_body = json.j2b2Body( physicsWorld(), prototype() );
+	if( ! m_body || ! m_body->GetFixtureList() ) {
 		std::cout << "Simple inventory item prototype messed up" << std::endl;
 		return false;
 	}
-	m_objectBody->SetUserData( this );
-	m_objectBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_objectBody->GetAngle() );
+	m_body->SetUserData( this );
+	m_body->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_body->GetAngle() );
 	setPosition(position);
+
+	m_bodies.push_back( m_body );
+
 	return true;
 }

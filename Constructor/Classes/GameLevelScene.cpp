@@ -201,16 +201,21 @@ bool GameLevelScene::checkVictory()
 	if ( ! m_winArea ) {
 		return 0;
 	}
-	
-	b2ContactEdge * cont = m_winArea->m_objectBody->GetContactList();
-	while( cont ) {
-		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
-			 || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
-		   && cont->contact->IsTouching() ) {
-			return 1;
+
+	for( std::vector<b2Body*>::iterator bit = m_winArea->m_bodies.begin(); bit != m_winArea->m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		b2ContactEdge * cont = body->GetContactList();
+		while( cont ) {
+			if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
+				|| cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+			&& cont->contact->IsTouching() ) {
+				return 1;
+			}
+			cont = cont->next;
 		}
-		cont = cont->next;
 	}
+
 	return 0;
 }
 bool GameLevelScene::checkDefeat()
@@ -223,15 +228,19 @@ bool GameLevelScene::checkDefeat()
 	if ( ! m_looseArea ) {
 		return 0;
 	}
-	
-	b2ContactEdge * cont = m_looseArea->m_objectBody->GetContactList();
-	while( cont ) {
-		if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
-			 || cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
-		   && cont->contact->IsTouching() ) {
-			return 1;
+
+	for( std::vector<b2Body*>::iterator bit = m_looseArea->m_bodies.begin(); bit != m_looseArea->m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		b2ContactEdge * cont = body->GetContactList();
+		while( cont ) {
+			if( ( cont->contact->GetFixtureA()->GetBody()->GetUserData() == m_target
+				|| cont->contact->GetFixtureB()->GetBody()->GetUserData() == m_target )
+			&& cont->contact->IsTouching() ) {
+				return 1;
+			}
+			cont = cont->next;
 		}
-		cont = cont->next;
 	}
 
 	return 0;
@@ -356,12 +365,13 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 
 	if (m_touchCount == 1) {
 		m_firstTouchID = pTouch->m_uID;
-	}else if( m_selectedObject->isRotatable){
+	}
+	else if( m_selectedObject->isRotatable){
 		m_secondTouchID = pTouch->m_uID;
 		m_selectedObject->setObjectState( GameObject::Idile );		
 		m_selectedObject->setObjectState( GameObject::Rotating );
 		m_initialTouchAngle=atan2(m_selectedObject->getPosition().x - location.x, m_selectedObject->getPosition().y -location.y);
-		m_initialObjectAngle = m_selectedObject->m_objectBody->GetAngle();
+		m_initialObjectAngle = m_selectedObject->m_bodies[0]->GetAngle(); // TODO: ugh... maybe we should use with some boundary box?
 		return true;
 	}
 
@@ -403,12 +413,17 @@ bool GameLevelScene::ccTouchBegan( CCTouch *pTouch, CCEvent *pEvent )
 			}
 		}
 	}
-	
+
 	// If nothing was taped and there were no selected object ignore tap
 	if (!m_selectedObject) {
 		return true;
 	}
-	
+
+	/*
+	std::cout << "Selected: " << m_selectedObject << std::endl;
+	std::cout << " movable: " << m_selectedObject->isMovable << std::endl;
+	*/
+
 	m_selectedObject->setSelected(true);
 	if( m_selectedObject->isMovable ) {
 		m_touchToCenterOffset = CCPoint(location.x - m_selectedObject->getPosition().x, location.y - m_selectedObject->getPosition().y);
@@ -455,8 +470,8 @@ void GameLevelScene::ccTouchMoved( CCTouch *pTouch, CCEvent *pEvent )
 //////////////////////////////////////////////////// 
 void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
 {
-	m_touchCount--;	
-	
+	m_touchCount--;
+
 	// Initial finger is still taped
 	if (m_touchCount == 1 && (int) pTouch->m_uID == m_secondTouchID) {
 		m_selectedObject->setObjectState( GameObject::Idile);
@@ -464,28 +479,27 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
 		return;
 	}
 
-    if (m_selectedObject == NULL) {
-        return;
-    }
-    
-    CCPoint location = pTouch->locationInView();
-    location = CCDirector::sharedDirector()->convertToGL(location);
-    
-    // If touch is not in game zone
-    if( ! CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving && m_selectedObject->isDeletable ) {
-		InventoryItem * item = m_selectedObject->m_inventoryItem;		
+	if (m_selectedObject == NULL) {
+		return;
+	}
+
+	CCPoint location = pTouch->locationInView();
+	location = CCDirector::sharedDirector()->convertToGL(location);
+
+	// If touch is not in game zone
+	if( ! CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving && m_selectedObject->isDeletable ) {
 		m_gameObjects->removeObject(m_selectedObject);
-        m_selectedObject->destroy();
-		m_inventoryLayer->updateInventryItemQuantity(item);
-        m_selectedObject=NULL;        
-        return;
-    }
-    m_selectedObject->setObjectState( GameObject::Idile );
-	
+		m_selectedObject->destroy();
+		// m_inventoryLayer->updateInventryItemQuantity(item); // TODO: quantity system must be reworked
+		m_selectedObject=NULL;
+		return;
+	}
+	m_selectedObject->setObjectState( GameObject::Idile );
+
 	m_selectedObject->startUnstuckPhase();
 	runAction(CCSequence::actions(CCDelayTime::actionWithDuration(0.3),
-								  CCCallFunc::actionWithTarget(m_selectedObject,
-															   callfunc_selector(GameObject::unstuckPhaseFinished)), NULL));
+									CCCallFunc::actionWithTarget(m_selectedObject,
+																callfunc_selector(GameObject::unstuckPhaseFinished)), NULL));
 }
 
 void GameLevelScene::ccTouchCancelled( cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent )
@@ -505,11 +519,10 @@ bool GameLevelScene::tapUtilityButtons( cocos2d::CCPoint location )
 	}
 
 	if (m_selectedObject && m_deleteButton->getIsVisible() && CCRect::CCRectContainsPoint(m_deleteButton->boundingBox(), location)) {
-		InventoryItem * item = m_selectedObject->m_inventoryItem;
 		m_selectedObject->setSelected(false);
 		m_gameObjects->removeObject(m_selectedObject);
 		m_selectedObject->destroy();
-		m_inventoryLayer->updateInventryItemQuantity(item);
+		// m_inventoryLayer->updateInventryItemQuantity(item); // TODO: quantity system must be reworked
 		setUtilityButtonsVisibleFoSelectedObject(false);
 		m_selectedObject = NULL;
 		return true;	

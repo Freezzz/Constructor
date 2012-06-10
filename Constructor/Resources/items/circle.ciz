@@ -1,34 +1,5 @@
-
 {
- "name" : "circle",
- "prototype" :
-    {
-       "angle" : 0,
-       "angularVelocity" : 0,
-       "awake" : true,
-       "fixture" :
-       [
-
-          {
-             "circle" :
-             {
-                "center" : 0,
-                "radius" : 0.5156250
-             },
-             "density" : 1,
-             "friction" : 0.1000000014901161,
-             "restitution" : 0.50
-          }
-       ],
-       "linearVelocity" : 0,
-       "type" : 0
-    },
- "isDeletable" : true,
- "isMovable" : true,
- "isRotatable" : false,
- "isStatic" : true,
- "item sprite path" : "fixed.png",
- "object sprite path" : "circle.png",
- "type" : 0
+	"name" : "circle",
+	"sprite path" : "fixed.png",
+	"game object file" : "circle"
 }
-

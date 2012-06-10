@@ -7,8 +7,6 @@
 #include "FixtureFiller.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( AreaInventoryItem , ObjectArea, Area )
-
 typedef enum AreaType{
 	WinArea = 0,
 	LooseArea = 1
@@ -20,6 +18,8 @@ typedef enum AreaType{
 class ObjectArea : public GameObject
 {
 private:
+	CCSprite *m_sprite;
+	b2Body *m_body;
 	CCSprite * m_fillSprite;
 	
 	FixtureFiller * m_fixtureFiller;
@@ -28,24 +28,28 @@ protected:
 	bool init( std::string spritePath );
 
 	bool createBodyAtPosition(CCPoint position);
-	bool setBody( b2Body *b );
 	virtual void draw();
+
 public:
-	GAMEOBJECT_NODE_DEF( AreaInventoryItem , ObjectArea )
-    AreaType getAreaType(){ return m_areaType; }
+    ObjectArea(const string& fileName, const Json::Value& prototype)
+	: GameObject(fileName, prototype) { }
+	GAMEOBJECT_NODE_DEF( ObjectArea )
+
+	AreaType getAreaType(){ return m_areaType; }
 	void setAreaType( AreaType type );
-	
-	
+
 	//////////////////////////////////////////////////// 
 	// Begins object preparation for unstuck routine
 	//////////////////////////////////////////////////// 
 	void startUnstuckPhase();
-	
+
 	//////////////////////////////////////////////////// 
 	// Function to be called after unstuck routine is finished
 	//////////////////////////////////////////////////// 
 	void unstuckPhaseFinished();
-	
+
+	bool init( );
+
 	static CCRect minimumBoundingBoxForPolygon(b2PolygonShape * shape);
 };
 

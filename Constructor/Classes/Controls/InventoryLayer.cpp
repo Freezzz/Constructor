@@ -8,14 +8,31 @@
 
 #include "InventoryLayer.h"
 #include "../GameObjects/GameObject.h"
+#include "../Serialization/LevelManager.h"
+#include "../Serialization/ConstructorJSon.h"
 #include <iostream>
 #include <sstream>
 #define BUTTON_SIZE 90
 
-//////////////////////////////////////////////////// 
+
+bool InventoryItem::init( )
+{
+	m_sprite = CCSprite::spriteWithFile( m_spritePath.c_str() );
+	setContentSize( m_sprite->getContentSize() );
+	addChild( m_sprite );
+	return 1;
+}
+GameObject *InventoryItem::spawnObject( CCPoint p )
+{
+	std::cout << "Spawning " << m_prototypeName << "..." << std::endl;
+	return ConstructorJSon::j2cGameObject( m_prototypeName, p );
+}
+
+////////////////////////////////////////////////////
 // InventoryLayer init
-//////////////////////////////////////////////////// 
-bool InventoryLayer::init(){
+////////////////////////////////////////////////////
+bool InventoryLayer::init( )
+{
 	// Set achor point to middle left
 	setAnchorPoint(CCPoint(0,0.5));
 
@@ -54,16 +71,16 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 		InventoryItem *button = *it;
 
 		/*
-		std::cout << "  Item at: " << CCRect::CCRectGetMidX( button->boundingBox() ) << "," << CCRect::CCRectGetMidY( button->boundingBox() )
-				  << " : " << button->m_objectSprite->boundingBox().size.width << "x" << button->m_objectSprite->boundingBox().size.height << std::endl;
+		std::cout << "  Item " << button->getName() << " at: " << CCRect::CCRectGetMidX( button->boundingBox() ) << "," << CCRect::CCRectGetMidY( button->boundingBox() )
+				  << " : " << button->boundingBox().size.width << "x" << button->boundingBox().size.height << std::endl;
 		*/
 
 		CCPoint point = CCPoint( pointLocal.x - button->boundingBox().origin.x, pointLocal.y - button->boundingBox().origin.y );
-		// std::cout << "  Fake click: " << point.x << "," << point.y << std::endl;
+		//std::cout << "  Fake click: " << point.x << "," << point.y << std::endl;
 
-		if( CCRect::CCRectContainsPoint( button->m_objectSprite->boundingBox(), point ) ) {
+		if( CCRect::CCRectContainsPoint( button->m_sprite->boundingBox(), point ) ) {
 			button->runAction( CCBlink::actionWithDuration(0.2, true) );
-			GameObject *r = button->gameObjectNode( location );
+			GameObject *r = button->spawnObject( location );
 			if (r) {
 				updateInventryItemQuantity(button);
 			}
@@ -77,10 +94,6 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 void InventoryLayer::addInventoryItem( InventoryItem *item )
 {
 	m_inventoryItems.push_back( item );
-	if( ! item->m_available ) {
-		item->retain();
-		return ;
-	}
 
 	item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
 	m_buttons.push_back( item );
@@ -109,10 +122,6 @@ void InventoryLayer::removeInventoryItem( InventoryItem *item )
 {
 	// removing from m_inventoryItems
 	m_inventoryItems.erase( std::remove( m_inventoryItems.begin(), m_inventoryItems.end(), item ), m_inventoryItems.end() );
-	if( ! item->m_available ) {
-		item->release();
-		return ;
-	}
 
 	// removing from m_buttons
 	int itemIndex = -1;
@@ -132,10 +141,6 @@ void InventoryLayer::removeInventoryItem( InventoryItem *item )
 
 void InventoryLayer::updateInventryItemQuantity( InventoryItem *item )
 {
-	if( ! item->m_available ) {
-		return ;
-	}
-
 	if (item->m_maxQuantity <= 0) {
 		return;
 	}

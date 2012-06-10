@@ -1,0 +1,29 @@
+
+{
+	"type" : 4,
+	"deletable" : true,
+	"movable" : true,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "pin.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"restitution": 0.5,
+				"sensor": true,
+				"polygon": {
+					"vertices": {
+						"y": [ -0.46875, -0.46875, 0.46875, 0.46875 ],
+						"x": [ -0.5, 0.5, 0.5, -0.5 ]
+					}
+				},
+				"friction": 0.1000000014901161,
+				"density": 1
+			}
+		]
+	}
+}
+

@@ -14,21 +14,26 @@
 
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( GlueInventoryItem , ObjectGlue, Glue )
-
 
 
 ////////////////////////////////////////////////////
 // ObjectGlue
 ///////////////////////////////////////////////////
-class ObjectGlue : public GameObject {
+class ObjectGlue : public GameObject
+{
 private:
+	CCSprite *m_sprite;
+	b2Body *m_body;
+
 	bool m_isGlued;
 	vector<b2WeldJoint*> m_joints;
 
 	void weldObjectsAtContact(b2Contact *contact);
+
+	ObjectGlue( const std::string &fileName, const Json::Value &prototype )
+	: GameObject( fileName, prototype ) { }
 protected:
-	bool init( std::string spritePath );
+	bool init( );
 	// State change handlers
 	virtual void onSimulationStarted();
 	virtual void onSimulationEnded();	
@@ -36,7 +41,6 @@ protected:
 	virtual void onMovementEnded();
 
 	bool createBodyAtPosition(CCPoint position);
-	bool setBody( b2Body *b );
 
 public:
 	void unPin(bool destroyJoint);
@@ -52,7 +56,7 @@ public:
 	//////////////////////////////////////////////////// 
 	void unstuckPhaseFinished();
 	
-	GAMEOBJECT_NODE_DEF( GlueInventoryItem , ObjectGlue )
+	GAMEOBJECT_NODE_DEF( ObjectGlue )
 };
 
 

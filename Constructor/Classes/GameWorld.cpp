@@ -12,26 +12,18 @@
 //////////////////////////////////////////////////// 
 // GameWorld init
 //////////////////////////////////////////////////// 
-bool GameWorld::init( b2World *phyWorld, b2Body *nullBody )
+bool GameWorld::init( b2Vec2 gravity )
 {
 	gameWorldInstance = this;
 
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
-	b2Vec2 gravity;
-	gravity.Set(0.0f, -9.8);
 
-	if( ! phyWorld || ! nullBody ) {
-		physicsWorld = new b2World(gravity);
-		physicsWorld->SetAllowSleeping(true);
-		physicsWorld->SetContinuousPhysics(true);
-		
-		// Create world borders
-		createWorldBox(winSize);
-	}
-	else {
-		physicsWorld = phyWorld;
-		umbelicoDelMondo = nullBody;
-	}
+	physicsWorld = new b2World(gravity);
+	physicsWorld->SetAllowSleeping(true);
+	physicsWorld->SetContinuousPhysics(true);
+
+	// Create world borders
+	createWorldBox(winSize);
     
 	// Box2d debugDraw configuration
 	m_debugDraw = new GLESDebugDraw( PTM_RATIO * CC_CONTENT_SCALE_FACTOR() );
@@ -150,10 +142,10 @@ GameWorld* GameWorld::sharedGameWorld(){
 //////////////////////////////////////////////////// 
 // Static constructor returns autorelesed object
 //////////////////////////////////////////////////// 
-GameWorld* GameWorld::node( b2World *phyWorld, b2Body *nullBody )
+GameWorld* GameWorld::node( b2Vec2 gravity )
 {
 	GameWorld * pRet = new GameWorld();
-	if ( pRet && pRet->init(phyWorld, nullBody) ) {
+	if ( pRet && pRet->init(gravity) ) {
 		pRet->autorelease();
 		return pRet;
 	}

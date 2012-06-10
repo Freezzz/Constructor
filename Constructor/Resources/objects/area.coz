@@ -1,0 +1,30 @@
+
+{
+	"type" : 1,
+	"deletable" : false,
+	"movable" : false,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"fill sprite path" : "stripes.png",
+		"sprite path" : "blocks.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0,
+				"friction" : 0,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -1, 1, 1, -1 ],
+						"y" : [ -5, -5, 5, 5 ]
+					}
+				},
+				"restitution" : 0.3000000119209290,
+				"sensor" : true
+			}
+		]
+	}
+}
+

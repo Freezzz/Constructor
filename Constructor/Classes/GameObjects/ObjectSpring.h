@@ -13,8 +13,6 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, Spring )
-
 
 ////////////////////////////////////////////////////
 // ObjectSpring
@@ -22,10 +20,9 @@ INVENTORYITEM_CLASS_DEF( SpringInventoryItem, ObjectSpring, Spring )
 class ObjectSpring : public GameObject
 {
 private:
-	b2Body * m_secondBody;
-
-	CCSprite * m_fistBodySprite;
-	CCSprite * m_secondBodySprite;	
+	b2Body *m_firstBody, *m_secondBody;
+	CCSprite *m_firstBodySprite, *m_secondBodySprite;
+	CCSprite *m_springSprite;
 	
 	b2Vec2 m_firstBodyOriginalLocation;
 	float m_firstBodyOriginalRotation;
@@ -38,7 +35,7 @@ private:
 	
 	b2Vec2 m_offsetBetweenBodies;
 protected:
-	bool init( std::string spritePath );
+	bool init( );
 	virtual void destroy();
 	virtual void update(ccTime dt);
 
@@ -52,8 +49,10 @@ protected:
 	// Creates object at location
 	////////////////////////////////////////////////////
 	bool createBodyAtPosition(CCPoint position);
-	bool setBody( b2Body *b );
 public:
+    ObjectSpring( const string& fileName, const Json::Value& prototype )
+	: GameObject( fileName, prototype ) { }
+
 	////////////////////////////////////////////////////
 	// Save object's properties pre-simulation
 	////////////////////////////////////////////////////
@@ -87,7 +86,7 @@ public:
 	//////////////////////////////////////////////////// 
 	void unstuckPhaseFinished();
 
-	GAMEOBJECT_NODE_DEF( SpringInventoryItem, ObjectSpring )
+	GAMEOBJECT_NODE_DEF( ObjectSpring )
 };
 
 #endif

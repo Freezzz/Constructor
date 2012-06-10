@@ -32,7 +32,7 @@ private:
 	void createWorldBox(CCSize screenSize);
     
 	virtual void update(ccTime dt);
-	virtual bool init( b2World *phyWorld = NULL, b2Body *nullBody = NULL );
+	virtual bool init( b2Vec2 gravity );
 
 	void draw();
 public:
@@ -42,7 +42,7 @@ public:
     //////////////////////////////////////////////////// 
     // Static factory constructor
     //////////////////////////////////////////////////// 
-	static GameWorld* node( b2World *phyWorld = NULL, b2Body *nullBody = NULL );
+	static GameWorld* node( b2Vec2 gravity );
     
     //////////////////////////////////////////////////// 
     // Singleton pattern

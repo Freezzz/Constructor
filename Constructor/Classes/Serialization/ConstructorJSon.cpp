@@ -7,13 +7,44 @@
 #include "../GameObjects/ObjectGlue.h"
 #include "../GameObjects/ObjectPin.h"
 #include "../GameObjects/ObjectSpring.h"
+#include "../Controls/InventoryLayer.h"
 #include "../Serialization/LevelManager.h"
 
 #include "LevelDef.h"
-
 #include "GameWorld.h"
+#include "Common.h"
 
 #include <fstream>
+
+namespace Json
+{
+	// TODO: find a better way to return errors...
+	Json::Value jsonFromFile( const char *filename )
+	{
+		if( ! filename ) {
+			return Json::Value();
+		}
+
+		std::ifstream ifs;
+		ifs.open( filename, std::ios::in );
+		if( ! ifs ) {
+			std::cout << "Could not open file " << filename << " for reading" << std::endl;
+			return Json::Value();
+		}
+
+		Json::Value value;
+		Json::Reader reader;
+		if( ! reader.parse(ifs, value) )
+		{
+			std::cout  << "Failed to parse " << filename << std::endl << reader.getFormattedErrorMessages();
+			ifs.close();
+			return Json::Value();
+		}
+		ifs.close();
+
+		return value;
+	}
+}
 
 ConstructorJSon::ConstructorJSon( )
 	: b2dJson(1)
@@ -72,7 +103,6 @@ Json::Value ConstructorJSon::cj( InventoryItem* item )
 	Json::Value itemValue;
 
 	itemValue["max quantity"] = item->m_maxQuantity;
-	itemValue["available"] = item->m_available;
 	itemValue["file"] = item->m_fileName;
 
 	// the other properties are already defined in the inventory item file
@@ -98,8 +128,9 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 {
 	Json::Value objectValue;
 
-	objectValue["body"] = lookupBodyIndex( gameObject->getObjectBody() );
-	objectValue["inventory item"] = lookupInventoryItemIndex( gameObject->getInventoryItem() );
+	objectValue["object file"] = gameObject->m_fileName;
+    vecToJson( "position", v( gameObject->m_originalPosition ), objectValue );
+	objectValue["rotation"] = gameObject->m_originalRotation;
 
 	objectValue["isStatic"] = gameObject->isStatic;
 	objectValue["isMovable"] = gameObject->isMovable;
@@ -114,29 +145,36 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 {
 	LevelDef *l = new LevelDef;
-	
-	// level description
-	l->name = value["name"].asString();
-	l->difficulty = value["difficulty"].asFloat();
 
-	// level style
-	l->theme = value["theme"].asString();
-
-	// level physical world
+	// level properties
 	{
-		Json::Value worldJson;
-		worldJson = value["game world"];
+		// description
+		l->name = value["name"].asString();
+		l->difficulty = value["difficulty"].asFloat();
 
-		b2World *physicsWorld = j2b2World( worldJson["physics world"] );
-		b2Body *nullBody = getBodyByName( "null body" );
-		l->gameWorld = GameWorld::node( physicsWorld, nullBody );
+		// style
+		l->theme = value["theme"].asString();
+
+		// win and lose conditions
+		l->winConditions = static_cast<LevelDef::WinConditions>( value["win conditions"].asInt() );
+		l->loseConditions = static_cast<LevelDef::LoseConditions>( value["lose conditions"].asInt() );
 	}
 
-	// inventory items
+	// world
 	{
-		int items = value["inventory items"].size();
+		l->gameWorld = GameWorld::node( b2Vec2(0,-9.8) );
+		
+		// TODO: world properties (gravity etc) from a world file...
+	}
+
+	// inventory buttons
+	{
+		int items = value["inventory buttons"].size();
 		for( int i = 0; i < items; ++i ) {
-			InventoryItem *item = j2cInventoryItem( value["inventory items"][i] );
+			InventoryItem *item = j2cInventoryItem( value["inventory buttons"][i] );
+			if( ! item ) {
+				return 0;
+			}
 			l->inventoryItems.push_back( item );
 			m_inventoryItems.push_back( item );
 		}
@@ -144,13 +182,17 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 
 	// game objects
 	{
-		int items = value["game objects"].size();
-		for( int i = 0; i < items; ++i ) {
+		int objects = value["game objects"].size();
+		for( int i = 0; i < objects; ++i ) {
 			GameObject *object = j2cGameObject( value["game objects"][i] );
+			if( ! object ) {
+				return 0;
+			}
 			l->gameObjects.addObject( object );
 			m_gameObjects.push_back( object );
 		}
 	}
+
 	{
 		int targetIndex = value["target"].asInt();
 		CCAssert( targetIndex < (int) m_gameObjects.size(), "Wrong \"target\"" );
@@ -171,108 +213,99 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		}else {
 			l->looseArea = m_gameObjects[targetIndex];
 		}
-
-
 	}
-
-	// win and lose conditions
-	l->winConditions = static_cast<LevelDef::WinConditions>( value["win conditions"].asInt() );
-	l->loseConditions = static_cast<LevelDef::LoseConditions>( value["lose conditions"].asInt() );
 
 	return l;
 }
 InventoryItem* ConstructorJSon::j2cInventoryItem( Json::Value itemValue )
 {
-	InventoryItem *item;
 	std::string fileName = itemValue["file"].asString();
-
-	// reading the inventory item file
-	{
-		std::string filePath = inventoryItemPath( fileName );
-		std::ifstream ifs;
-		ifs.open( filePath.c_str(), std::ios::in );
-		if (!ifs) {
-			std::cout << "Could not open inventory item file " << filePath << " for reading" << std::endl;
-			return NULL;
-		}
-
-		Json::Reader reader;
-		ConstructorJSon cjs;
-		Json::Value json;
-
-		if( ! reader.parse(ifs, json) )
-		{
-			std::cout  << "Failed to parse inventory item file " << filePath << std::endl << reader.getFormattedErrorMessages();
-			ifs.close();
-			return NULL;
-		}
-
-		ObjectType type = static_cast<ObjectType>( json["type"].asInt() );
-		std::string name = json["name"].asString();
-		std::string itemSprite = json["item sprite path"].asString();
-		std::string objectSprite = json["object sprite path"].asString();
-		
-		Json::Value prototype = json["prototype"];
-
-		switch( type ) {
-			case SimpleBox:
-				item = SimpleBoxInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
-				break;
-			case Area:
-				item = AreaInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
-				break;
-			case Spring:
-				item = SpringInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
-				break;
-			case Pin:
-				item = PinInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
-				break;
-			case Glue:
-				item = GlueInventoryItem::node( itemSprite, objectSprite, prototype, fileName, name );
-				break;
-			default:
-				CCAssert( false, "Invalid inventory item" );
-		}
-
-		item->isStatic = json["isStatic"].asBool();
-		item->isMovable = json["isMovable"].asBool();
-		item->isRotatable = json["isRotatable"].asBool();
-		item->isDeletable = json["isDeletable"].asBool();
-
-		ifs.close();
+	InventoryItem *item = j2cInventoryItem( fileName );
+	if( ! item ) {
+		return 0;
 	}
-
+	
 	item->m_maxQuantity = itemValue["max quantity"].asInt();
-	if( itemValue["available"].isIntegral() ) {
-		item->m_available = itemValue["available"].asBool();
-	} else {
-		item->m_available = true;
-	}
 
 	return item;
 }
-GameObject* ConstructorJSon::j2cGameObject( Json::Value objectValue )
+InventoryItem* ConstructorJSon::j2cInventoryItem( std::string &fileName )
 {
-	int itemIndex = objectValue["inventory item"].asInt();
-	int bodyIndex = objectValue["body"].asInt();
-
-	if( bodyIndex >= (int) m_bodies.size() ) {
-		return NULL;
-	}
-	if( itemIndex >= (int) m_inventoryItems.size() ) {
-		return NULL;
+	std::string filePath = inventoryItemPath( fileName );
+	Json::Value json = Json::jsonFromFile( filePath.c_str() );
+	if( json.empty() ) {
+		std::cout << "Failed reading inventory item file: " << filePath << std::endl;
+		return 0;
 	}
 
-	InventoryItem *item = m_inventoryItems[itemIndex];
-	b2Body *body = m_bodies[bodyIndex];
-	
-	GameObject *object = item->gameObjectNode( body );
+	std::string name = json["name"].asString();
+	std::string spritePath = json["sprite path"].asString();
+	std::string prototypeName = json["game object file"].asString();
 
-	object->isStatic = objectValue["isStatic"].asBool();
-	object->isMovable = objectValue["isMovable"].asBool();
-	object->isRotatable = objectValue["isRotatable"].asBool();
-	object->isDeletable = objectValue["isDeletable"].asBool();
+	return InventoryItem::node( fileName, name, prototypeName, spritePath );
+}
+GameObject* ConstructorJSon::j2cGameObject( Json::Value value )
+{
+	std::string fileName = value["file"].asString();
 	
+	CCPoint p = v( jsonToVec("position",value) );
+	p.x *= PTM_RATIO;
+	p.y *= PTM_RATIO;
+	GameObject *object = j2cGameObject( fileName, p );
+	if( ! object ) {
+		return 0;
+	}
+
+	if( value.isMember("movable") ) {
+		object->isMovable = value["movable"].asBool();
+	}
+	if( value.isMember("rotatable") ) {
+		object->isRotatable = value["rotatable"].asBool();
+	}
+	if( value.isMember("deletable") ) {
+		object->isDeletable = value["deletable"].asBool();
+	}
+
+	return object;
+}
+GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d::CCPoint &p )
+{
+	std::string filePath = gameObjectPath( fileName );
+	Json::Value json = Json::jsonFromFile( filePath.c_str() );
+	if( json.empty() ) {
+		std::cout << "Failed reading game object file: " << filePath << std::endl;
+		return 0;
+	}
+	
+	GameObject *object = 0;
+
+	ObjectType type = static_cast<ObjectType>( json["type"].asInt() );
+	Json::Value prototype = json["prototype"];
+	switch( type ) {
+		case SimpleBox:
+			object = ObjectSimpleBox::node( fileName, prototype, p );
+			break;
+		case Area:
+			object = ObjectArea::node( fileName, prototype, p );
+			break;
+		case Spring:
+			object = ObjectSpring::node( fileName, prototype, p );
+			break;
+		case Pin:
+			object = ObjectPin::node( fileName, prototype, p );
+			break;
+		case Glue:
+			object = ObjectGlue::node( fileName, prototype, p );
+			break;
+		default:
+			CCAssert( false, "Invalid inventory item" );
+	}
+
+	object->isStatic = json["static"].asBool();
+	object->isMovable = json["movable"].asBool();
+	object->isRotatable = json["rotatable"].asBool();
+	object->isDeletable = json["deletable"].asBool();
+
 	return object;
 }
 

@@ -34,4 +34,29 @@
  "object sprite path" : "Icon-Small-50.png",
  "type" : 0
 }
-
+{
+	"type" : 0,
+	"deletable" : false,
+	"movable" : true,
+	"rotatable" : true,
+	"static" : false,
+	
+	"prototype" : {
+		"sprite path" : "box.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0.3,
+				"friction" : 0.5,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
+						"y" : [ -0.781250, -0.781250, 0.781250, 0.781250 ]
+					}
+				},
+				"restitution" : 0.3000000119209290
+			}
+		]
+	}
+}

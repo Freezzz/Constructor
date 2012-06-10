@@ -13,20 +13,22 @@
 #include "GameObject.h"
 using namespace cocos2d;
 
-INVENTORYITEM_CLASS_DEF( SimpleBoxInventoryItem , ObjectSimpleBox, SimpleBox )
-
 
 ////////////////////////////////////////////////////
 // ObjectSimpleBox
 ///////////////////////////////////////////////////
 class ObjectSimpleBox : public GameObject {
 protected:
-	bool init( std::string spritePath );
+	CCSprite *m_sprite;
+	b2Body *m_body;
 
+    ObjectSimpleBox(const string& fileName, const Json::Value& prototype)
+	: GameObject(fileName, prototype) { }
+	bool init( );
     bool createBodyAtPosition( CCPoint position );
 	
 public:
-	GAMEOBJECT_NODE_DEF( SimpleBoxInventoryItem , ObjectSimpleBox )
+	GAMEOBJECT_NODE_DEF( ObjectSimpleBox )
 };
 
 #endif

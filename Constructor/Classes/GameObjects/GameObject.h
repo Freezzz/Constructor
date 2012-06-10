@@ -12,7 +12,7 @@
 #include <iostream>
 #include "cocos2d.h"
 #include <Box2D/Box2D.h>
-#include "Serialization/ConstructorJSon.h"
+#include "Serialization/ConstructorJSon.h" // for the prototype
 #include "Constants.h"
 #include "GameWorld.h"
 using namespace cocos2d;
@@ -20,125 +20,19 @@ using namespace cocos2d;
 
 class GameObject;
 
-#define INVENTORYITEM_CLASS_DEF(INVENTORYITEM,GAMEOBJECT,TYPE) \
-	class GAMEOBJECT; \
-	class INVENTORYITEM : public InventoryItem \
-	{ \
-	public: \
-		GameObject* gameObjectNode( b2Body *b ); \
-		GameObject* gameObjectNode( CCPoint p ); \
-		INVENTORYITEM() : InventoryItem(TYPE) {} \
-		/* init */ \
-		bool init( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &fileName, const std::string &name ) { \
-			m_itemSpritePath = itemSpritePath; \
-			m_objectSpritePath = objectSpritePath; \
-			m_prototype = prototype; \
-			m_fileName = fileName; \
-			m_name = name; \
-			m_objectSprite = CCSprite::spriteWithFile( itemSpritePath.c_str() ); \
-			addChild( m_objectSprite ); \
-			CCLOG("INIT"); \
-			return true;\
-		} \
-		/* node */ \
-		static INVENTORYITEM* node( std::string itemSpritePath, std::string objectSpritePath, Json::Value prototype, const std::string &fileName, const std::string &name ) { \
-			INVENTORYITEM *r = new INVENTORYITEM(); \
-			if( r && r->init( itemSpritePath, objectSpritePath, prototype, fileName, name ) ) { \
-				r->autorelease(); \
-				return r; \
-			} \
-			delete r; \
-			return NULL; \
-		}; \
-	};
-
-#define GAMEOBJECT_NODE_DEF(INVENTORYITEM,GAMEOBJECT) \
-	static GAMEOBJECT* node( InventoryItem *item, CCPoint p, std::string spritePath ) { \
-		GAMEOBJECT *r = new GAMEOBJECT(); \
+#define GAMEOBJECT_NODE_DEF(GAMEOBJECT) \
+	static GAMEOBJECT* node( const std::string &fileName, const Json::Value &prototype, CCPoint p ) { \
+		GAMEOBJECT *r = new GAMEOBJECT(fileName, prototype); \
 		if( ! r ) { \
 			return NULL; \
 		} \
-		++ item->m_quantity; \
-		r->m_inventoryItem = item; \
-		if( r->init(spritePath) && r->createBodyAtPosition(p) ) { \
-			r->autorelease(); \
-			return r; \
-		} \
-		delete r; \
-		return NULL; \
-	}; \
-	static GAMEOBJECT* node( InventoryItem *item, b2Body *b, std::string spritePath ) { \
-		GAMEOBJECT *r = new GAMEOBJECT(); \
-		if( ! r ) { \
-			return NULL; \
-		} \
-		++ item->m_quantity; \
-		r->m_inventoryItem = item; \
-		if( r->init(spritePath) && r->setBody(b) ) { \
+		if( r->init() && r->createBodyAtPosition(p) ) { \
 			r->autorelease(); \
 			return r; \
 		} \
 		delete r; \
 		return NULL; \
 	};
-
-#define INVENTORYITEM_GAMEOBJECT_NODE_DECL(INVENTORYITEM,GAMEOBJECT) \
-	GameObject* INVENTORYITEM::gameObjectNode( b2Body *b ) { \
-		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
-			return NULL; \
-		} \
-		GAMEOBJECT *go = GAMEOBJECT::node(this, b, m_objectSpritePath); \
-		go->isStatic = isStatic; \
-		go->isMovable = isMovable; \
-		go->isRotatable = isRotatable; \
-		go->isDeletable = isDeletable; \
-		return go; \
-	} \
-	GameObject* INVENTORYITEM::gameObjectNode( CCPoint p ) { \
-		if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) { \
-			return NULL; \
-		} \
-		GAMEOBJECT *go = GAMEOBJECT::node(this, p, m_objectSpritePath); \
-		go->isStatic = isStatic; \
-		go->isMovable = isMovable; \
-		go->isRotatable = isRotatable; \
-		go->isDeletable = isDeletable; \
-		return go; \
-	}
-
-
-
-// the inventory item
-class InventoryItem : public CCNode
-{
-public:
-	std::string m_fileName; // the file where this item is defined
-	std::string m_name;
-	std::string m_itemSpritePath;
-	std::string m_objectSpritePath;
-	CCSprite * m_objectSprite;
-	ObjectType m_type;
-	int m_quantity; // how many objects of this type exist?
-	int m_maxQuantity; // how many items of this class may be created. 0 means infinity
-	bool m_available; // whether this inventory item is avaliable to the user
-	Json::Value m_prototype;
-
-	// Is a static object in simulation
-	bool isStatic;
-	bool isMovable;
-	bool isRotatable;
-	bool isDeletable;
-
-	InventoryItem( ObjectType type ) : m_type(type), m_quantity(0), m_maxQuantity(0), m_available(1), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1) { }
-	virtual ~InventoryItem( ) { }
-    
-public:
-	virtual GameObject* gameObjectNode( b2Body *b ) = 0;
-	virtual GameObject* gameObjectNode( CCPoint p ) = 0;
-	ObjectType getObjectType() { return m_type; }
-	std::string getName() const { return m_name; }
-	
-};
 
 ////////////////////////////////////////////////////
 // GameObject
@@ -154,18 +48,40 @@ public:
 		Simulating  = 3
 	};
 
-protected:
+public:
+	std::string m_fileName; // the file where this object is defined
+	// when saving a level, will not create new files for each game
+	// object: will use existing file instead
+
+	ObjectType m_type; // TODO: why? isn't polymorphism + RTTI enough?
+	Json::Value m_prototype; // TODO: no need to duplicate it for every instance
+
 	// Original pre-simulation settings of object
+	std::vector< b2Body* > m_bodies;
+
 	CCPoint m_originalPosition;
 	float m_originalRotation;
 
+	// Current object state
+	ObjectState m_state;
 
+	bool isStatic; // is a static object in simulation
+	bool isMovable, isRotatable, isDeletable; // what user can do
+
+	int defaultZOrder;
+
+	// Utility buttons offsets
+	CCPoint rotateButtonOffset;
+	CCPoint deleteButtonOffset;
+
+protected:
 	////////////////////////////////////////////////////
 	// GameObject init
 	////////////////////////////////////////////////////
-	GameObject( );
-	~GameObject( );
+	GameObject( const std::string &fileName, const Json::Value &prototype );
+	virtual ~GameObject( );
 
+public:
 	////////////////////////////////////////////////////
 	// Basic object update loop, moves sprite to body
 	// location
@@ -182,29 +98,11 @@ protected:
 
 public:
 	// Properties
-	b2Body * m_objectBody;
-	b2Body* getObjectBody(){return m_objectBody;}
-
-	CCSprite * m_objectSprite;
-	CCSprite* getObjectSprite(){return m_objectSprite;}
-
 	b2World * physicsWorld() { return GameWorld::sharedGameWorld()->physicsWorld; }
-	Json::Value prototype() { return m_inventoryItem->m_prototype; }
+	Json::Value prototype() { return m_prototype; }
 
 	// Is a static object in simulation
-	bool isStatic;
-	bool isMovable;
-	bool isRotatable;
-	bool isDeletable;
 
-	int defaultZOrder;
-
-	// Utility buttons offsets
-	CCPoint rotateButtonOffset;
-	CCPoint deleteButtonOffset;
-
-	// Current object state
-	ObjectState m_state;
 	ObjectState getObjectState(){return m_state;}
 	////////////////////////////////////////////////////
 	// Sets object state, and calls coresponding handlers
@@ -213,12 +111,7 @@ public:
 
 
 	// Object type
-	//ObjectType m_type;
-	//ObjectType getObjectType(){return m_type;}
-	ObjectType getObjectType(){return m_inventoryItem->getObjectType();}
-
-	InventoryItem *m_inventoryItem;
-	InventoryItem *getInventoryItem(){return m_inventoryItem;}
+	ObjectType getObjectType(){return m_type;}
 
 	////////////////////////////////////////////////////
 	// Moves object to new location, if state is idile
@@ -258,11 +151,6 @@ public:
 	// Creates object at location
 	////////////////////////////////////////////////////
 	virtual bool createBodyAtPosition( CCPoint position ) = 0;
-	virtual bool setBody( b2Body *b ) {
-		m_objectBody = b;
-		m_objectBody->SetUserData( this );
-		return true;
-	}
 	
 	//////////////////////////////////////////////////// 
 	// Begins object preparation for unstuck routine

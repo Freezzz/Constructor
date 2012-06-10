@@ -15,14 +15,13 @@
 ////////////////////////////////////////////////////
 // GameObject init
 ////////////////////////////////////////////////////
-GameObject::GameObject( )
-: isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
+GameObject::GameObject( const std::string &fileName, const Json::Value &prototype )
+: m_fileName(fileName), m_prototype(prototype), m_state(Idile), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
 {
 	// m_inventoryItem->m_quantity already increased by node()...
 }
 GameObject::~GameObject( )
 {
-	-- m_inventoryItem->m_quantity;
 }
 
 //////////////////////////////////////////////////// 
@@ -55,10 +54,13 @@ void GameObject::setObjectState( ObjectState newState )
 void GameObject::onSimulationStarted( )
 {
 	saveOriginalProperties();
-	m_objectBody->SetAwake(true);
-	m_objectBody->SetFixedRotation(false);
-	if (!isStatic) {
-		m_objectBody->SetType(b2_dynamicBody);
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetAwake( true );
+		body->SetFixedRotation( false );
+		if( ! isStatic ) {
+			body->SetType( b2_dynamicBody );
+		}
 	}
 }
 
@@ -67,8 +69,11 @@ void GameObject::onSimulationStarted( )
 //////////////////////////////////////////////////// 
 void GameObject::onSimulationEnded( )
 {
-	m_objectBody->SetType(b2_staticBody);	
-	m_objectBody->SetFixedRotation(true);	
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetType( b2_staticBody );
+		body->SetFixedRotation( true );
+	}
 	restoreToOriginalProperties();
 }
 
@@ -77,17 +82,11 @@ void GameObject::onSimulationEnded( )
 //////////////////////////////////////////////////// 
 void GameObject::onMovementStarted( )
 {
-	if (m_inventoryItem->m_type == Pin || m_inventoryItem->m_type == Glue) {
-		// Sensor objects like pin/grue need collision detection to pin them
-		m_objectBody->SetType(b2_dynamicBody);
-		// Setting gravity scale to 0 avoid them to fall down while user drags them
-		m_objectBody->SetGravityScale(0);
-	}else {
-		m_objectBody->SetType(b2_staticBody);
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetType( b2_staticBody ); // making it static to avoid movements
+		body->SetFixedRotation( true ); // disable rotation
 	}
-
-	// Disable rotation
-	m_objectBody->SetFixedRotation(true);  
 }
 
 //////////////////////////////////////////////////// 
@@ -95,14 +94,12 @@ void GameObject::onMovementStarted( )
 //////////////////////////////////////////////////// 
 void GameObject::onMovementEnded( )
 {
-	// Enable rotation
-	m_objectBody->SetFixedRotation(false);
-
-	// Resume taking in account the gravity
-	m_objectBody->SetGravityScale(1);
-	
-	// Set static to avoid further movements      
-	m_objectBody->SetType(b2_staticBody);	
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetFixedRotation( false ); // enable rotation
+		body->SetGravityScale( 1 ); // resume taking in account the gravity
+		body->SetType( b2_staticBody ); // set static to avoid further movements
+	}
 }
 
 //////////////////////////////////////////////////// 
@@ -110,19 +107,23 @@ void GameObject::onMovementEnded( )
 //////////////////////////////////////////////////// 
 void GameObject::onRotationStarted( )
 {
-	m_objectBody->SetFixedRotation(false);	
-	m_objectBody->SetType(b2_staticBody);
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetFixedRotation( false );
+		body->SetType( b2_staticBody );
+	}
 }
 
 //////////////////////////////////////////////////// 
 // Callback when rotation just ended
 //////////////////////////////////////////////////// 
 void GameObject::onRotationEnded( )
-{	
-	// Enable rotation
-	m_objectBody->SetFixedRotation(true);
-	// Set static to avoid further movements        
-	m_objectBody->SetType(b2_staticBody);	
+{
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+		body->SetFixedRotation( true ); // enable rotation
+		body->SetType( b2_staticBody ); // set static to avoid further movements
+	}
 }
 
 //////////////////////////////////////////////////// 
@@ -132,14 +133,21 @@ void GameObject::onRotationEnded( )
 //////////////////////////////////////////////////// 
 void GameObject::move( CCPoint newPostion )
 {
-	if (getParent() && m_objectBody) {
+	if( ! getParent() ) {
+		// not moving if this object has no parent
+		return ;
+	}
+
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(newPostion.x/PTM_RATIO,
 		                           newPostion.y/PTM_RATIO);
         
-		float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS(getRotation());
-		setPosition(newPostion);        
-		m_objectBody->SetTransform(b2Position, b2Angle);
+		float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS( getRotation() );
+		setPosition( newPostion );
+		body->SetTransform( b2Position, b2Angle );
 	}
 }
 
@@ -151,14 +159,20 @@ void GameObject::move( CCPoint newPostion )
 //////////////////////////////////////////////////// 
 void GameObject::rotate( float newRotation )
 {
-    if (getParent() && m_objectBody) {
+	if( ! getParent() ) {
+		// not rotating if this object has no parent
+		return ;
+	}
+
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
 		// Update posisiotn of phisical body moving it to nodes position
 		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
 		                           getPosition().y/PTM_RATIO);
-		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS(newRotation);
+		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS( newRotation );
                
-		m_objectBody->SetTransform(b2Position, b2Angle);
-        
+		body->SetTransform( b2Position, b2Angle );
 	}
 }
 
@@ -167,11 +181,18 @@ void GameObject::rotate( float newRotation )
 //////////////////////////////////////////////////// 
 void GameObject::update( ccTime dt )
 {
-    if (getParent() && m_objectBody) {
-        // Update posisiotn of node moving it to body postion
-        setPosition( CCPointMake( m_objectBody->GetPosition().x * PTM_RATIO, m_objectBody->GetPosition().y * PTM_RATIO) );
-        setRotation( -1 * CC_RADIANS_TO_DEGREES(m_objectBody->GetAngle()) );
-    }
+	if( ! getParent() ) {
+		// doing nothing if this object has no parent
+		return ;
+	}
+
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		// Update posisiotn of node moving it to body postion
+		setPosition( CCPointMake( body->GetPosition().x * PTM_RATIO, body->GetPosition().y * PTM_RATIO ) );
+		setRotation( -1 * CC_RADIANS_TO_DEGREES( body->GetAngle() ) );
+	}
 }
 
 //////////////////////////////////////////////////// 
@@ -179,23 +200,32 @@ void GameObject::update( ccTime dt )
 //////////////////////////////////////////////////// 
 void GameObject::destroy( )
 {
-	b2JointEdge * jnt = m_objectBody->GetJointList();
-	while (jnt) {
-		ObjectPin * pin = dynamic_cast<ObjectPin*>((GameObject*)jnt->joint->GetUserData());
-		if (pin) {
-			// We dont need to destroy joint manualy it will be destroyed with this body
-			pin->unPin(false);
-		}else {
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		// TODO: use polymorphism...
+		b2JointEdge * jnt = body->GetJointList();
+		while( jnt ) {
+			// if it's a pin, unpinning
+			ObjectPin * pin = dynamic_cast<ObjectPin*>((GameObject*)jnt->joint->GetUserData());
+			if( pin ) {
+				// We dont need to destroy joint manualy it will be destroyed with this body
+				pin->unPin(false);
+			}
+
+			// if it's glue, ungluing
 			ObjectGlue * glue = dynamic_cast<ObjectGlue*>((GameObject*)jnt->joint->GetUserData());
 			if (glue) {
 				// We dont need to destroy joint manualy it will be destroyed with this body
 				glue->unGlueJoint((b2WeldJoint*)jnt->joint);
 			}
+
+			jnt = jnt->next;
 		}
-		jnt = jnt->next;
+
+		GameWorld::sharedGameWorld()->physicsWorld->DestroyBody( body );
 	}
-	
-    GameWorld::sharedGameWorld()->physicsWorld->DestroyBody(m_objectBody);
+
 	removeFromParentAndCleanup(true);
 }
 
@@ -214,16 +244,22 @@ void GameObject::saveOriginalProperties( )
 //////////////////////////////////////////////////// 
 void GameObject::restoreToOriginalProperties( )
 {
-	move(m_originalPosition);
-	rotate(m_originalRotation);
-	m_objectBody->SetLinearVelocity(b2Vec2(0, 0));
-	m_objectBody->SetAngularVelocity(0);
+	move( m_originalPosition );
+	rotate( m_originalRotation );
+
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		body->SetLinearVelocity(b2Vec2(0, 0));
+		body->SetAngularVelocity(0);
+	}
 }
 
 //////////////////////////////////////////////////// 
 // Checks if the point is contained inside this node
 //////////////////////////////////////////////////// 
-bool GameObject::containsPoint(cocos2d::CCPoint location){
+bool GameObject::containsPoint( cocos2d::CCPoint location )
+{
 	location = convertToNodeSpace(location);
 	CCRect rect = CCRect(0,0, getContentSize().width, getContentSize().height);
 	return CCRect::CCRectContainsPoint(rect, location);
@@ -232,20 +268,33 @@ bool GameObject::containsPoint(cocos2d::CCPoint location){
 //////////////////////////////////////////////////// 
 // Begins object preparation for unstuck routine
 //////////////////////////////////////////////////// 
-void GameObject::startUnstuckPhase(){
-	m_objectBody->SetType(b2_dynamicBody);
-	m_objectBody->SetFixedRotation(false);	
-	m_objectBody->SetGravityScale(0);
+void GameObject::startUnstuckPhase( )
+{
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		body->SetType(b2_dynamicBody);
+		body->SetFixedRotation(false);
+		body->SetGravityScale(0);
+	}
 }
 
 //////////////////////////////////////////////////// 
 // Function to be called after unstuck routine is finished
 //////////////////////////////////////////////////// 
-void GameObject::unstuckPhaseFinished(){
-    if (getParent() && m_objectBody) {
-		m_objectBody->SetGravityScale(1);	
-		m_objectBody->SetType(b2_staticBody);
-		m_objectBody->SetFixedRotation(true);	
+void GameObject::unstuckPhaseFinished( )
+{
+	if( ! getParent() ) {
+		// doing nothing if this object has no parent
+		return ;
+	}
+
+	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
+		b2Body *body = *bit;
+
+		body->SetGravityScale(1);
+		body->SetType(b2_staticBody);
+		body->SetFixedRotation(true);
 		GameLevelScene::sharedGameScene()->setUtilityButtonsVisibleFoSelectedObject(true);
 	}
 	CCLog("Unstuck finished");
@@ -256,12 +305,13 @@ void GameObject::unstuckPhaseFinished(){
 //////////////////////////////////////////////////// 
 void GameObject::setSelected( bool selected )
 {
-	if (!m_objectSprite) {
-		return;
+	// TODO: use polymorphism or share sprites
+	/*
+	if( selected ) {
+		m_objectSprite->setColor(ccc3(255, 255, 0));
 	}
-    if (selected) {
-        m_objectSprite->setColor(ccc3(255, 255, 0));
-    }else {
-        m_objectSprite->setColor(ccc3(255, 255, 255));
-    }
+	else {
+		m_objectSprite->setColor(ccc3(255, 255, 255));
+	}
+	*/
 }
