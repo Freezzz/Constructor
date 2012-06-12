@@ -6,7 +6,7 @@
 	"static" : false,
 	
 	"prototype" : {
-		"sprite path" : "Icon.png",
+		"sprite path" : "Icon-Small-50.png",
 		
 		"awake" : true,
 		"fixture" : [

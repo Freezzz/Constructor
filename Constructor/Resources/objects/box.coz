@@ -1,39 +1,3 @@
-
-{
- "name" : "box",
- "prototype" :
-    {
-       "angle" : 0,
-       "angularVelocity" : 0,
-       "awake" : true,
-       "fixture" :
-       [
-
-          {
-             "density" : 0.3,
-             "friction" : 0.5,
-             "polygon" :
-             {
-                "vertices" :
-                {
-                   "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
-                   "y" : [ -0.781250, -0.781250, 0.781250, 0.781250 ]
-                }
-             },
-             "restitution" : 0.3000000119209290
-          }
-       ],
-       "linearVelocity" : 0,
-       "type" : 0
-    },
- "isDeletable" : true,
- "isMovable" : true,
- "isRotatable" : true,
- "isStatic" : false,
- "item sprite path" : "box.png",
- "object sprite path" : "Icon-Small-50.png",
- "type" : 0
-}
 {
 	"type" : 0,
 	"deletable" : false,
@@ -42,7 +6,7 @@
 	"static" : false,
 	
 	"prototype" : {
-		"sprite path" : "box.png",
+		"sprite path" : "Icon-Small-50.png",
 		
 		"awake" : true,
 		"fixture" : [

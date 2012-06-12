@@ -66,6 +66,9 @@ bool ObjectArea::createBodyAtPosition( cocos2d::CCPoint position )
 	setPosition(position);
 
 	m_bodies.push_back( m_body );
+	
+	setContentSize(minimumBoundingBoxForPolygon((b2PolygonShape *)m_body->GetFixtureList()->GetShape()).size);
+	setAnchorPoint(CCPoint(0.5, 0.5));
 
 	return true;
 }

@@ -24,6 +24,8 @@
             
             {
                "file" : "area",
+               "movable" : true,
+               "rotatable" : true,
                "position" : 
                {
                   "x" : 20,
@@ -33,6 +35,8 @@
             
             {
                "file" : "area",
+               "movable" : true,
+               "rotatable" : true,               
                "position" : 
                {
                   "x" : 10,
@@ -42,6 +46,10 @@
    ],
    
    "inventory buttons" : [
+		{
+			"file" : "box",
+			"max quantity" : 0
+		},   
 		{
 			"file" : "spring",
 			"max quantity" : 3
