@@ -3,7 +3,7 @@
 	"type" : 3,
 	"deletable" : true,
 	"movable" : true,
-	"rotatable" : true,
+	"rotatable" : false,
 	"static" : false,
 	
 	"prototype" : {

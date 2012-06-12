@@ -73,8 +73,8 @@ bool ObjectSpring::createBodyAtPosition( cocos2d::CCPoint position )
 
 	ASSERT_PROTOTYPE( m_secondBody = json.j2b2Body( physicsWorld(), prototype()["spring bottom"] ) );
 	ASSERT_PROTOTYPE( m_secondBody->GetFixtureList() );
-	m_firstBody->SetUserData(this);
-	m_firstBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_secondBody->GetAngle() );
+	m_secondBody->SetUserData(this);
+	m_secondBody->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_secondBody->GetAngle() );
 
 	b2DistanceJointDef jointDef1;
 	jointDef1.bodyA = m_firstBody;
