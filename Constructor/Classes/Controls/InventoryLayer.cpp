@@ -36,7 +36,7 @@ bool InventoryItem::init( )
 }
 GameObject *InventoryItem::spawnObject( CCPoint p )
 {
-	if( m_quantity >= m_maxQuantity ) {
+	if( m_quantity >= m_maxQuantity && m_maxQuantity > 0 ) {
 		return 0;
 	}
 
