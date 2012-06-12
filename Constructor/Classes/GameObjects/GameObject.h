@@ -19,6 +19,7 @@ using namespace cocos2d;
 
 
 class GameObject;
+class InventoryItem;
 
 #define GAMEOBJECT_NODE_DEF(GAMEOBJECT) \
 	static GAMEOBJECT* node( const std::string &fileName, const Json::Value &prototype, CCPoint p ) { \
@@ -55,6 +56,8 @@ public:
 
 	ObjectType m_type; // TODO: why? isn't polymorphism + RTTI enough?
 	Json::Value m_prototype; // TODO: no need to duplicate it for every instance
+
+	InventoryItem *m_inventoryItem; // only to update the quantity counter
 
 	// Original pre-simulation settings of object
 	std::vector< b2Body* > m_bodies;

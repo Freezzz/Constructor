@@ -490,7 +490,6 @@ void GameLevelScene::ccTouchEnded( CCTouch *pTouch, CCEvent* pEvent )
 	if( ! CCRect::CCRectContainsPoint(m_gameZoneRect, location) && m_selectedObject->m_state == GameObject::Moving && m_selectedObject->isDeletable ) {
 		m_gameObjects->removeObject(m_selectedObject);
 		m_selectedObject->destroy();
-		// m_inventoryLayer->updateInventryItemQuantity(item); // TODO: quantity system must be reworked
 		m_selectedObject=NULL;
 		return;
 	}

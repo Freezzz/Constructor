@@ -28,6 +28,7 @@ public:
 	CCSprite *m_sprite;
 
 	int m_quantity, m_maxQuantity;
+	CCLabelTTF *m_quantityLabel;
 
 protected:
 	InventoryItem( const std::string &fileName, const std::string &name, const std::string &prototypeName, const std::string &spritePath )
@@ -37,6 +38,7 @@ public:
 	GameObject *spawnObject( CCPoint p );
 	std::string getName() const { return m_name; }
 	bool init( );
+	void updateQuantityLabel( );
 
 	static InventoryItem *node( const std::string &fileName, const std::string &name, const std::string &prototypeName, const std::string &spritePath ) {
 		InventoryItem *r = new InventoryItem( fileName, name, prototypeName, spritePath );
@@ -59,8 +61,6 @@ private:
 
 public:
 	vector<InventoryItem*> m_inventoryItems;
-	vector<InventoryItem*> m_buttons; // not containing the empty ones
-	vector<CCLabelTTF*> m_quantityLabels;
 	
 public:
 	////////////////////////////////////////////////////
@@ -74,11 +74,8 @@ public:
 	////////////////////////////////////////////////////
 	GameObject* getGameObjectForTapLocation(CCPoint location);
 
-	// quantity=-1 : infinite
 	void addInventoryItem( InventoryItem *item );
 	void removeInventoryItem( InventoryItem *item );
-
-	void updateInventryItemQuantity(InventoryItem *item);
 
 	LAYER_NODE_FUNC(InventoryLayer);
 };

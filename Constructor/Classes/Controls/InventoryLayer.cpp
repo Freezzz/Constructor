@@ -17,15 +17,57 @@
 
 bool InventoryItem::init( )
 {
-	m_sprite = CCSprite::spriteWithFile( m_spritePath.c_str() );
-	setContentSize( m_sprite->getContentSize() );
-	addChild( m_sprite );
+	// sprite
+	{
+		m_sprite = CCSprite::spriteWithFile( m_spritePath.c_str() );
+		setContentSize( m_sprite->getContentSize() );
+		addChild( m_sprite );
+	}
+
+	// quantity label
+	{
+		m_quantityLabel = CCLabelTTF::labelWithString( "", "Arial", 22 );
+		addChild( m_quantityLabel );
+	}
+
+	
+
 	return 1;
 }
 GameObject *InventoryItem::spawnObject( CCPoint p )
 {
+	if( m_quantity >= m_maxQuantity ) {
+		return 0;
+	}
+
 	std::cout << "Spawning " << m_prototypeName << "..." << std::endl;
-	return ConstructorJSon::j2cGameObject( m_prototypeName, p );
+	GameObject *obj = ConstructorJSon::j2cGameObject( m_prototypeName, p );
+
+	if( obj ) {
+		obj->m_inventoryItem = this;
+		m_quantity ++;
+		updateQuantityLabel( );
+	}
+	return obj;
+}
+void InventoryItem::updateQuantityLabel()
+{
+	string str;
+	//int fontSize = 22;
+	if( m_maxQuantity > 0 ) {
+		stringstream q;
+		q << ( m_maxQuantity - m_quantity );
+		str = q.str();
+	}
+	else {
+		str = "∞";
+		//fontSize = 26;
+	}
+
+	m_quantityLabel->setString( str.c_str() );
+	m_quantityLabel->setPosition( CCPoint(30, -30) );
+	m_quantityLabel->setColor( ccc3(0, 255, 0) );
+	m_quantityLabel->setAnchorPoint( CCPoint(0, 0) );
 }
 
 ////////////////////////////////////////////////////
@@ -67,7 +109,7 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 	//std::cout << "Clicked: " << pointLocal.x << "," << pointLocal.y << std::endl;
 
 	vector<InventoryItem*>::iterator it;
-	for( it = m_buttons.begin(); it != m_buttons.end(); ++ it ) {
+	for( it = m_inventoryItems.begin(); it != m_inventoryItems.end(); ++ it ) {
 		InventoryItem *button = *it;
 
 		/*
@@ -81,9 +123,6 @@ GameObject* InventoryLayer::getGameObjectForTapLocation(CCPoint location){
 		if( CCRect::CCRectContainsPoint( button->m_sprite->boundingBox(), point ) ) {
 			button->runAction( CCBlink::actionWithDuration(0.2, true) );
 			GameObject *r = button->spawnObject( location );
-			if (r) {
-				updateInventryItemQuantity(button);
-			}
 			return r;
 		}
 	}
@@ -95,70 +134,13 @@ void InventoryLayer::addInventoryItem( InventoryItem *item )
 {
 	m_inventoryItems.push_back( item );
 
-	item->setPosition( CCPoint(35, BUTTON_SIZE * (2-(int)m_buttons.size()) ) );
-	m_buttons.push_back( item );
+	item->setPosition( CCPoint(35, BUTTON_SIZE * (4-(int)m_inventoryItems.size()) ) );
+	item->updateQuantityLabel();
 	addChild( item );
-
-	// Quantity counters
-	string str;
-	int fontSize = 22;
-	if (item->m_maxQuantity > 0) {
-		stringstream q;
-		q << item->m_maxQuantity;
-		str = q.str();
-	}else {
-		str = "∞";
-		fontSize = 26;
-	}
-
-	CCLabelTTF * quantityLabel = CCLabelTTF::labelWithString(str.c_str(), "Arial", fontSize);
-	quantityLabel->setPosition(CCPoint(45, BUTTON_SIZE * (3-(int)m_buttons.size())-25) );
-	quantityLabel->setColor(ccc3(0, 255, 0));
-	quantityLabel->setAnchorPoint(CCPoint(0, 0));
-	m_quantityLabels.push_back(quantityLabel);
-	addChild(quantityLabel);
 }
 void InventoryLayer::removeInventoryItem( InventoryItem *item )
 {
 	// removing from m_inventoryItems
 	m_inventoryItems.erase( std::remove( m_inventoryItems.begin(), m_inventoryItems.end(), item ), m_inventoryItems.end() );
-
-	// removing from m_buttons
-	int itemIndex = -1;
-	for( unsigned int i = 0; i < m_buttons.size(); ++i ) {
-		if (item == m_buttons.at(i)) {
-			itemIndex = i;
-			break;
-		}
-	}
-	m_buttons.erase( m_buttons.begin()+itemIndex );
 	removeChild( item, 1 );
-
-	removeChild(m_quantityLabels.at(itemIndex), true);
-	m_quantityLabels.erase(m_quantityLabels.begin()+itemIndex);
 }
-
-
-void InventoryLayer::updateInventryItemQuantity( InventoryItem *item )
-{
-	if (item->m_maxQuantity <= 0) {
-		return;
-	}
-	int itemIndex = -1;
-	for( unsigned int i = 0; i< m_buttons.size(); ++i ) {
-		if (item == m_buttons.at(i)) {
-			itemIndex = i;
-			break;
-		}
-	}
-	stringstream q;
-	q << item->m_maxQuantity - item->m_quantity;
-	m_quantityLabels.at(itemIndex)->setString(q.str().c_str());
-	if (item->m_maxQuantity - item->m_quantity == 0) {
-		m_quantityLabels.at(itemIndex)->setColor(ccc3(255, 0, 0));
-	}else {
-		m_quantityLabels.at(itemIndex)->setColor(ccc3(0, 255, 0));
-	}
-}
-
-

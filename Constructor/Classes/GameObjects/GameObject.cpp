@@ -11,17 +11,22 @@
 #include "ObjectPin.h"
 #include "ObjectGlue.h"
 #include "GameLevelScene.h"
+#include "Controls/InventoryLayer.h"
 #include <iostream>
 ////////////////////////////////////////////////////
 // GameObject init
 ////////////////////////////////////////////////////
 GameObject::GameObject( const std::string &fileName, const Json::Value &prototype )
-: m_fileName(fileName), m_prototype(prototype), m_state(Idile), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
+: m_fileName(fileName), m_prototype(prototype), m_inventoryItem(0), m_state(Idile), isStatic(0), isMovable(1), isRotatable(1), isDeletable(1)
 {
 	// m_inventoryItem->m_quantity already increased by node()...
 }
 GameObject::~GameObject( )
 {
+	if( m_inventoryItem ) {
+		m_inventoryItem->m_quantity --;
+		m_inventoryItem->updateQuantityLabel( );
+	}
 }
 
 //////////////////////////////////////////////////// 
