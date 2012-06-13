@@ -136,7 +136,8 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 	objectValue["isMovable"] = gameObject->isMovable;
 	objectValue["isRotatable"] = gameObject->isRotatable;
 	objectValue["isDeletable"] = gameObject->isDeletable;
-
+	objectValue["defaultZOrder"] = gameObject->defaultZOrder;
+	
 	return objectValue;
 }
 
@@ -265,7 +266,10 @@ GameObject* ConstructorJSon::j2cGameObject( Json::Value value )
 	if( value.isMember("deletable") ) {
 		object->isDeletable = value["deletable"].asBool();
 	}
-
+	if( value.isMember("defaultZOrder") ) {
+		object->defaultZOrder = value["defaultZOrder"].asInt();
+	}
+	
 	return object;
 }
 GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d::CCPoint &p )
