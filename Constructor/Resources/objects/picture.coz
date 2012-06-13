@@ -1,0 +1,27 @@
+{
+	"type" : 0,
+	"deletable" : false,
+	"movable" : false,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "picture.png",
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0.3,
+				"friction" : 0.5,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -1, 1, 1, -1 ],
+						"y" : [ -1, -1, 1, 1 ]
+					}
+                    
+				},
+                "sensor" : true,
+				"restitution" : 0.3
+			}
+		]
+	}
+}

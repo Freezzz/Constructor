@@ -3,274 +3,92 @@
    "difficulty" : 1.0,
    "game objects" : 
    [
-      // target
-      {
-         "body" : 0,
-         "inventory item" : 0,
-         "isDeletable" : false,
-         "isMovable" : false,
-         "isRotatable" : false,
-         "isStatic" : false
-      },
-      // win area
-      {
-         "body" : 3,
-         "inventory item" : 3,
-         "isDeletable" : false,
-         "isMovable" : false,
-         "isRotatable" : false,
-         "isStatic" : true
-      }
-   ],
-   "game world" : 
-   {
-      "physics world" : 
-      {
-         "allowSleep" : true,
-         "autoClearForces" : true,
-         "body" : 
-         [
             
             {
-               "angle" : 0,
-               "angularVelocity" : 0,
-               "awake" : true,
-               "fixture" : 
-               [
-                  
-                  {
-                     "density" : 0.1,
-                     "friction" : 0.3000000119209290,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
-                           "y" : [ -0.781250, -0.781250, 0.781250, 0.781250 ]
-                        }
-                     },
-                     "restitution" : 0.3000000119209290
-                  }
-               ],
-               "linearVelocity" : 0,
+               "file" : "target",
+               "movable" : false,
+               "rotatable" : false,               
                "position" : 
                {
-                  "x" : 5,
-                  "y" : 3
-               },
-               "type" : 0 //static
+                  "x" : 6,
+                  "y" : 9
+               }
             },
             
             {
-               "angle" : 0,
-               "angularVelocity" : 0,
-               "awake" : true,
-               "fixture" : 
-               [
-                  
-                  {
-                     "density" : 1,
-                     "friction" : 0.3000000119209290,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : [ -0.06250, 0.06250, 0.06250, -0.06250 ],
-                           "y" : [ -0.06250, -0.06250, 0.06250, 0.06250 ]
-                        }
-                     },
-                     "restitution" : 0.3000000119209290,
-                     "sensor" : true
-                  }
-               ],
-               "linearVelocity" : 0,
-               "name" : "null body",
+               "file" : "boundaries1",
                "position" : 
                {
                   "x" : 16.0,
                   "y" : 12.0
-               },
-               "type" : 0 //static
+               }
             },
-            
             {
-               "angle" : 0,
-               "angularVelocity" : 0,
-               "awake" : true,
-               "fixture" : 
-               [
-                  
-                  {
-                     "friction" : 0.2000000029802322,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : 
-                           [
-                              15.99899959564209,
-                              16.00099945068359,
-                              16.00099945068359,
-                              15.99899959564209
-                           ],
-                           "y" : [ -11.06250, -11.06250, 11.06250, 11.06250 ]
-                        }
-                     }
-                  },
-                  
-                  {
-                     "friction" : 0.2000000029802322,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : 
-                           [
-                              -16.00099945068359,
-                              -15.99899959564209,
-                              -15.99899959564209,
-                              -16.00099945068359
-                           ],
-                           "y" : [ -11.06250, -11.06250, 11.06250, 11.06250 ]
-                        }
-                     }
-                  },
-                  
-                  {
-                     "friction" : 0.2000000029802322,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : [ -16.0, 16.0, 16.0, -16.0 ],
-                           "y" : 
-                           [
-                              11.06149959564209,
-                              11.06149959564209,
-                              11.06350040435791,
-                              11.06350040435791
-                           ]
-                        }
-                     }
-                  },
-                  
-                  {
-                     "friction" : 0.2000000029802322,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : [ -16.0, 16.0, 16.0, -16.0 ],
-                           "y" : 
-                           [
-                              -11.06350040435791,
-                              -11.06350040435791,
-                              -11.06149959564209,
-                              -11.06149959564209
-                           ]
-                        }
-                     }
-                  }
-               ],
-               "linearVelocity" : 0,
+               "file" : "comod",
                "position" : 
                {
-                  "x" : 16.0,
-                  "y" : 12.0
-               },
-               "type" : 0 //static
+                  "x" : 6,
+                  "y" : 3.5
+               }
             },
-            
             {
-               "angle" : 0,
-               "angularVelocity" : 0,
-               "awake" : true,
-               "fixture" : 
-               [
-                  
-                  {
-                     "density" : 0,
-                     "friction" : 0.3000000119209290,
-                     "polygon" : 
-                     {
-                        "vertices" : 
-                        {
-                           "x" : [ -1, 1, 1, -1 ],
-                           "y" : [ -15, -15, 15, 15 ]
-                        }
-                     },
-                     "restitution" : 0.3000000119209290,
-                     "sensor" : true
-                  }
-               ],
-               "linearVelocity" : 0,
+               "file" : "puff",
+               "position" : 
+               {
+                  "x" : 15,
+                  "y" : 2
+               }
+            },
+            {
+               "file" : "picture",
+               "defaultZOrder": 0,
                "position" : 
                {
                   "x" : 20,
                   "y" : 15
-               },
-               "type" : 0 //static
-            }
-         ],
-         "continuousPhysics" : true,
-         "gravity" : 
-         {
-            "x" : 0,
-            "y" : -9.800000190734863
-         },
-         "subStepping" : false,
-         "warmStarting" : true
-      }
-   },
-   "inventory items" : 
-   [
-      
-      {
-         "file" : "box",
-         "available": true,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "circle",
-         "available": true,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "panel",
-         "available": true,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "area",
-         "available" : false,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "spring",
-         "available": true,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "pin",
-         "available": true,
-         "max quantity": 0
-      },
-      
-      {
-         "file" : "glue",
-         "available": true,
-         "max quantity": 0
-      }
+               }
+            },
+            {
+               "file" : "cheese",
+               "position" : 
+               {
+                  "x" : 28,
+                  "y" : 3
+               }
+            }           
    ],
-   "lose conditions" : 0,
-   "name" : "test level",
-   "target" : 0,
-   "win area" : 1,
-   "theme" : "test theme",
-   "win conditions" : 0
+   
+   "inventory buttons" : [
+		{
+			"file" : "box",
+			"max quantity" : 4
+		},   
+		{
+			"file" : "spring",
+			"max quantity" : 3
+		},
+		{
+			"file" : "circle",
+			"max quantity" : 3
+		},
+		{
+			"file" : "glue",
+			"max quantity" : 2
+		},
+		{
+			"file" : "pin",
+			"max quantity" : 2
+		},
+		{
+			"file" : "panel",
+			"max quantity" : 1
+		}
+	],
+	
+	"lose conditions" : 0,
+	"name" : "test level",
+	"target" : 0,
+	"win area" : 5,   
+	"theme" : "test theme",
+	"win conditions" : 0
 }

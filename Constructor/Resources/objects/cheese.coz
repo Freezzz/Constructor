@@ -1,0 +1,27 @@
+{
+	"type" : 0,
+	"deletable" : false,
+	"movable" : false,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "cheese.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0.3,
+				"friction" : 0.5,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -2.3, 2.1, 2.65, -2.6 ],
+						"y" : [ -1.7, -1.8, 2.3, 2.3 ]
+					}
+                    
+				},
+				"restitution" : 0.0
+			}
+		]
+	}
+}

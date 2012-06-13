@@ -1,0 +1,27 @@
+{
+	"type" : 0,
+	"deletable" : false,
+	"movable" : false,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "puff.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0.3,
+				"friction" : 0.5,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -2.3, 2.3, 2.3, -2.5 ],
+						"y" : [ -1, -1, 1, 1 ]
+					}
+                    
+				},
+				"restitution" : 0.6
+			}
+		]
+	}
+}
