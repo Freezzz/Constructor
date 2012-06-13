@@ -1,0 +1,39 @@
+{
+	"background" : {
+		"background image" : "blueprints_bg.png",
+		"particle effects" : [
+			{
+				"texture" : "cloud.png",
+				"number" : 50,
+			
+				"speed" : 30,
+				"speed var" : 10,
+			
+				"size" : 100,
+				"size var" : 25,
+			
+				"position" : { "x" : -0.1, "y" : 0.9 },
+				"position var" : { "x" : 0, "y" : 0.1 },
+			
+				"life" : 50,
+				"emission rate" : 0.15
+			},
+			{
+				"texture" : "cloud.png",
+				"number" : 50,
+			
+				"speed" : -30,
+				"speed var" : 10,
+			
+				"size" : 100,
+				"size var" : 25,
+			
+				"position" : { "x" : 1.1, "y" : 0.9 },
+				"position var" : { "x" : 0, "y" : 0.1 },
+			
+				"life" : 50,
+				"emission rate" : 0.15
+			}
+		]
+	}
+}

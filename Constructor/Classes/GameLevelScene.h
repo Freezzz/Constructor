@@ -17,6 +17,7 @@ class VictoryLayer;
 class b2Contact;
 class LevelDef;
 class LevelDescription;
+class Background;
 
 ////////////////////////////////////////////////////
 // GameLevelScene - tat manages user interaction 
@@ -30,6 +31,7 @@ private:
 
 	CCRect m_gameZoneRect;
 
+	Background *m_background;
 	InventoryLayer * m_inventoryLayer;
 	CreationLayer * m_creationLayer;
 	VictoryLayer * m_victoryLayer;

@@ -153,12 +153,15 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		l->name = value["name"].asString();
 		l->difficulty = value["difficulty"].asFloat();
 
-		// style
-		l->theme = value["theme"].asString();
-
 		// win and lose conditions
 		l->winConditions = static_cast<LevelDef::WinConditions>( value["win conditions"].asInt() );
 		l->loseConditions = static_cast<LevelDef::LoseConditions>( value["lose conditions"].asInt() );
+	}
+
+	// theme
+	{
+		std::string filePath = themePath( value["theme"].asString() );
+		l->theme = Json::jsonFromFile( filePath.c_str() );
 	}
 
 	// world

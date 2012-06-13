@@ -16,6 +16,7 @@
 #include "Controls/InventoryLayer.h"
 #include "Controls/VictoryLayer.h"
 #include "Controls/CreationLayer.h"
+#include "Controls/Background.h"
 #include "Constants.h"
 
 #include "Serialization/LevelManager.h"
@@ -39,14 +40,10 @@ bool GameLevelScene::init( LevelDescription *level )
 	setIsAccelerometerEnabled( true );
 
 	m_touchCount = 0;
+	m_background = 0;
 
 	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 	setContentSize( winSize );
-
-	// Background
-	CCSprite * bg = CCSprite::spriteWithFile("blueprints_bg.png");
-	bg->setPosition(CCPoint(winSize.width*0.5, winSize.height*0.5));
-	addChild(bg);
 
 	// Invetory
 	m_inventoryLayer = InventoryLayer::node();
@@ -319,7 +316,12 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 		((ObjectArea*)m_looseArea)->setAreaType(LooseArea);
 	}
 
-	
+	// level background
+	if( ld->theme.isMember( "background" ) ) {
+		m_background = Background::node( ld->theme["background"] );
+		addChild( m_background, -1 );
+	}
+
 	enterEditing();
 }
 void GameLevelScene::loadFile( LevelDescription *level )
@@ -328,6 +330,7 @@ void GameLevelScene::loadFile( LevelDescription *level )
 
 	wipeWorld(); // removing former objects
 	removeChild( gameWorld, 1 );
+	removeChild( m_background, 1 );
 	
 	// removing inventory items
 	{

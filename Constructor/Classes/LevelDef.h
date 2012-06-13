@@ -4,6 +4,7 @@
 
 
 #include "cocos2d.h"
+#include "Serialization/json/json.h"
 using namespace cocos2d;
 
 class InventoryItem;
@@ -11,6 +12,10 @@ class GameWorld;
 class GameObject;
 
 struct LevelDescription;
+
+namespace Json {
+	class Value;
+}
 
 struct LevelDef
 {
@@ -30,7 +35,7 @@ struct LevelDef
 	float difficulty;
 
 	// level style
-	std::string theme;
+	Json::Value theme;
 
 	// level physical world
 	GameWorld *gameWorld;

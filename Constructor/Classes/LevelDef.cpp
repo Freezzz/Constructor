@@ -13,7 +13,6 @@ std::ostream& operator<<( std::ostream &out, LevelDef &l )
 {
 	out << "     Level name: " << l.name << std::endl;
 	out << "     Difficulty: " << l.difficulty << std::endl;
-	out << "          Theme: " << l.theme << std::endl;
 	out << "      GameWorld with " << l.gameWorld->physicsWorld->GetBodyCount() << " bodies" << std::endl;
 	out << "      Inventory with " << l.inventoryItems.size() << " items" << std::endl;
 	out << "              " << l.gameObjects.count() << " game objects" << std::endl;

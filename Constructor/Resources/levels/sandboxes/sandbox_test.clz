@@ -77,6 +77,6 @@
 	"target" : 0,
 	"win area" : 2,
 	"loose area" : 3,    
-	"theme" : "test theme",
+	"theme" : "theme1",
 	"win conditions" : 0
 }
