@@ -1,6 +1,6 @@
 {
 	"background" : {
-		"background image" : "blueprints_bg.png",
+		"background image" : "room_bg.jpg",
 		"particle effects" : [
 			{
 				"texture" : "cloud.png",
