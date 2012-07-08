@@ -1,0 +1,27 @@
+{
+	"type" : 0,
+	"deletable" : false,
+	"movable" : false,
+	"rotatable" : false,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "sofa.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"density" : 0.3,
+				"friction" : 0.5,
+				"polygon" : {
+					"vertices" : {
+						"x" : [ -6.0,  6.0,  6.9,  5.0, -5.2, -7.0 ],
+                        "y" : [ -4.0, -4.0,  1.2,  4.1,  4.1,  1.5]
+					}
+                    
+				},
+				"restitution" : 0.5
+			}
+		]
+	}
+}
