@@ -7,6 +7,7 @@
 #include "../GameObjects/ObjectGlue.h"
 #include "../GameObjects/ObjectPin.h"
 #include "../GameObjects/ObjectSpring.h"
+#include "../GameObjects/ObjectFatty.h"
 #include "../Controls/InventoryLayer.h"
 #include "../Serialization/LevelManager.h"
 
@@ -304,6 +305,9 @@ GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d
 		case Glue:
 			object = ObjectGlue::node( fileName, prototype, p );
 			break;
+		case Fatty:
+			object = ObjectFatty::node( fileName, prototype, p );
+			break;			
 		default:
 			CCAssert( false, "Invalid inventory item" );
 	}

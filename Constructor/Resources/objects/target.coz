@@ -1,25 +1,23 @@
 {
-	"type" : 0,
+	"type" : 6,
 	"deletable" : false,
 	"movable" : true,
 	"rotatable" : true,
 	"static" : false,
 	
 	"prototype" : {
-		"sprite path" : "Icon-Small-50.png",
+		"sprite path" : "wheel.png",
 		
 		"awake" : true,
 		"fixture" : [
 			{
-				"density" : 0.3,
-				"friction" : 0.5,
-				"polygon" : {
-					"vertices" : {
-						"x" : [ -0.781250, 0.781250, 0.781250, -0.781250 ],
-						"y" : [ -0.781250, -0.781250, 0.781250, 0.781250 ]
-					}
+				"circle" : {
+					"center" : 0,
+					"radius" : 2.5
 				},
-				"restitution" : 0.3000000119209290
+				"density" : 1,
+				"friction" : 0.1,
+				"restitution" : 0.50
 			}
 		]
 	}

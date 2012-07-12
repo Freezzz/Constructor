@@ -1,6 +1,6 @@
 {
 	"type" : 0,
-	"deletable" : false,
+	"deletable" : true,
 	"movable" : true,
 	"rotatable" : true,
 	"static" : false,

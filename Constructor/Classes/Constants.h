@@ -17,7 +17,8 @@ typedef enum ObjectType{
 	Area		= 1,
     Spring      = 3,
 	Pin			= 4,
-	Glue		= 5 
+	Glue		= 5,
+	Fatty		= 6
 }ObjectType;
 
 
