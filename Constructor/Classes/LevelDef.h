@@ -33,6 +33,9 @@ struct LevelDef
 	// level description
 	std::string name;
 	float difficulty;
+	
+	// level game mode configuration
+	bool controlled;
 
 	// level style
 	Json::Value theme;

@@ -51,9 +51,34 @@ bool ObjectFatty::createBodyAtPosition( cocos2d::CCPoint position )
 	m_body->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_body->GetAngle() );
 	setPosition(position);
 
+	
+	b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.fixedRotation = true;
+	m_contactSensor = physicsWorld()->CreateBody(&bodyDef);
+	m_contactSensor->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_body->GetAngle() );
+	
+	m_bodies.push_back( m_contactSensor );
 	m_bodies.push_back( m_body );
 
+	
+	b2RevoluteJointDef md;
+	md.Initialize(m_body, m_contactSensor, m_body->GetPosition());
+	md.maxMotorTorque = 300;
+	md.enableMotor = true;
+	m_motorJoint = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
+	
 	return true;
+}
+
+
+void ObjectFatty::applyTorque(float value){
+	if (value >= 0) {
+		value = 100;
+	}else {
+		value = -100;
+	}
+	m_motorJoint->SetMotorSpeed(value);
 }
 
 //////////////////////////////////////////////////// 
@@ -75,6 +100,7 @@ void ObjectFatty::update( ccTime dt )
 		// Updating only wheel rotation
 		m_sprite->setRotation( -1 * CC_RADIANS_TO_DEGREES( body->GetAngle() ) );
 		
+        // Flip sprite based on moving direction
 		m_fattySprite->setFlipX( body->GetLinearVelocity().x < 0 );
 	}
 }

@@ -12,7 +12,7 @@
 		"fixture" : [
 			{
 				"density" : 0.3,
-				"friction" : 0.5,
+				"friction" : 1,
 				"polygon" : {
 					"vertices" : {
 						"x" : [ -2.3, 2.3, 2.3, -2.5 ],

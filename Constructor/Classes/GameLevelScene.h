@@ -127,6 +127,12 @@ public:
 	virtual void ccTouchEnded(CCTouch *pTouch, CCEvent* pEvent);
 	virtual void ccTouchCancelled(CCTouch *pTouch, CCEvent* pEvent);
 	
+	
+	//////////////////////////////////////////////////// 
+	// Accelerometer delegates
+	//////////////////////////////////////////////////// 
+    virtual void didAccelerate(CCAcceleration* pAccelerationValue);
+	
 	////////////////////////////////////////////////////
 	// Checks if user taped on one of ultility bottons
 	// and performs tapped button operation

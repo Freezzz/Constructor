@@ -22,6 +22,9 @@ protected:
 	CCSprite *m_sprite;
 	CCSprite *m_fattySprite;
 	b2Body *m_body;
+	b2Body *m_contactSensor;
+
+	b2RevoluteJoint * m_motorJoint;
 
     ObjectFatty(const string& fileName, const Json::Value& prototype)
 	: GameObject(fileName, prototype) { }
@@ -31,6 +34,8 @@ protected:
 public:
 	
 	void update(ccTime dt);
+	
+	void applyTorque(float value);
 	
 	GAMEOBJECT_NODE_DEF( ObjectFatty )
 };

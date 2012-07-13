@@ -66,6 +66,9 @@ Json::Value ConstructorJSon::cj( LevelDef* levelDef )
 	// level style
 	value["theme"] = levelDef->theme;
 
+    // level game mode configuration
+    value["controlled"] = levelDef->controlled;
+    
 	// level physical world
 	Json::Value worldJson;
 	{
@@ -159,6 +162,11 @@ LevelDef* ConstructorJSon::j2cLevelDef( Json::Value value )
 		l->loseConditions = static_cast<LevelDef::LoseConditions>( value["lose conditions"].asInt() );
 	}
 
+	// level game mode configurations
+	{
+		l->controlled = value["controlled"].asBool();
+	}
+	
 	// theme
 	{
 		std::string filePath = themePath( value["theme"].asString() );

@@ -11,41 +11,7 @@
                "position" : 
                {
                   "x" : 6,
-                  "y" : 18
-               }
-            },
-            
-            {
-               "file" : "boundaries1",
-               "position" : 
-               {
-                  "x" : 16.0,
-                  "y" : 12.0
-               }
-            },
-            {
-               "file" : "comod",
-               "position" : 
-               {
-                  "x" : 6,
-                  "y" : 3.5
-               }
-            },
-            {
-               "file" : "sofa",
-               "position" : 
-               {
-                  "x" : 17,
-                  "y" : 4.
-               }
-            },
-            {
-               "file" : "picture",
-               "defaultZOrder": 0,
-               "position" : 
-               {
-                  "x" : 20,
-                  "y" : 15
+                  "y" : 5
                }
             },
             {
@@ -53,9 +19,44 @@
                "position" : 
                {
                   "x" : 28,
-                  "y" : 2.5
+                  "y" : 3
                }
-            }           
+            },           
+
+            {
+               "file" : "puff",
+               "position" : 
+               {
+                  "x" : 16,
+                  "y" : 2
+               }
+            },
+            {
+               "file" : "box",
+               "position" : 
+               {
+                  "x" : 15,
+                  "y" : 4
+               }
+            },
+            {
+               "file" : "box",
+               "position" : 
+               {
+                  "x" : 17,
+                  "y" : 4
+               }
+            },
+            {
+               "file" : "box",
+               "position" : 
+               {
+                  "x" : 16,
+                  "y" : 5.6
+               }
+            }
+
+
    ],
    
    "inventory buttons" : [
@@ -88,8 +89,8 @@
 	"lose conditions" : 0,
 	"name" : "test level",
 	"target" : 0,
-	"win area" : 5,
-    "controlled" : true,   
+	"win area" : 1,
+    "controlled" : true,    
 	"theme" : "theme1",
 	"win conditions" : 0
 }

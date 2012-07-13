@@ -16,7 +16,7 @@
 					"radius" : 2.5
 				},
 				"density" : 1,
-				"friction" : 0.1,
+				"friction" : 1,
 				"restitution" : 0.50
 			}
 		]

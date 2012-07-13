@@ -12,7 +12,7 @@
 		
 		"fixture" : [
 			{
-				"friction" : 0.2000000029802322,
+				"friction" : 1,
 				"polygon" : {
 					"vertices" : {
 						"x" : [
@@ -27,7 +27,7 @@
 			},
 
 			{
-				"friction" : 0.2000000029802322,
+				"friction" : 1,
 				"polygon" : {
 					"vertices" : {
 						"x" : [
@@ -42,7 +42,7 @@
 			},
 
 			{
-				"friction" : 0.2000000029802322,
+				"friction" : 1,
 				"polygon" : {
 					"vertices" : {
 						"x" : [ -16.0, 16.0, 16.0, -16.0 ],
@@ -57,7 +57,7 @@
 			},
 
 			{
-				"friction" : 0.2000000029802322,
+				"friction" : 1,
 				"polygon" : {
 					"vertices" : {
 						"x" : [ -16.0, 16.0, 16.0, -16.0 ],

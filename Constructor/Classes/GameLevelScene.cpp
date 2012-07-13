@@ -12,6 +12,7 @@
 #include "GameObjects/ObjectSimpleBox.h"
 #include "GameObjects/ObjectSpring.h"
 #include "GameObjects/ObjectArea.h"
+#include "GameObjects/ObjectFatty.h"
 
 #include "Controls/InventoryLayer.h"
 #include "Controls/VictoryLayer.h"
@@ -37,7 +38,6 @@ bool GameLevelScene::init( LevelDescription *level )
 		return false;
 	}
 	setIsTouchEnabled( true );
-	setIsAccelerometerEnabled( true );
 
 	m_touchCount = 0;
 	m_background = 0;
@@ -85,7 +85,9 @@ bool GameLevelScene::init( LevelDescription *level )
 	LevelDef *ld = LevelDef::loadFromFile( level );
 	m_levelFile = level;
 	loadLevel( ld );
-
+	
+	setIsAccelerometerEnabled( ld->controlled );
+	
 	scheduleUpdate();
 	return true;
 }
@@ -508,6 +510,32 @@ void GameLevelScene::ccTouchCancelled( cocos2d::CCTouch *pTouch, cocos2d::CCEven
 {
 	CCLog("TOUCH CANCELLED!");
 }
+
+
+//////////////////////////////////////////////////// 
+// Accelerometer delegates
+//////////////////////////////////////////////////// 
+void GameLevelScene::didAccelerate(CCAcceleration* pAccelerationValue){
+	static float prevX=0, prevY=0;
+    
+    //#define kFilterFactor 0.05f
+	#define kFilterFactor 0.5f
+    
+    float accelX = (float) pAccelerationValue->x * kFilterFactor + (1- kFilterFactor)*prevX;
+    float accelY = (float) pAccelerationValue->y * kFilterFactor + (1- kFilterFactor)*prevY;
+    
+    prevX = accelX;
+    prevY = accelY;
+    
+    // multiply the gravity by 10
+    b2Vec2 gravity( accelX * 30, accelY * 30);
+    
+    // TODO: Check for valid fatty
+	if (isSimulating()) {
+		((ObjectFatty*)m_target)->applyTorque(accelX);
+	}
+}
+
 
 //////////////////////////////////////////////////// 
 // Checks if user taped on one of ultility bottons
