@@ -1,5 +1,5 @@
 {
 	"name" : "box",
-	"sprite path" : "box.png",
+	"sprite path" : "box_btn.png",
 	"game object file" : "box"
 }

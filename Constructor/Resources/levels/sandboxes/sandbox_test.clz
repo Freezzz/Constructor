@@ -52,11 +52,11 @@
 		},   
 		{
 			"file" : "spring",
-			"max quantity" : 3
+			"max quantity" : 0
 		},
 		{
 			"file" : "circle",
-			"max quantity" : 5
+			"max quantity" : 0
 		},
 		{
 			"file" : "glue",
@@ -64,11 +64,11 @@
 		},
 		{
 			"file" : "pin",
-			"max quantity" : 1
+			"max quantity" : 0
 		},
 		{
 			"file" : "panel",
-			"max quantity" : 2
+			"max quantity" : 0
 		}
 	],
 	
@@ -76,6 +76,7 @@
 	"name" : "test level",
 	"target" : 0,
 	"win area" : 2,
+    "controlled" : true,
 	"loose area" : 3,    
 	"theme" : "theme1",
 	"win conditions" : 0
