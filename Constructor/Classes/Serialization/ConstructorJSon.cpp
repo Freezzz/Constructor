@@ -133,7 +133,8 @@ Json::Value ConstructorJSon::cj( GameObject* gameObject )
 	Json::Value objectValue;
 
 	objectValue["object file"] = gameObject->m_fileName;
-    vecToJson( "position", v( gameObject->m_originalPosition ), objectValue );
+
+    vecToJson( "position", 	b2Vec2(gameObject->m_originalPosition.x / PTM_RATIO, gameObject->m_originalPosition.y / PTM_RATIO ), objectValue );
 	objectValue["rotation"] = gameObject->m_originalRotation;
 
 	objectValue["isStatic"] = gameObject->isStatic;
