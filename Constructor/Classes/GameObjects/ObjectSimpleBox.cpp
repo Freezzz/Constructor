@@ -15,6 +15,8 @@
 //////////////////////////////////////////////////// 
 bool ObjectSimpleBox::init( )
 {
+	m_type = SimpleBox;
+	
 	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 
 	// Adapt container to the graphical rapresentation

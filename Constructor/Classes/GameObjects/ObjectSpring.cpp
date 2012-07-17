@@ -20,6 +20,8 @@
 //////////////////////////////////////////////////// 
 bool ObjectSpring::init( )
 {
+	m_type = Spring;
+	
 	// adapt container to the graphical rapresentation
 	m_springSprite = CCSprite::spriteWithFile( m_prototype["spring sprite path"].asCString() );
 	m_springSprite->setAnchorPoint(CCPoint(0,0.5));
@@ -155,15 +157,11 @@ void ObjectSpring::saveOriginalProperties(){
 
 void ObjectSpring::onSimulationStarted(){
 	saveOriginalProperties();
-	m_firstBody->SetAwake(true);
-	m_secondBody->SetAwake(true);
-	m_firstBody->SetType(b2_dynamicBody);
+//	m_firstBody->SetType(b2_dynamicBody);
 	m_secondBody->SetType(b2_dynamicBody);  	
-	m_firstBody->SetFixedRotation(false);
+//	m_firstBody->SetFixedRotation(false);
 	m_secondBody->SetFixedRotation(false);	
-	for (unsigned int i = 0; i < m_joints.size(); i++) {
-		m_joints.at(i)->SetLength(MAX_LENGHT / PTM_RATIO);
-	}	
+
 }
 
 void ObjectSpring::onSimulationEnded(){
@@ -234,6 +232,20 @@ void ObjectSpring::rotate( float newRotation )
 		
 		m_firstBody->SetTransform(b2Position, b2Angle);
         
+	}
+}
+
+void ObjectSpring::objectCollided(GameObject *otherObject){
+	if(otherObject->m_type == Fatty){
+		m_firstBody->SetAwake(true);
+		m_secondBody->SetAwake(true);
+//		m_firstBody->SetType(b2_dynamicBody);
+//		m_secondBody->SetType(b2_dynamicBody);  	
+//		m_firstBody->SetFixedRotation(false);
+//		m_secondBody->SetFixedRotation(false);	
+		for (unsigned int i = 0; i < m_joints.size(); i++) {
+			m_joints.at(i)->SetLength(MAX_LENGHT / PTM_RATIO);
+		}			
 	}
 }
 

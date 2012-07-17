@@ -85,6 +85,13 @@ public:
 	// Function to be called after unstuck routine is finished
 	//////////////////////////////////////////////////// 
 	void unstuckPhaseFinished();
+	
+	
+	//////////////////////////////////////////////////// 
+	// Object collided notification
+	// @pararm: other Object of the collision
+	//////////////////////////////////////////////////// 
+	virtual void objectCollided(GameObject * otherObject);
 
 	GAMEOBJECT_NODE_DEF( ObjectSpring )
 };

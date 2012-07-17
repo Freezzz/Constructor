@@ -8,6 +8,8 @@
 ////////////////////////////////////////////////////
 bool ObjectArea::init( )
 {
+	m_type = Area;
+	
 	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 	
 	//Define texture to fill the fixture ( must be added to node render properly )

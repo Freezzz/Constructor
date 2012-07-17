@@ -14,6 +14,8 @@
 //////////////////////////////////////////////////// 
 bool ObjectGlue::init( )
 {
+	m_type = Glue;
+	
 	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
     
 	// Adapt container to the graphical rapresentation

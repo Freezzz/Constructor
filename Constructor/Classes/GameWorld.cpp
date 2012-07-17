@@ -27,7 +27,10 @@ bool GameWorld::init( b2Vec2 gravity )
     
 	// Box2d debugDraw configuration
 	m_debugDraw = new GLESDebugDraw( PTM_RATIO * CC_CONTENT_SCALE_FACTOR() );
+	m_contacListner = new CContactListener();
+
 	physicsWorld->SetDebugDraw( m_debugDraw );
+	physicsWorld->SetContactListener( m_contacListner );
     
 	uint32 flags = 0;
 	flags += b2Draw::e_shapeBit;

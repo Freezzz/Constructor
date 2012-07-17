@@ -10,6 +10,7 @@
 #define __GameWorld_H__
 
 #include "cocos2d.h"
+#include "ContactListener.h"
 #include <Box2D/Box2D.h>
 #include "GLES-Render.h"
 #include "Constants.h"
@@ -24,7 +25,7 @@ class GameObject;
 class GameWorld : public CCNode {
 private:
     GLESDebugDraw * m_debugDraw;
-    
+    CContactListener * m_contacListner;
     
     //////////////////////////////////////////////////// 
     // Create world internal bounds

@@ -169,6 +169,13 @@ public:
 	// Checks if the point is contained inside this node
 	//////////////////////////////////////////////////// 
 	bool containsPoint(CCPoint location);
+	
+	
+	//////////////////////////////////////////////////// 
+	// Object collided notification
+	// @pararm: other Object of the collision
+	//////////////////////////////////////////////////// 
+	virtual void objectCollided(GameObject * otherObject);
 };
 
 #endif

@@ -15,6 +15,8 @@
 //////////////////////////////////////////////////// 
 bool ObjectPin::init( )
 {
+	m_type = Pin;
+	
 	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 
 	// Adapt container to the graphical rapresentation

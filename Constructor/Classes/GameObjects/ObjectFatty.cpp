@@ -15,6 +15,8 @@
 //////////////////////////////////////////////////// 
 bool ObjectFatty::init( )
 {
+	m_type = Fatty;
+	
 	m_sprite = CCSprite::spriteWithFile( m_prototype["sprite path"].asCString() );
 
 	m_fattySprite = CCSprite::spriteWithFile("fatty.png");
@@ -50,7 +52,6 @@ bool ObjectFatty::createBodyAtPosition( cocos2d::CCPoint position )
 	m_body->SetUserData( this );
 	m_body->SetTransform( b2Vec2(position.x/PTM_RATIO, position.y/PTM_RATIO), m_body->GetAngle() );
 	setPosition(position);
-
 	
 	b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;

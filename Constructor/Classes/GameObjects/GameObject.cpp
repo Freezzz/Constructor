@@ -306,6 +306,14 @@ void GameObject::unstuckPhaseFinished( )
 }
 
 //////////////////////////////////////////////////// 
+// Object collided notification
+// @pararm: other Object of the collision
+//////////////////////////////////////////////////// 
+void GameObject::objectCollided(GameObject *otherObject){
+//	CCLog("Override me");
+}
+
+//////////////////////////////////////////////////// 
 // Grapical rapresentation of selected state
 //////////////////////////////////////////////////// 
 void GameObject::setSelected( bool selected )
