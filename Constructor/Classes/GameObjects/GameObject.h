@@ -176,6 +176,13 @@ public:
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
 	virtual void objectCollided(GameObject * otherObject);
+	
+	//////////////////////////////////////////////////// 
+	// Object collision ended notification
+	// @pararm: other Object of the collision
+	//////////////////////////////////////////////////// 
+	virtual void objectCollisionEnded(GameObject * otherObject);
+
 };
 
 #endif

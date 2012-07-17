@@ -1,0 +1,235 @@
+{
+   "difficulty": 1.0,
+   "game objects": [
+
+   {
+      "file": "target",
+      "movable": false,
+      "rotatable": false,
+      "position": {
+         "x": 7.43750,
+         "y": 19
+      }
+   }, {
+      "file": "cheese",
+      "position": {
+         "x": 28,
+         "y": 3
+      }
+   },
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 7.7656250,
+         "y": 14.69336318969727
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 13.49950408935547,
+         "y": 14.70898818969727
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "panel",
+      "position": {
+         "x": 19.23326683044434,
+         "y": 14.72459411621094
+      }
+   },
+
+   {
+      
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 27.06250,
+         "y": 19.00586318969727
+      },
+      "rotation": 88.47700500488281
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 27.18750,
+         "y": 13.24023818969727
+      },
+      "rotation": 88.80428314208984
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 24.656250,
+         "y": 9.427738189697266
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,
+      "file": "circle",
+      "position": {
+         "x": 10.4843750,
+         "y": 13.95898818969727
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,
+      "file": "circle",
+      "position": {
+         "x": 22.2656250,
+         "y": 8.703991889953613
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 18.92220115661621,
+         "y": 9.365238189697266
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,      
+      "file": "panel",
+      "position": {
+         "x": 13.17210578918457,
+         "y": 9.370897293090820
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "box",
+      "position": {
+         "x": 7.5468750,
+         "y": 1.771488189697266
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "box",
+      "position": {
+         "x": 12.0468750,
+         "y": 1.734738111495972
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "box",
+      "position": {
+         "x": 16.968750,
+         "y": 1.734747052192688
+      },
+      "rotation": -2.630311064422131e-05
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "box",
+      "position": {
+         "x": 21.5156250,
+         "y": 1.734734535217285
+      }
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      
+      "file": "box",
+      "position": {
+         "x": 26.218750,
+         "y": 1.734743595123291
+      },
+      "rotation": -6.396722164936364e-05
+   },
+
+   {
+      "isDeletable": false,
+      "isMovable": false,
+      "isRotatable": false,
+      "isStatic": true,
+      "file": "circle",
+      "position": 0,
+      "rotation": 1.375847315660949e-19
+   }
+   
+
+
+
+   ],
+
+   "inventory buttons": [{
+      "file": "pin",
+      "max quantity": 4
+   }, {
+      "file": "panel",
+      "max quantity": 3
+   }],
+
+   "lose conditions": 0,
+   "name": "test level",
+   "target": 0,
+   "win area": 1,
+   "controlled": true,
+   "theme": "theme1",
+   "win conditions": 0
+}

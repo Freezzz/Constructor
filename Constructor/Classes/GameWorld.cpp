@@ -124,7 +124,7 @@ void GameWorld::draw()
     
     
     // Debug info, comment out this line
-//    physicsWorld->DrawDebugData();
+    physicsWorld->DrawDebugData();
 
     
 	// restore default GL states

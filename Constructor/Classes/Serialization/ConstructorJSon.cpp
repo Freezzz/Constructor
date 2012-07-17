@@ -8,6 +8,7 @@
 #include "../GameObjects/ObjectPin.h"
 #include "../GameObjects/ObjectSpring.h"
 #include "../GameObjects/ObjectFatty.h"
+#include "../GameObjects/ObjectWater.h"
 #include "../Controls/InventoryLayer.h"
 #include "../Serialization/LevelManager.h"
 
@@ -317,6 +318,10 @@ GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d
 		case Fatty:
 			object = ObjectFatty::node( fileName, prototype, p );
 			break;			
+		case Water:
+			object = ObjectWater::node( fileName, prototype, p );
+			break;			
+			
 		default:
 			CCAssert( false, "Invalid inventory item" );
 	}

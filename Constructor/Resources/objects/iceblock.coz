@@ -1,0 +1,38 @@
+
+{
+	"type" : 0,
+	"deletable" : true,
+	"movable" : true,
+	"rotatable" : true,
+	"static" : true,
+	
+	"prototype" : {
+		"sprite path" : "iceblock.png",
+		
+		"awake" : true,
+		"fixture" : [
+			{
+				"restitution": 0.1,
+				"polygon": {
+					"vertices": {
+						"y": [
+							-0.8,
+							-0.8,
+							0.8,
+							0.8
+						],
+						"x": [
+							-3.6,
+							3.6,
+							3.6,
+							-3.6
+						]
+					}
+				},
+				"friction": 0.01,
+				"density": 1
+			}
+		]
+	}
+}
+

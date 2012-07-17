@@ -13,23 +13,20 @@
 //////////////////////////////////////////////////// 
 // Default contructor
 //////////////////////////////////////////////////// 
-CContactListener::CContactListener()
-{
+CContactListener::CContactListener(){
 }
 
 //////////////////////////////////////////////////// 
 // Default destructor
 //////////////////////////////////////////////////// 
-CContactListener::~CContactListener() 
-{
+CContactListener::~CContactListener() {
 }
 
 
 //////////////////////////////////////////////////// 
 // On contact started handler
 //////////////////////////////////////////////////// 
-void CContactListener::BeginContact(b2Contact* contact) 
-{
+void CContactListener::BeginContact(b2Contact* contact) {
 	if (!GameLevelScene::sharedGameScene()->isSimulating()) {
 		return;
 	}
@@ -47,8 +44,19 @@ void CContactListener::BeginContact(b2Contact* contact)
 //////////////////////////////////////////////////// 
 // On contact ended handler
 //////////////////////////////////////////////////// 
-void CContactListener::EndContact(b2Contact* contact) 
-{
+void CContactListener::EndContact(b2Contact* contact){
+	if (!GameLevelScene::sharedGameScene()->isSimulating()) {
+		return;
+	}
+	
+	GameObject * gameObjectA = (GameObject*)contact->GetFixtureA()->GetBody()->GetUserData();
+	GameObject * gameObjectB = (GameObject*)contact->GetFixtureB()->GetBody()->GetUserData();
+	
+    if (gameObjectA && gameObjectB) {
+		gameObjectA->objectCollisionEnded(gameObjectB);
+		gameObjectB->objectCollisionEnded(gameObjectA);
+    }
+
 }
 
 void CContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) 
