@@ -53,6 +53,7 @@ bool ObjectSimpleBox::createBodyAtPosition( cocos2d::CCPoint position )
 	setPosition(position);
 
 	m_bodies.push_back( m_body );
-
+	
+	saveOriginalProperties();
 	return true;
 }

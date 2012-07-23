@@ -23,9 +23,10 @@
       "rotatable": false,
       "static": true,
       "file": "panel",
+      "rotation": 45,
       "position": {
          "x": 6,
-         "y": 16
+         "y": 15
       }
    }, {
       "file": "oven",

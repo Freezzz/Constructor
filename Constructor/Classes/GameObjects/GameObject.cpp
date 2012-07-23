@@ -101,9 +101,9 @@ void GameObject::onMovementEnded( )
 {
 	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
 		b2Body *body = *bit;
-		body->SetFixedRotation( false ); // enable rotation
-		body->SetGravityScale( 1 ); // resume taking in account the gravity
-		body->SetType( b2_staticBody ); // set static to avoid further movements
+		body->SetFixedRotation( false );	// enable rotation
+		body->SetGravityScale( 1 );			// resume taking in account the gravity
+		body->SetType( b2_staticBody );		// set static to avoid further movements
 	}
 }
 
@@ -172,12 +172,9 @@ void GameObject::rotate( float newRotation )
 	for( std::vector<b2Body*>::iterator bit = m_bodies.begin(); bit != m_bodies.end(); ++bit ) {
 		b2Body *body = *bit;
 
-		// Update posisiotn of phisical body moving it to nodes position
-		b2Vec2 b2Position = b2Vec2(getPosition().x/PTM_RATIO,
-		                           getPosition().y/PTM_RATIO);
 		float32 b2Angle =  -1 * CC_DEGREES_TO_RADIANS( newRotation );
                
-		body->SetTransform( b2Position, b2Angle );
+		body->SetTransform( body->GetPosition(), b2Angle );
 	}
 }
 

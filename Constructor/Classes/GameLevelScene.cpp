@@ -303,6 +303,7 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 			for( unsigned int i = 0; i < m_gameObjects->count(); ++i ) {
 				GameObject *object = m_gameObjects->getObjectAtIndex(i);
 				addChild( object, object->defaultZOrder );
+				object->restoreToOriginalProperties();
 			}
 		}
 	}

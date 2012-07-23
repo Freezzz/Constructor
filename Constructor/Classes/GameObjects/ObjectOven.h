@@ -28,6 +28,9 @@ protected:
 	b2Body *m_flameSensor;
 	b2Body *m_buttonSensor;
 	
+	CCPoint m_flameSensorOffset;
+	CCPoint m_buttonSensorOffset;
+	
 	bool m_isOn;
 
     ObjectOven(const string& fileName, const Json::Value& prototype)
@@ -55,6 +58,13 @@ public:
 	//////////////////////////////////////////////////// 
 	virtual void onSimulationEnded();
 	
+	////////////////////////////////////////////////////
+	// Moves object to new location, if state is idile
+	// than it is a simple translation, if moving than
+	// creates a move joint to move object around
+	////////////////////////////////////////////////////
+	virtual void move(CCPoint newPostion);
+		
 	bool getIsOn(){return m_isOn;}
 	void setIsOn( bool value );
 };

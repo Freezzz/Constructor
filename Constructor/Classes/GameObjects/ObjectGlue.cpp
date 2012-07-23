@@ -61,6 +61,7 @@ bool ObjectGlue::createBodyAtPosition( cocos2d::CCPoint position )
 
 	m_bodies.push_back( m_body );
 
+	saveOriginalProperties();
 	return true;
 }
 

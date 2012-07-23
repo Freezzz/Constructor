@@ -49,10 +49,10 @@ bool ObjectOven::createBodyAtPosition( cocos2d::CCPoint position )
 	b2dJson json;
 
 	// Flames
-	CCPoint flameOffset = CCPoint(m_prototype["flames"]["offset"]["x"].asFloat(), m_prototype["flames"]["offset"]["y"].asFloat());
-	m_flameSprite->setPosition(flameOffset);
+	m_flameSensorOffset = CCPoint(m_prototype["flames"]["offset"]["x"].asFloat(), m_prototype["flames"]["offset"]["y"].asFloat());
+	m_flameSprite->setPosition(m_flameSensorOffset);
 	
-	CCPoint flameSensorPosition = CCPoint(position.x + flameOffset.x, position.y + flameOffset.y);
+	CCPoint flameSensorPosition = CCPoint(position.x + m_flameSensorOffset.x, position.y + m_flameSensorOffset.y);
 	
 	m_flameSensor = json.j2b2Body( physicsWorld(), prototype()["flames"] );
 	if( ! m_flameSensor || ! m_flameSensor->GetFixtureList() ) {
@@ -65,9 +65,9 @@ bool ObjectOven::createBodyAtPosition( cocos2d::CCPoint position )
 	
 	
 	// Button
-	CCPoint buttonOffset = CCPoint(m_prototype["button"]["offset"]["x"].asFloat(), m_prototype["button"]["offset"]["y"].asFloat());
+	m_buttonSensorOffset = CCPoint(m_prototype["button"]["offset"]["x"].asFloat(), m_prototype["button"]["offset"]["y"].asFloat());
 	
-	CCPoint buttonSensorPosition = CCPoint(position.x + buttonOffset.x, position.y + buttonOffset.y);
+	CCPoint buttonSensorPosition = CCPoint(position.x + m_buttonSensorOffset.x, position.y + m_buttonSensorOffset.y);
 	
 	m_buttonSensor = json.j2b2Body( physicsWorld(), prototype()["button"] );
 	if( ! m_buttonSensor || ! m_buttonSensor->GetFixtureList() ) {
@@ -75,7 +75,7 @@ bool ObjectOven::createBodyAtPosition( cocos2d::CCPoint position )
 		return false;
 	}
 	m_buttonSensor->SetUserData( this );
-	m_buttonSensor->SetTransform( b2Vec2(buttonSensorPosition.x/PTM_RATIO, buttonSensorPosition.y/PTM_RATIO), m_flameSensor->GetAngle() );
+	m_buttonSensor->SetTransform( b2Vec2(buttonSensorPosition.x/PTM_RATIO, buttonSensorPosition.y/PTM_RATIO), m_buttonSensor->GetAngle() );
 	m_bodies.push_back( m_buttonSensor );
 	
 	// Main oven
@@ -90,6 +90,7 @@ bool ObjectOven::createBodyAtPosition( cocos2d::CCPoint position )
 
 	m_bodies.push_back( m_body );
 
+	saveOriginalProperties();
 	return true;
 }
 
@@ -164,4 +165,30 @@ void ObjectOven::onSimulationEnded(){
 //	}
 //	m_affectedObjects.clear();
 	setIsOn(false);
+}
+
+
+////////////////////////////////////////////////////
+// Moves object to new location, if state is idile
+// than it is a simple translation, if moving than
+// creates a move joint to move object around
+////////////////////////////////////////////////////
+void ObjectOven::move(cocos2d::CCPoint newPostion){
+	if( ! getParent() ) {
+		// not moving if this object has no parent
+		return ;
+	}
+	b2Vec2 b2Position = b2Vec2(newPostion.x/PTM_RATIO,
+							   newPostion.y/PTM_RATIO);
+	
+	float32 b2Angle = -1 * CC_DEGREES_TO_RADIANS( getRotation() );
+	setPosition( newPostion );
+	m_body->SetTransform( b2Position, b2Angle );
+	
+	CCPoint flameSensorPosition = CCPoint(newPostion.x + m_flameSensorOffset.x, newPostion.y + m_flameSensorOffset.y);
+	m_flameSensor->SetTransform( b2Vec2(flameSensorPosition.x/PTM_RATIO, flameSensorPosition.y/PTM_RATIO), m_flameSensor->GetAngle() );
+
+	CCPoint buttonSensorPosition = CCPoint(newPostion.x + m_buttonSensorOffset.x, newPostion.y + m_buttonSensorOffset.y);
+	m_buttonSensor->SetTransform( b2Vec2(buttonSensorPosition.x/PTM_RATIO, buttonSensorPosition.y/PTM_RATIO), m_flameSensor->GetAngle() );
+	
 }

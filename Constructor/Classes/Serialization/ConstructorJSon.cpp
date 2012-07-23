@@ -284,9 +284,13 @@ GameObject* ConstructorJSon::j2cGameObject( Json::Value value )
 	if( value.isMember("defaultZOrder") ) {
 		object->defaultZOrder = value["defaultZOrder"].asInt();
 	}
+	if( value.isMember("rotation") ) {
+		object->m_originalRotation = value["rotation"].asFloat();
+	}	
 	if( value.isMember("static") ) {
 		object->isStatic = value["static"].asBool();
 	}	
+
 	return object;
 }
 GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d::CCPoint &p )

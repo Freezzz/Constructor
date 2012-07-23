@@ -69,6 +69,7 @@ bool ObjectFatty::createBodyAtPosition( cocos2d::CCPoint position )
 	md.enableMotor = true;
 	m_motorJoint = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
 	
+	saveOriginalProperties();
 	return true;
 }
 
