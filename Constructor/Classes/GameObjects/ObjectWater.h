@@ -18,6 +18,8 @@ using namespace cocos2d;
 // ObjectWater
 ///////////////////////////////////////////////////
 class ObjectWater : public GameObject {
+private:
+	std::vector<GameObject*> m_affectedObjects;
 protected:
 	CCSprite *m_sprite;
 	b2Body *m_body;
@@ -34,13 +36,18 @@ public:
 	// Object collided notification
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
-	virtual void objectCollided(GameObject * otherObject);
+	virtual void objectCollided(GameObject * otherObject, b2Contact * contact);
 	
 	//////////////////////////////////////////////////// 
 	// Object collision ended notification
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
-	virtual void objectCollisionEnded(GameObject * otherObject);
+	virtual void objectCollisionEnded(GameObject * otherObject, b2Contact * contact);
+	
+	//////////////////////////////////////////////////// 
+	// Callback on simulation ended
+	//////////////////////////////////////////////////// 
+	virtual void onSimulationEnded();
 };
 
 #endif

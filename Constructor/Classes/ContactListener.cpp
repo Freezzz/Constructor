@@ -35,8 +35,8 @@ void CContactListener::BeginContact(b2Contact* contact) {
 	GameObject * gameObjectB = (GameObject*)contact->GetFixtureB()->GetBody()->GetUserData();
 	
     if (gameObjectA && gameObjectB) {
-		gameObjectA->objectCollided(gameObjectB);
-		gameObjectB->objectCollided(gameObjectA);
+		gameObjectA->objectCollided(gameObjectB, contact);
+		gameObjectB->objectCollided(gameObjectA, contact);
     }
 }
 
@@ -53,8 +53,8 @@ void CContactListener::EndContact(b2Contact* contact){
 	GameObject * gameObjectB = (GameObject*)contact->GetFixtureB()->GetBody()->GetUserData();
 	
     if (gameObjectA && gameObjectB) {
-		gameObjectA->objectCollisionEnded(gameObjectB);
-		gameObjectB->objectCollisionEnded(gameObjectA);
+		gameObjectA->objectCollisionEnded(gameObjectB, contact);
+		gameObjectB->objectCollisionEnded(gameObjectA, contact);
     }
 
 }

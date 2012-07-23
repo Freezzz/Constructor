@@ -33,6 +33,7 @@ bool ObjectWater::init( )
 	deleteButtonOffset = CCPoint( -getContentSize().width/2 - 10, 0 );
 
 	m_state = Idile;
+	m_affectedObjects = std::vector<GameObject*>();
 	scheduleUpdate();
 	return true;
 }
@@ -64,19 +65,38 @@ bool ObjectWater::createBodyAtPosition( cocos2d::CCPoint position )
 //////////////////////////////////////////////////// 
 // Collision handler
 //////////////////////////////////////////////////// 
-void ObjectWater::objectCollided(GameObject *otherObject){
+void ObjectWater::objectCollided(GameObject *otherObject, b2Contact * contact){
 	if(otherObject->m_type == Fatty){
 		for (int i = 0; i < otherObject->m_bodies.size(); i++) {
 			otherObject->m_bodies[i]->SetGravityScale(0.1);
-		}		
+		}
+		m_affectedObjects.push_back(otherObject);
 	}
 }
 
 //////////////////////////////////////////////////// 
 // Collision ended handler
 //////////////////////////////////////////////////// 
-void ObjectWater::objectCollisionEnded(GameObject *otherObject){
+void ObjectWater::objectCollisionEnded(GameObject *otherObject, b2Contact * contact){
 	for (int i = 0; i < otherObject->m_bodies.size(); i++) {
 		otherObject->m_bodies[i]->SetGravityScale(1);
 	}
+	
+	for (int i = 0; i < m_affectedObjects.size(); i++) {
+		if( m_affectedObjects[i] == otherObject){
+			m_affectedObjects.erase(m_affectedObjects.begin() + i);
+			return;
+		}
+	}
+	
+}
+
+void ObjectWater::onSimulationEnded(){
+	for (int i = 0; i < m_affectedObjects.size(); i++) {
+		GameObject * obj =	m_affectedObjects[i];
+		for (int i = 0; i < obj->m_bodies.size(); i++) {
+			obj->m_bodies[i]->SetGravityScale(1);
+		}
+	}
+	m_affectedObjects.clear();
 }

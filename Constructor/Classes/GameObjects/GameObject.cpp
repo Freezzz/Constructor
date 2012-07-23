@@ -309,7 +309,7 @@ void GameObject::unstuckPhaseFinished( )
 // Object collided notification
 // @pararm: other Object of the collision
 //////////////////////////////////////////////////// 
-void GameObject::objectCollided(GameObject *otherObject){
+void GameObject::objectCollided(GameObject *otherObject, b2Contact * contact){
 //	CCLog("Override me");
 }
 
@@ -318,7 +318,7 @@ void GameObject::objectCollided(GameObject *otherObject){
 // Object collided notification
 // @pararm: other Object of the collision
 //////////////////////////////////////////////////// 
-void GameObject::objectCollisionEnded(GameObject *otherObject){
+void GameObject::objectCollisionEnded(GameObject *otherObject, b2Contact * contact){
 	//	CCLog("Override me");
 }
 

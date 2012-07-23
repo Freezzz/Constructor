@@ -235,7 +235,7 @@ void ObjectSpring::rotate( float newRotation )
 	}
 }
 
-void ObjectSpring::objectCollided(GameObject *otherObject){
+void ObjectSpring::objectCollided(GameObject * otherObject, b2Contact * contact){
 	if(otherObject->m_type == Fatty){
 		m_firstBody->SetAwake(true);
 		m_secondBody->SetAwake(true);

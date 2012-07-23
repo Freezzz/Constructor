@@ -175,13 +175,13 @@ public:
 	// Object collided notification
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
-	virtual void objectCollided(GameObject * otherObject);
+	virtual void objectCollided(GameObject * otherObject, b2Contact * contact);
 	
 	//////////////////////////////////////////////////// 
 	// Object collision ended notification
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
-	virtual void objectCollisionEnded(GameObject * otherObject);
+	virtual void objectCollisionEnded(GameObject * otherObject, b2Contact * contact);
 
 };
 

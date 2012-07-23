@@ -91,7 +91,7 @@ public:
 	// Object collided notification
 	// @pararm: other Object of the collision
 	//////////////////////////////////////////////////// 
-	virtual void objectCollided(GameObject * otherObject);
+	virtual void objectCollided(GameObject * otherObject, b2Contact * contact);
 
 	GAMEOBJECT_NODE_DEF( ObjectSpring )
 };
