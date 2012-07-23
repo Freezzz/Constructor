@@ -1,70 +1,65 @@
-
 {
-   "difficulty" : 1.0,
-   "game objects" : 
-   [
-            
-            {
-               "file" : "target",
-               "movable" : false,
-               "rotatable" : false,               
-               "position" : 
-               {
-                  "x" : 6,
-                  "y" : 5
-               }
-            },
-            {
-               "file" : "cheese",
-               "position" : 
-               {
-                  "x" : 28,
-                  "y" : 3
-               }
-            },           
+   "difficulty": 1.0,
+   "game objects": [
 
-            {
-               "file" : "puff",
-               "position" : 
-               {
-                  "x" : 16,
-                  "y" : 2
-               }
-            }
-   ],
-   
-   "inventory buttons" : [
-		{
-			"file" : "box",
-			"max quantity" : 4
-		},   
-		{
-			"file" : "spring",
-			"max quantity" : 3
-		},
-		{
-			"file" : "circle",
-			"max quantity" : 3
-		},
-		{
-			"file" : "glue",
-			"max quantity" : 2
-		},
-		{
-			"file" : "pin",
-			"max quantity" : 2
-		},
-		{
-			"file" : "panel",
-			"max quantity" : 1
-		}
-	],
-	
-	"lose conditions" : 0,
-	"name" : "test level",
-	"target" : 0,
-	"win area" : 1,
-    "controlled" : true,    
-	"theme" : "theme1",
-	"win conditions" : 0
+   {
+      "file": "target",
+      "movable": false,
+      "rotatable": false,
+      "position": {
+         "x": 6,
+         "y": 20
+      }
+   }, {
+      "file": "cheese",
+      "position": {
+         "x": 28,
+         "y": 3
+      }
+   }, {
+
+      "deletable": false,
+      "movable": false,
+      "rotatable": false,
+      "static": true,
+      "file": "panel",
+      "position": {
+         "x": 6,
+         "y": 16
+      }
+   }, {
+      "file": "oven",
+      "position": {
+         "x": 16,
+         "y": 3.6
+      }
+   }],
+
+   "inventory buttons": [{
+      "file": "box",
+      "max quantity": 4
+   }, {
+      "file": "spring",
+      "max quantity": 3
+   }, {
+      "file": "circle",
+      "max quantity": 3
+   }, {
+      "file": "glue",
+      "max quantity": 2
+   }, {
+      "file": "pin",
+      "max quantity": 2
+   }, {
+      "file": "panel",
+      "max quantity": 1
+   }],
+
+   "lose conditions": 0,
+   "name": "test level",
+   "target": 0,
+   "win area": 1,
+   "controlled": true,
+   "theme": "theme1",
+   "win conditions": 0
 }

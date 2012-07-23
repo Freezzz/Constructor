@@ -1,0 +1,59 @@
+{
+	"type": 8,
+	"deletable": false,
+	"movable": false,
+	"rotatable": false,
+	"static": true,
+
+	"prototype": {
+		"oven": {
+			"sprite path": "oven.png",
+
+			"awake": true,
+			"fixture": [{
+				"density": 5,
+				"friction": 1,
+				"polygon": {
+					"vertices": {
+						"x": [-3.3, 3.3, 3.3, -3.3],
+						"y": [-2.85, -2.85, 2.5, 2.5]
+					}
+
+				},
+				"restitution": 0.3
+			}]
+		},
+		"button": {
+			"offset": {
+				"x": -40,
+				"y": 110
+			},
+			"fixture": [{
+				"polygon": {
+					"vertices": {
+						"y": [-1, -1, 0, 0],
+						"x": [-2, 0, 0, -2]
+					}
+				},
+				"sensor": true
+			}]
+		},
+		"flames": {
+			"sprite path": "flame.png",
+			"awake": true,
+			"offset": {
+				"x": 60,
+				"y": 170
+			},
+			"fixture": [{
+				"polygon": {
+					"vertices": {
+						"y": [-2.5, -2.5, -0.5, -0.5],
+						"x": [-3, 1, 1, -3]
+					}
+				},
+				"sensor": true
+			}]
+		}
+	}
+}

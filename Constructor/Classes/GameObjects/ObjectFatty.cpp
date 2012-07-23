@@ -65,7 +65,7 @@ bool ObjectFatty::createBodyAtPosition( cocos2d::CCPoint position )
 	
 	b2RevoluteJointDef md;
 	md.Initialize(m_body, m_contactSensor, m_body->GetPosition());
-	md.maxMotorTorque = 300;
+	md.maxMotorTorque = 200;
 	md.enableMotor = true;
 	m_motorJoint = (b2RevoluteJoint *)GameWorld::sharedGameWorld()->physicsWorld->CreateJoint(&md);
 	

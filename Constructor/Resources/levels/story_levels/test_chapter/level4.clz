@@ -45,7 +45,7 @@
       "isDeletable": false,
       "isMovable": false,
       "isRotatable": false,
-      
+      "isStatic": true,          
       "file": "panel",
       "position": {
          "x": 19.23326683044434,

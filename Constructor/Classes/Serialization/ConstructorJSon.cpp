@@ -9,6 +9,7 @@
 #include "../GameObjects/ObjectSpring.h"
 #include "../GameObjects/ObjectFatty.h"
 #include "../GameObjects/ObjectWater.h"
+#include "../GameObjects/ObjectOven.h"
 #include "../Controls/InventoryLayer.h"
 #include "../Serialization/LevelManager.h"
 
@@ -283,7 +284,9 @@ GameObject* ConstructorJSon::j2cGameObject( Json::Value value )
 	if( value.isMember("defaultZOrder") ) {
 		object->defaultZOrder = value["defaultZOrder"].asInt();
 	}
-	
+	if( value.isMember("static") ) {
+		object->isStatic = value["static"].asBool();
+	}	
 	return object;
 }
 GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d::CCPoint &p )
@@ -320,6 +323,9 @@ GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d
 			break;			
 		case Water:
 			object = ObjectWater::node( fileName, prototype, p );
+			break;			
+		case Oven:
+			object = ObjectOven::node( fileName, prototype, p );
 			break;			
 			
 		default:
