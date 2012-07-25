@@ -11,8 +11,8 @@
 #include "GameLevelScene.h"
 #include "../GameWorld.h"
 
-#define MAX_LENGHT 132
-#define MIN_LENGHT 5
+#define MAX_LENGHT 40
+#define MIN_LENGHT 3
 
 
 //////////////////////////////////////////////////// 
@@ -28,16 +28,18 @@ bool ObjectSpring::init( )
 	m_springSprite->setScaleY(0.3);
 	
 	setAnchorPoint(CCPoint(0.5,0)); // CCNode AP default is 0,0
-	addChild(m_springSprite);
+	
 
 	m_firstBodySprite = CCSprite::spriteWithFile( m_prototype["spring top"]["sprite path"].asCString() );
-	addChild(m_firstBodySprite);
 	m_firstBodySprite->setAnchorPoint(CCPoint(0.5,0.5));
-	
+		
 	m_secondBodySprite = CCSprite::spriteWithFile( m_prototype["spring bottom"]["sprite path"].asCString() );
-	addChild(m_secondBodySprite);
 	m_secondBodySprite->setAnchorPoint(CCPoint(0.5,0.5));	
 	
+	addChild(m_firstBodySprite);
+	addChild(m_springSprite);
+	addChild(m_secondBodySprite);	
+
 	setContentSize(CCSize(m_secondBodySprite->getContentSize().width, m_secondBodySprite->getContentSize().height * 2));
 	
 	isStatic = false;
