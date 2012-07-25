@@ -7,11 +7,6 @@
 #include "FixtureFiller.h"
 using namespace cocos2d;
 
-typedef enum AreaType{
-	WinArea = 0,
-	LooseArea = 1
-}AreaType;
-
 ////////////////////////////////////////////////////
 // ObjectArea
 ///////////////////////////////////////////////////
@@ -23,7 +18,6 @@ private:
 	CCSprite * m_fillSprite;
 	
 	FixtureFiller * m_fixtureFiller;
-    AreaType m_areaType;
 protected:
 	bool init( std::string spritePath );
 
@@ -34,9 +28,6 @@ public:
     ObjectArea(const string& fileName, const Json::Value& prototype)
 	: GameObject(fileName, prototype) { }
 	GAMEOBJECT_NODE_DEF( ObjectArea )
-
-	AreaType getAreaType(){ return m_areaType; }
-	void setAreaType( AreaType type );
 
 	//////////////////////////////////////////////////// 
 	// Begins object preparation for unstuck routine
