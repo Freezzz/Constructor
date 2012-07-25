@@ -86,7 +86,11 @@ bool GameLevelScene::init( LevelDescription *level )
 	m_levelFile = level;
 	loadLevel( ld );
 	
+	// enabling accelerometer
 	setIsAccelerometerEnabled( ld->controlled );
+	if( ld->controlled ) {
+		cocos2d::CCAccelerometer::sharedAccelerometer()->setDelegate( this );
+	}
 	
 	scheduleUpdate();
 	return true;
