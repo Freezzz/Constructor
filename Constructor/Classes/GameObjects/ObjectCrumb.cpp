@@ -23,7 +23,7 @@ bool ObjectCrumb::init( )
 
 	// Adapt container to the graphical rapresentation
 	setContentSize(m_sprite->getContentSize());
-	m_sprite->setAnchorPoint(CCPoint(0,0.5));
+	m_sprite->setAnchorPoint(CCPoint(0,0));
 	setAnchorPoint(CCPoint(0.5,0.5)); // CCNode AP default is 0,0
 	addChild(m_sprite);
 	defaultZOrder = 1;
