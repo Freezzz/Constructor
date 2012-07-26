@@ -28,27 +28,16 @@ bool ObjectArea::init( )
 
 	rotateButtonOffset = CCPoint(40,0);
 	deleteButtonOffset = CCPoint(-40,0);
-
-	m_areaType = WinArea;
 	
 	// Permits to pin to be always over other objects
 	defaultZOrder = 20;
 
 	scheduleUpdate();
 	
-	m_fixtureFiller = NULL;
-	return true;
-}
-
-void ObjectArea::setAreaType( AreaType type ){
-	m_areaType = type;
-//	delete m_fixtureFiller;
-	if (type == WinArea) {
-		m_fillSprite = CCSprite::spriteWithFile("stripes_win.png");
-	}else {
-		m_fillSprite = CCSprite::spriteWithFile("stripes_loose.png");
-	}
+	// m_fixtureFiller = NULL;
+	m_fillSprite = CCSprite::spriteWithFile("stripes_win.png");
 	m_fixtureFiller = new FixtureFiller(m_body->GetFixtureList(), m_fillSprite->getTexture(), ccc4f(255, 255, 255, 255));
+	return true;
 }
 
 ////////////////////////////////////////////////////

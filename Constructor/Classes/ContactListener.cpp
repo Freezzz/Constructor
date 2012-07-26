@@ -7,7 +7,7 @@
 //
 
 #include "ContactListener.h"
-#include "GameObject.h"
+#include "GameObjects/GameObject.h"
 #include "GameLevelScene.h"
 
 //////////////////////////////////////////////////// 

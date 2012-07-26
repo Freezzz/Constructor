@@ -86,7 +86,11 @@ bool GameLevelScene::init( LevelDescription *level )
 	m_levelFile = level;
 	loadLevel( ld );
 	
+	// enabling accelerometer
 	setIsAccelerometerEnabled( ld->controlled );
+	if( ld->controlled ) {
+		cocos2d::CCAccelerometer::sharedAccelerometer()->setDelegate( this );
+	}
 	
 	scheduleUpdate();
 	return true;
@@ -310,14 +314,7 @@ void GameLevelScene::loadLevel( LevelDef *ld )
 	m_target = ld->target;
 	
 	m_winArea = ld->winArea;
-	if (m_winArea) {
-		((ObjectArea*)m_winArea)->setAreaType(WinArea);
-	}
-	
 	m_looseArea = ld->looseArea;
-	if (m_looseArea) {
-		((ObjectArea*)m_looseArea)->setAreaType(LooseArea);
-	}
 
 	// level background
 	if( ld->theme.isMember( "background" ) ) {
