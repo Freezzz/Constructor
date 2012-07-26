@@ -84,12 +84,14 @@ void ObjectCrumb::update(ccTime dt){
 	
 }
 
+//////////////////////////////////////////////////// 
+// Debug purpose only draws los of the mouse
+//////////////////////////////////////////////////// 
 void ObjectCrumb::draw(){
 	GameObject::draw();
 	if (isEaten()) {
 		return;
 	}
-	
 	if (m_canSee) {
 		glColor4ub(0, 255, 0, 255);
 	} else {
@@ -117,15 +119,8 @@ void ObjectCrumb::objectCollided(GameObject *otherObject, b2Contact * contact){
 }
 
 //////////////////////////////////////////////////// 
-// Collision ended handler
+// Callback on simulation ended
 //////////////////////////////////////////////////// 
-void ObjectCrumb::objectCollisionEnded(GameObject *otherObject, b2Contact * contact){
-}
-
-void ObjectCrumb::onSimulationStarted(){
-	GameObject::onSimulationStarted();
-}
-
 void ObjectCrumb::onSimulationEnded(){
 	GameObject::onSimulationEnded();
 	setIsEaten(false);
