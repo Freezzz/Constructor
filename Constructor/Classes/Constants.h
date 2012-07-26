@@ -20,7 +20,8 @@ typedef enum ObjectType{
 	Glue		= 5,
 	Fatty		= 6,
 	Water		= 7,
-	Oven		= 8
+	Oven		= 8,
+	Crumb		= 9
 }ObjectType;
 
 

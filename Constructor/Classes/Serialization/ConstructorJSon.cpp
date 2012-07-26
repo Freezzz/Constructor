@@ -10,6 +10,7 @@
 #include "../GameObjects/ObjectFatty.h"
 #include "../GameObjects/ObjectWater.h"
 #include "../GameObjects/ObjectOven.h"
+#include "../GameObjects/ObjectCrumb.h"
 #include "../Controls/InventoryLayer.h"
 #include "../Serialization/LevelManager.h"
 
@@ -331,7 +332,9 @@ GameObject* ConstructorJSon::j2cGameObject( std::string &fileName, const cocos2d
 		case Oven:
 			object = ObjectOven::node( fileName, prototype, p );
 			break;			
-			
+		case Crumb:
+			object = ObjectCrumb::node( fileName, prototype, p );
+			break;
 		default:
 			CCAssert( false, "Invalid inventory item" );
 	}

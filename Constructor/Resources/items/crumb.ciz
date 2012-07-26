@@ -1,0 +1,5 @@
+{
+	"name" : "crumb",
+	"sprite path" : "crumb_btn.png",
+	"game object file" : "crumb"
+}

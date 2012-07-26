@@ -81,6 +81,7 @@ void ObjectFatty::applyTorque(float value){
 		value = -100;
 	}
 	m_motorJoint->SetMotorSpeed(value);
+//	m_body -> ApplyForceToCenter(b2Vec2(value, 0));
 }
 
 //////////////////////////////////////////////////// 

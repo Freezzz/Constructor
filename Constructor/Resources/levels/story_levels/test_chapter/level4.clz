@@ -114,7 +114,6 @@
          "y": 8
       }
    },
-
    {
       "deletable": false,
       "movable": false,
@@ -132,10 +131,7 @@
    ],
 
    "inventory buttons": [{
-      "file": "pin",
-      "max quantity": 4
-   }, {
-      "file": "panel",
+      "file": "crumb",
       "max quantity": 3
    }],
 
@@ -143,7 +139,7 @@
    "name": "test level",
    "target": 0,
    "win area": 1,
-   "controlled": true,
+   "controlled": false,
    "theme": "theme1",
    "win conditions": 0
 }
